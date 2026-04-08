@@ -211,6 +211,34 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
 </table>`;
 
     chapter.questions.forEach((question, qi) => {
+
+      // ── Bloc libre (freetext) ──────────────────────────────────────────────
+      if (question.qtype === 'freetext') {
+        chaptersHtml += `
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:4pt;border-collapse:collapse;">
+  <tr>
+    <td style="background:${C.ELECTRIC};width:4pt;padding:0;"></td>
+    <td style="padding:8pt 12pt;background:${C.LIGHT_BG};">
+      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${esc(question.text)}</span>
+    </td>
+  </tr>
+</table>`;
+        if (question.freetextContent) {
+          chaptersHtml += `
+<table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:14pt;border-collapse:collapse;">
+  <tr>
+    <td style="background:${C.ELECTRIC};width:4pt;padding:0;"></td>
+    <td style="padding:8pt 14pt;font-size:10.5pt;color:${C.TEXT_DARK};line-height:1.7;font-family:Calibri,Arial,sans-serif;border:1pt solid #CBD5E1;border-left:none;white-space:pre-wrap;">
+      ${esc(question.freetextContent)}
+    </td>
+  </tr>
+</table>`;
+        }
+        chaptersHtml += `<hr style="border:none;border-top:1pt solid #CBD5E1;margin:10pt 0;">`;
+        return;
+      }
+
+      // ── Question à choix (comportement normal) ────────────────────────────
       const raw        = answers[question.id];
       const answer     = answerValue(raw);
       const reason     = answerReason(raw);

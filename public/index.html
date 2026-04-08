@@ -718,6 +718,21 @@ function renderAudit() {
     });
 
     visibleQuestions.forEach(q => {
+      if (q.qtype === 'freetext') {
+        // ── Bloc libre : affichage lecture seule dans le questionnaire ──
+        html += `<div class="question-card" style="background:var(--blue-pale);border-left:3px solid var(--blue-med);">
+          <div style="display:flex;align-items:flex-start;gap:8px;">
+            <div style="flex:1;">
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue-med);margin-bottom:4px;">📝 Bloc libre</div>
+              <div class="question-text">${esc(q.text)}</div>
+              ${q.freetextContent ? `<div class="preview-para" style="margin-top:6px;">${esc(q.freetextContent)}</div>` : ''}
+            </div>
+            <button class="hide-btn" onclick="hideQuestion(${q.id})" title="Masquer ce bloc du rapport">✕ Masquer</button>
+          </div>
+        </div>`;
+        return;
+      }
+
       const ans    = getAnswerValue(q.id);
       const reason = getAnswerReason(q.id);
       const para   = ans && ans !== 'Non applicable' ? q.paragraphs[ans] : null;
@@ -824,6 +839,7 @@ function renderManage() {
 
     ch.questions.forEach((q, qi) => {
       const lo = (opt) => opt.toLowerCase();
+      const isFree = q.qtype === 'freetext';
       html += `<div class="question-manage-row"
           draggable="true"
           data-cid="${ch.id}" data-qid="${q.id}"
@@ -834,12 +850,16 @@ function renderManage() {
           ondragend="onDragEnd()">
         <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
         <div style="flex:1;min-width:0;">
-          <div class="question-manage-text">${esc(q.text)}</div>
+          <div class="question-manage-text">${isFree ? '📝 ' : ''}${esc(q.text)}</div>
           <div class="question-manage-options">`;
-      q.options.forEach(opt => {
-        const cls = lo(opt) === 'oui' ? 'badge-green' : lo(opt) === 'non' ? 'badge-red' : lo(opt) === 'non applicable' ? 'badge-amber' : 'badge-blue';
-        html += `<span class="badge ${cls}">${esc(opt)}</span>`;
-      });
+      if (isFree) {
+        html += `<span class="badge badge-blue">Bloc libre</span>`;
+      } else {
+        q.options.forEach(opt => {
+          const cls = lo(opt) === 'oui' ? 'badge-green' : lo(opt) === 'non' ? 'badge-red' : lo(opt) === 'non applicable' ? 'badge-amber' : 'badge-blue';
+          html += `<span class="badge ${cls}">${esc(opt)}</span>`;
+        });
+      }
       html += `</div></div>
         <div style="display:flex;gap:6px;flex-shrink:0;">
           <button class="btn btn-xs" onclick="openEditQuestion(${ch.id}, ${q.id})">✏ Modifier</button>
@@ -959,7 +979,7 @@ function removeQuestion(cid, qid) {
 // MODAL QUESTION
 // ────────────────────────────────────────────────────────────────────────────
 function openAddQuestion(cid) {
-  state.modal = { type: 'add', cid, q: { id: null, text: '', options: ['Oui', 'Non'], paragraphs: { 'Oui': '', 'Non': '' } } };
+  state.modal = { type: 'add', cid, q: { id: null, text: '', qtype: 'choice', options: ['Oui', 'Non'], paragraphs: { 'Oui': '', 'Non': '' } } };
   document.getElementById('modal-title').textContent = 'Nouvelle question';
   renderModal();
   document.getElementById('modal-overlay').classList.add('open');
@@ -976,11 +996,31 @@ function openEditQuestion(cid, qid) {
 
 function renderModal() {
   const { q } = state.modal;
+  const isFree = q.qtype === 'freetext';
+
   let html = `<div class="field">
-    <label>Texte de la question *</label>
-    <textarea id="modal-qtext" rows="3" placeholder="La question à poser lors de l'audit...">${esc(q.text)}</textarea>
+    <label>Texte / Titre *</label>
+    <textarea id="modal-qtext" rows="2" placeholder="${isFree ? 'Titre du bloc (ex: Contexte, Planning…)' : 'La question à poser lors de l\'audit...'}">${esc(q.text)}</textarea>
   </div>
-  <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);margin-bottom:12px;">Options, paragraphes et images associés</div>`;
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
+    <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);">Type :</span>
+    <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;">
+      <input type="radio" name="modal-qtype" value="choice" ${!isFree?'checked':''} onchange="setModalQtype('choice')"> Question à choix
+    </label>
+    <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;">
+      <input type="radio" name="modal-qtype" value="freetext" ${isFree?'checked':''} onchange="setModalQtype('freetext')"> Bloc libre (contexte, planning…)
+    </label>
+  </div>`;
+
+  if (isFree) {
+    // ── Mode champ libre ──
+    html += `<div class="field">
+      <label>Contenu du bloc</label>
+      <textarea id="modal-freetext" rows="8" placeholder="Texte libre affiché tel quel dans le rapport…" style="font-size:13px;">${esc(q.freetextContent || '')}</textarea>
+    </div>`;
+  } else {
+    // ── Mode question à choix (comportement existant) ──
+    html += `<div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);margin-bottom:12px;">Options, paragraphes et images associés</div>`;
 
   q.options.forEach((opt, i) => {
     const lo = opt.toLowerCase();
@@ -1032,14 +1072,61 @@ function renderModal() {
   });
 
   html += `<div style="margin-top:8px;"><button class="btn btn-sm" onclick="addOption()">+ Ajouter une option</button></div>`;
+
+  } // end if/else isFree
+
   document.getElementById('modal-body').innerHTML = html;
 }
 
 function addOption() {
-  const val = prompt('Nouvelle option de réponse :');
-  if (!val || !val.trim()) return;
-  state.modal.q.options.push(val.trim());
-  state.modal.q.paragraphs[val.trim()] = '';
+  // Pas de prompt() — on insère un champ inline pour éviter la fermeture du modal
+  const existing = document.getElementById('new-option-input');
+  if (existing) { existing.focus(); return; }
+
+  const container = document.createElement('div');
+  container.id = 'new-option-row';
+  container.style.cssText = 'display:flex;gap:6px;margin-top:8px;align-items:center;';
+  container.innerHTML = `
+    <input id="new-option-input" type="text" placeholder="Nouvelle option..." 
+           style="flex:1;font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;"
+           onkeydown="if(event.key==='Enter'){confirmAddOption();}if(event.key==='Escape'){cancelAddOption();}">
+    <button class="btn btn-sm btn-primary" onclick="confirmAddOption()">Ajouter</button>
+    <button class="btn btn-sm" onclick="cancelAddOption()">Annuler</button>`;
+
+  // Insérer avant le bouton "+ Ajouter une option"
+  const addBtn = document.querySelector('#modal-body > div:last-child');
+  if (addBtn) addBtn.before(container);
+  setTimeout(() => document.getElementById('new-option-input')?.focus(), 0);
+}
+
+function confirmAddOption() {
+  const input = document.getElementById('new-option-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) { input.focus(); return; }
+  syncModalFields();
+  state.modal.q.options.push(val);
+  state.modal.q.paragraphs[val] = '';
+  renderModal();
+}
+
+function cancelAddOption() {
+  const row = document.getElementById('new-option-row');
+  if (row) row.remove();
+}
+
+function setModalQtype(qtype) {
+  syncModalFields();
+  state.modal.q.qtype = qtype;
+  if (qtype === 'freetext') {
+    // Pas besoin d'options pour un bloc libre
+    state.modal.q.options = [];
+    state.modal.q.paragraphs = {};
+  } else if (!state.modal.q.options.length) {
+    // Restaurer des options par défaut si on repasse en mode choix
+    state.modal.q.options = ['Oui', 'Non'];
+    state.modal.q.paragraphs = { 'Oui': '', 'Non': '' };
+  }
   renderModal();
 }
 
@@ -1056,6 +1143,10 @@ function removeOption(event, idx) {
 function syncModalFields() {
   const { q } = state.modal;
   q.text = document.getElementById('modal-qtext').value;
+  if (q.qtype === 'freetext') {
+    q.freetextContent = document.getElementById('modal-freetext')?.value || '';
+    return;
+  }
   if (!q.images) q.images = {};
   q.options.forEach((opt, i) => {
     q.paragraphs[opt] = document.getElementById('modal-para-' + i)?.value || q.paragraphs[opt] || '';
@@ -1204,7 +1295,7 @@ function removeImage(event, optIndex) {
 function saveQuestion() {
   syncModalFields();
   const { type, cid, q } = state.modal;
-  if (!q.text.trim()) { alert('La question ne peut pas être vide.'); return; }
+  if (!q.text.trim()) { alert('Le titre ne peut pas être vide.'); return; }
   const ch = state.chapters.find(c => c.id === cid);
   if (type === 'add') {
     q.id = Date.now();
