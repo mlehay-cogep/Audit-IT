@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit IT — Générateur de rapports</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue-dark:   #1A3A5C;
+    --blue-med:    #185FA5;
+    --blue-light:  #D4E6F8;
+    --blue-pale:   #EEF5FC;
+    --gray-dark:   #2C2C2A;
+    --gray-med:    #5F5E5A;
+    --gray-light:  #F4F2EC;
+    --green:       #3B6D11;
+    --green-light: #EAF3DE;
+    --red:         #A32D2D;
+    --red-light:   #FCEBEB;
+    --amber:       #854F0B;
+    --amber-light: #FAEEDA;
+    --white:       #FFFFFF;
+    --border:      rgba(0,0,0,0.1);
+    --radius:      10px;
+    --radius-lg:   14px;
+    --shadow:      0 2px 12px rgba(0,0,0,0.07);
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--gray-light);
+    color: var(--gray-dark);
+    min-height: 100vh;
+  }
+
+  /* ─── SIDEBAR ─────────────────────────────────────────── */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 240px; flex-shrink: 0;
+    background: var(--blue-dark);
+    display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .sidebar-logo-title { color: #fff; font-size: 15px; font-weight: 600; line-height: 1.3; }
+  .sidebar-logo-sub { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 3px; }
+
+  .sidebar-nav { flex: 1; padding: 12px 0; }
+  .nav-section { padding: 8px 20px 4px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.35); font-weight: 600; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; cursor: pointer;
+    color: rgba(255,255,255,0.65); font-size: 14px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+  .nav-item.active { background: rgba(255,255,255,0.1); color: #fff; border-left-color: #5BA3E0; font-weight: 500; }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .progress-widget {
+    margin: 12px; padding: 14px;
+    background: rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+  }
+  .progress-widget-label { color: rgba(255,255,255,0.5); font-size: 11px; margin-bottom: 8px; }
+  .progress-widget-count { color: #fff; font-size: 22px; font-weight: 600; }
+  .progress-widget-total { color: rgba(255,255,255,0.4); font-size: 13px; }
+  .progress-bar { background: rgba(255,255,255,0.15); border-radius: 20px; height: 5px; margin-top: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 20px; background: #5BA3E0; transition: width 0.4s ease; }
+
+  /* ─── MAIN ────────────────────────────────────────────── */
+  .main { flex: 1; padding: 28px 32px; max-width: 900px; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-title { font-size: 22px; font-weight: 600; color: var(--blue-dark); margin-bottom: 6px; }
+  .page-sub { font-size: 14px; color: var(--gray-med); margin-bottom: 24px; }
+
+  /* ─── CARDS ───────────────────────────────────────────── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 14px; font-weight: 600; color: var(--blue-dark);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ─── FORM ────────────────────────────────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  label { display: block; font-size: 12px; font-weight: 500; color: var(--gray-med); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  input[type="text"], input[type="email"], input[type="date"],
+  input[type="tel"], textarea, select {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px; color: var(--gray-dark);
+    background: #FAFAF8; font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--blue-med);
+    box-shadow: 0 0 0 3px rgba(24,95,165,0.12);
+    background: var(--white);
+  }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+  /* ─── BUTTONS ─────────────────────────────────────────── */
+  .btn {
+    padding: 9px 18px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--white); color: var(--gray-dark);
+    transition: all 0.15s; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { background: var(--gray-light); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--blue-med); color: #fff; border-color: var(--blue-med); }
+  .btn-primary:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+  .btn-primary:disabled { background: #aac5e6; border-color: #aac5e6; cursor: not-allowed; }
+  .btn-danger { border-color: #e5b4b4; color: var(--red); }
+  .btn-danger:hover { background: var(--red-light); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-xs { padding: 3px 8px; font-size: 11px; border-radius: 6px; }
+  .btn-row { display: flex; gap: 10px; align-items: center; margin-top: 16px; flex-wrap: wrap; }
+
+  /* ─── BADGE ───────────────────────────────────────────── */
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+  .badge-blue { background: var(--blue-pale); color: var(--blue-dark); }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+
+  /* ─── AUDIT PAGE ──────────────────────────────────────── */
+  .chapter-section { margin-bottom: 28px; }
+  .chapter-header-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--blue-dark); border-radius: var(--radius);
+    margin-bottom: 12px;
+  }
+  .chapter-header-bar .ch-num {
+    background: rgba(255,255,255,0.15); color: #fff;
+    font-size: 12px; font-weight: 700;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .chapter-header-bar .ch-name { color: #fff; font-size: 15px; font-weight: 600; }
+
+  .question-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px; margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .question-text { font-size: 14px; font-weight: 500; color: var(--gray-dark); margin-bottom: 10px; }
+
+  .radio-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .radio-option {
+    padding: 6px 16px; border: 1px solid var(--border);
+    border-radius: 20px; cursor: pointer; font-size: 13px;
+    color: var(--gray-med); transition: all 0.15s; user-select: none;
+    font-weight: 500;
+  }
+  .radio-option:hover { border-color: var(--blue-med); color: var(--blue-med); }
+  .radio-option.oui.selected { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .radio-option.non.selected { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .radio-option.other.selected { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+  .radio-option.na { color: var(--gray-med); border-style: dashed; }
+  .radio-option.na.selected { background: #F1EFE8; border-color: var(--gray-med); color: var(--gray-dark); border-style: solid; }
+  .na-reason-block {
+    margin-top: 10px; padding: 12px;
+    background: #F8F7F3; border: 1px solid #DDD;
+    border-left: 3px solid var(--gray-med);
+    border-radius: var(--radius);
+  }
+
+  .preview-para {
+    font-size: 13px; color: var(--gray-med); line-height: 1.6;
+    background: var(--blue-pale);
+    border-left: 3px solid var(--blue-med);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 10px 14px; margin-top: 6px;
+  }
+
+  /* ─── MANAGE PAGE ─────────────────────────────────────── */
+  .chapter-manage-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.15s, opacity 0.15s;
+  }
+  .chapter-manage-card.dragging { opacity: 0.4; }
+  .chapter-manage-card.drag-over { box-shadow: 0 0 0 2px var(--blue-med), var(--shadow); }
+  .chapter-manage-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--blue-pale);
+    border-bottom: 1px solid var(--border);
+  }
+  .chapter-manage-title { font-size: 15px; font-weight: 600; color: var(--blue-dark); }
+  .chapter-manage-body { padding: 16px 18px; }
+
+  .drag-handle {
+    cursor: grab; color: var(--gray-med); font-size: 16px;
+    padding: 0 6px; user-select: none; flex-shrink: 0;
+    line-height: 1;
+  }
+  .drag-handle:active { cursor: grabbing; }
+
+  .question-manage-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    transition: opacity 0.15s, background 0.1s;
+    border-radius: 4px;
+  }
+  .question-manage-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .question-manage-row.dragging { opacity: 0.4; }
+  .question-manage-row.drag-over { background: var(--blue-pale); }
+  .question-manage-text { flex: 1; font-size: 13px; color: var(--gray-dark); }
+  .question-manage-options { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+
+  /* ─── AUDIT HIDE CONTROLS ──────────────────────────────── */
+  .chapter-header-bar .hide-btn {
+    margin-left: 8px; font-size: 11px; padding: 3px 8px;
+    border-radius: 20px; border: 1px solid rgba(255,255,255,0.3);
+    background: transparent; color: rgba(255,255,255,0.7);
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .chapter-header-bar .hide-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .question-card .hide-btn {
+    font-size: 11px; padding: 2px 8px; border-radius: 20px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--gray-med); cursor: pointer; font-family: inherit;
+    transition: all 0.15s; float: right; margin-left: 8px;
+  }
+  .question-card .hide-btn:hover { background: var(--red-light); border-color: #e5b4b4; color: var(--red); }
+  .hidden-chapter-bar, .hidden-question-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px; border-radius: var(--radius);
+    background: var(--gray-light); border: 1px dashed var(--border);
+    margin-bottom: 8px; font-size: 12px; color: var(--gray-med);
+  }
+  .hidden-chapter-bar button, .hidden-question-bar button {
+    margin-left: auto; font-size: 11px; padding: 2px 8px;
+    border-radius: 20px; border: 1px solid var(--border);
+    background: var(--white); color: var(--gray-dark);
+    cursor: pointer; font-family: inherit;
+  }
+
+  .add-btn-dashed {
+    width: 100%; padding: 10px; border: 1.5px dashed var(--border);
+    border-radius: var(--radius); background: transparent; cursor: pointer;
+    font-size: 13px; color: var(--gray-med); font-family: inherit;
+    transition: all 0.15s;
+  }
+  .add-btn-dashed:hover { border-color: var(--blue-med); color: var(--blue-med); background: var(--blue-pale); }
+
+  /* ─── MODAL PLEIN ÉCRAN (panneau latéral droit) ──────── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1000;
+  }
+  .modal-overlay.open { display: block; }
+  .modal {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: min(820px, 100vw);
+    background: var(--white);
+    box-shadow: -8px 0 40px rgba(0,0,0,0.18);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+    flex-shrink: 0; background: var(--blue-dark);
+  }
+  .modal-title { font-size: 16px; font-weight: 600; color: #fff; margin: 0; }
+  .modal-close-btn {
+    background: rgba(255,255,255,0.15); border: none; color: #fff;
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .modal-close-btn:hover { background: rgba(255,255,255,0.3); }
+  .modal-body { flex: 1; overflow-y: auto; padding: 24px; }
+  .modal-footer {
+    padding: 16px 24px; border-top: 1px solid var(--border);
+    display: flex; gap: 10px; flex-shrink: 0;
+    background: var(--gray-light);
+  }
+  .modal-sep { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+  .option-edit-row {
+    background: #FAFAF8; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px;
+    margin-bottom: 12px;
+  }
+  .option-edit-label {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  /* ─── TOAST ───────────────────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--blue-dark); color: #fff;
+    padding: 12px 20px; border-radius: var(--radius);
+    font-size: 14px; font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 2000; display: none;
+    animation: slideUp 0.2s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* ─── WARN BOX ─────────────────────────────────────────── */
+  .warn-box {
+    background: var(--amber-light); border-radius: var(--radius);
+    padding: 10px 14px; font-size: 13px; color: var(--amber);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    border: 1px solid #f0c88a;
+  }
+
+  /* ─── GENERATE PANEL ──────────────────────────────────── */
+  .generate-panel {
+    background: var(--blue-dark); border-radius: var(--radius-lg);
+    padding: 24px; color: #fff; margin-top: 8px;
+  }
+  .generate-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .generate-sub { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 18px; }
+  .layout-opt {
+    padding: 7px 14px; border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7); font-size: 13px; cursor: pointer;
+    transition: all 0.15s; user-select: none; font-family: inherit; display: inline-block;
+  }
+  .layout-opt:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .layout-opt.active { background: rgba(255,255,255,0.22); color: #fff; border-color: rgba(255,255,255,0.6); font-weight: 500; }
+  .img-upload-zone {
+    border: 1.5px dashed var(--border); border-radius: var(--radius);
+    padding: 10px; text-align: center; cursor: pointer;
+    font-size: 12px; color: var(--gray-med); transition: all 0.15s;
+    background: #FAFAF8; margin-top: 6px;
+  }
+  .img-upload-zone:hover { border-color: var(--blue-med); color: var(--blue-med); background: var(--blue-pale); }
+  .img-preview img { max-width: 100%; max-height: 120px; border: 1px solid var(--border); border-radius: 4px; display: block; margin-top: 6px; }
+
+  /* ── Image picker ── */
+  .img-picker { margin-top: 6px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: #FAFAF8; }
+  .img-picker-tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .img-picker-tab {
+    flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer;
+    background: none; border: none; color: var(--gray-med);
+    transition: all 0.15s; font-family: inherit;
+  }
+  .img-picker-tab.active { color: var(--blue-med); background: var(--blue-pale); border-bottom: 2px solid var(--blue-med); }
+  .img-picker-panel { padding: 10px; }
+  .img-picker-panel.hidden { display: none; }
+  .img-name-input { width: 100%; font-size: 12px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; font-family: inherit; }
+  .img-drop-zone {
+    border: 1.5px dashed var(--border); border-radius: 8px;
+    padding: 14px 10px; text-align: center; cursor: pointer;
+    font-size: 12px; color: var(--gray-med); transition: all 0.15s; background: white;
+  }
+  .img-drop-zone:hover { border-color: var(--blue-med); color: var(--blue-med); background: var(--blue-pale); }
+  .img-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 6px; max-height: 200px; overflow-y: auto; }
+  .img-gallery-item {
+    border: 2px solid var(--border); border-radius: 6px; overflow: hidden;
+    cursor: pointer; transition: border-color 0.15s; position: relative; background: white;
+  }
+  .img-gallery-item:hover { border-color: var(--blue-med); }
+  .img-gallery-item img { width: 100%; height: 60px; object-fit: cover; display: block; }
+  .img-gallery-item .img-gallery-name { font-size: 9px; color: var(--gray-med); text-align: center; padding: 2px 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .img-gallery-empty { font-size: 12px; color: var(--gray-med); text-align: center; padding: 20px 0; }
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  hr.sep { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  @media (max-width: 700px) {
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: relative; }
+    .main { padding: 16px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- ─── SIDEBAR ───────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-title">Audit IT Pro</div>
+      <div class="sidebar-logo-sub">Générateur de rapports</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Rapport</div>
+      <div class="nav-item active" data-page="client">
+        <span class="nav-icon">🏢</span> Infos client
+      </div>
+      <div class="nav-item" data-page="audit">
+        <span class="nav-icon">✅</span> Questionnaire
+      </div>
+      <div class="nav-item" data-page="generate">
+        <span class="nav-icon">📄</span> Générer
+      </div>
+      <div class="nav-section" style="margin-top:8px;">Configuration</div>
+      <div class="nav-item" data-page="manage">
+        <span class="nav-icon">⚙️</span> Gérer les questions
+      </div>
+      <div class="nav-item" data-page="settings">
+        <span class="nav-icon">🔧</span> Paramètres
+      </div>
+    </nav>
+    <div class="progress-widget">
+      <div class="progress-widget-label">Questions répondues</div>
+      <div>
+        <span class="progress-widget-count" id="prog-answered">0</span>
+        <span class="progress-widget-total"> / <span id="prog-total">0</span></span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div style="padding:12px 16px 16px;border-top:1px solid rgba(255,255,255,0.08);margin-top:auto;">
+      <p style="font-size:10px;color:rgba(255,255,255,0.3);line-height:1.6;text-align:center;">
+        Réalisé par <strong style="color:rgba(255,255,255,0.5);">Mickaël LEHAY</strong><br>
+        à l'aide de <strong style="color:rgba(255,255,255,0.5);">Claude</strong> — Anthropic
+      </p>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ──────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- PAGE : CLIENT -->
+    <div class="page active" id="page-client">
+      <div class="page-title">Informations client</div>
+      <div class="page-sub">Renseignez les coordonnées de l'entreprise auditée et les détails de la mission.</div>
+
+      <div class="card">
+        <div class="card-title">🏢 Entreprise auditée</div>
+        <div class="grid-2">
+          <div class="field"><label>Nom de l'entreprise *</label><input type="text" id="c-company" placeholder="Acme Corp."></div>
+          <div class="field"><label>Nom du contact</label><input type="text" id="c-contact" placeholder="Jean Dupont"></div>
+          <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="contact@acme.fr"></div>
+          <div class="field"><label>Téléphone</label><input type="tel" id="c-phone" placeholder="01 23 45 67 89"></div>
+        </div>
+        <div class="field"><label>Adresse</label><input type="text" id="c-address" placeholder="12 rue de la Paix"></div>
+        <div class="grid-2">
+          <div class="field"><label>Code postal</label><input type="text" id="c-postal" placeholder="75001"></div>
+          <div class="field"><label>Ville</label><input type="text" id="c-city" placeholder="Paris"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Mission d'audit</div>
+        <div class="grid-3">
+          <div class="field"><label>Date de l'audit</label><input type="date" id="c-date"></div>
+          <div class="field"><label>Auditeur</label><input type="text" id="c-auditor" placeholder="Marie Martin"></div>
+          <div class="field"><label>Référence rapport</label><input type="text" id="c-ref" placeholder="AUDIT-2026-001"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goPage('audit')">Passer au questionnaire →</button>
+      </div>
+    </div>
+
+    <!-- PAGE : AUDIT -->
+    <div class="page" id="page-audit">
+      <div class="page-title">Questionnaire d'audit</div>
+      <div class="page-sub">Répondez à chaque question. Le paragraphe correspondant s'affichera automatiquement.</div>
+      <div id="audit-content"></div>
+      <hr class="sep">
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goPage('generate')">Passer à la génération →</button>
+      </div>
+    </div>
+
+    <!-- PAGE : GÉNÉRER -->
+    <div class="page" id="page-generate">
+      <div class="page-title">Générer le rapport</div>
+      <div class="page-sub">Choisissez le format et téléchargez votre rapport d'audit.</div>
+
+      <div class="card" id="gen-summary"></div>
+
+      <div class="generate-panel">
+        <div class="generate-title">Format de sortie</div>
+        <div class="generate-sub">Choisissez la mise en page et le format de fichier</div>
+
+        <div style="margin-bottom:14px;">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:rgba(255,255,255,0.5);margin-bottom:8px;">Mise en page</div>
+          <div style="display:flex;gap:8px;">
+            <div class="layout-opt active" id="lopt-cogep" onclick="setLayout('cogep')">🎨 Charte COGEP</div>
+            <div class="layout-opt" id="lopt-simple" onclick="setLayout('simple')">📄 Simple</div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:rgba(255,255,255,0.5);margin-bottom:8px;">Télécharger</div>
+        <div class="btn-row" style="margin-top:0;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="gen-btn-doc" onclick="generateReport('doc')" style="font-size:13px;padding:10px 20px;">⬇ .doc (Word)</button>
+          <button class="btn" id="gen-btn-html" onclick="generateReport('html')" style="font-size:13px;padding:10px 20px;background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.3);">⬇ .html</button>
+          <span id="gen-status" style="font-size:13px;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:8px;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE : MANAGE -->
+    <div class="page" id="page-manage">
+      <div class="page-title">Gérer les questions</div>
+      <div class="page-sub">Ajoutez, modifiez ou supprimez des chapitres et des questions. Définissez les paragraphes pour chaque réponse possible.</div>
+      <div id="manage-content"></div>
+      <button class="add-btn-dashed" onclick="addChapter()" style="margin-top:8px;">+ Ajouter un chapitre</button>
+    </div>
+
+    <!-- PAGE : PARAMÈTRES -->
+    <div class="page" id="page-settings">
+      <div class="page-title">Paramètres</div>
+      <div class="page-sub">Exportez ou importez toutes les données de l'application au format JSON.</div>
+
+      <div class="card">
+        <div class="card-title">⬆ Exporter les données</div>
+        <p style="font-size:13px;color:var(--gray-med);margin-bottom:16px;">Télécharge un fichier JSON contenant toutes les questions, chapitres et réponses actuels. Utile pour sauvegarder ou partager votre configuration.</p>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="exportJSON()">⬇ Exporter tout en JSON</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⬇ Importer des données</div>
+        <p style="font-size:13px;color:var(--gray-med);margin-bottom:4px;">Chargez un fichier JSON exporté précédemment. <strong>Attention : remplace toutes les données actuelles.</strong></p>
+        <div class="warn-box" style="margin-bottom:12px;">⚠ L'import écrase les chapitres, questions et réponses existants.</div>
+        <div class="field">
+          <label>Fichier JSON</label>
+          <input type="file" id="import-file" accept=".json" onchange="importJSON(this)" style="background:#FAFAF8;">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🗑 Remise à zéro</div>
+        <p style="font-size:13px;color:var(--gray-med);margin-bottom:16px;">Efface toutes les réponses du questionnaire en cours (les chapitres et questions sont conservés).</p>
+        <div class="btn-row">
+          <button class="btn btn-danger" onclick="resetAnswers()">Effacer les réponses</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ─── MODAL (panneau latéral droit) ─────────────────── -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Question</div>
+      <button class="modal-close-btn" onclick="closeModalNow()" title="Fermer">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveQuestion()">Enregistrer</button>
+      <button class="btn" onclick="closeModalNow()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="data.js"></script>
+<script>
+// ────────────────────────────────────────────────────────────────────────────
+// STATE — les chapitres/questions sont chargés depuis data.js
+// ────────────────────────────────────────────────────────────────────────────
+let state = {
+  chapters: JSON.parse(JSON.stringify(AUDIT_DATA)),
+  answers: {},
+  hidden: { chapters: {}, questions: {} }, // masqués dans l'onglet Audit
+  modal: null
+};
+
+// ────────────────────────────────────────────────────────────────────────────
+// NAVIGATION
+// ────────────────────────────────────────────────────────────────────────────
+function goPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelector(`[data-page="${name}"]`).classList.add('active');
+  if (name === 'audit') renderAudit();
+  if (name === 'manage') renderManage();
+  if (name === 'generate') renderSummary();
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => goPage(item.dataset.page));
+});
+
+// ────────────────────────────────────────────────────────────────────────────
+// PROGRESS
+// ────────────────────────────────────────────────────────────────────────────
+function updateProgress() {
+  let total = 0, answered = 0;
+  state.chapters.forEach(ch => {
+    if (state.hidden.chapters[ch.id]) return;
+    ch.questions.forEach(q => {
+      if (state.hidden.questions[q.id]) return;
+      total++;
+      if (state.answers[q.id]) answered++;
+    });
+  });
+  document.getElementById('prog-answered').textContent = answered;
+  document.getElementById('prog-total').textContent = total;
+  document.getElementById('prog-fill').style.width = total ? ((answered / total) * 100) + '%' : '0%';
+}
+updateProgress();
+
+// ────────────────────────────────────────────────────────────────────────────
+// AUDIT PAGE
+// ────────────────────────────────────────────────────────────────────────────
+function getAnswerValue(qid) {
+  const a = state.answers[qid];
+  if (!a) return null;
+  return typeof a === 'object' ? a.value : a;
+}
+function getAnswerReason(qid) {
+  const a = state.answers[qid];
+  return (a && typeof a === 'object') ? (a.reason || '') : '';
+}
+
+function hideChapter(cid)   { state.hidden.chapters[cid] = true;  renderAudit(); }
+function showChapter(cid)   { delete state.hidden.chapters[cid];  renderAudit(); }
+function hideQuestion(qid)  { state.hidden.questions[qid] = true; renderAudit(); }
+function showQuestion(qid)  { delete state.hidden.questions[qid]; renderAudit(); }
+
+function renderAudit() {
+  const container = document.getElementById('audit-content');
+
+  // Calcul progression sur questions non masquées
+  let total = 0, answered = 0;
+  state.chapters.forEach(ch => {
+    if (state.hidden.chapters[ch.id]) return;
+    ch.questions.forEach(q => {
+      if (state.hidden.questions[q.id]) return;
+      total++;
+      if (state.answers[q.id]) answered++;
+    });
+  });
+
+  let html = '';
+  if (total > 0 && answered < total) {
+    html += `<div class="warn-box">⚠ ${total - answered} question(s) sans réponse</div>`;
+  }
+
+  // Chapitres masqués — affichés en mode réduit avec bouton "Afficher"
+  state.chapters.filter(ch => state.hidden.chapters[ch.id]).forEach(ch => {
+    html += `<div class="hidden-chapter-bar">
+      <span>🙈 Chapitre masqué du rapport : <strong>${esc(ch.name)}</strong></span>
+      <button onclick="showChapter(${ch.id})">Afficher</button>
+    </div>`;
+  });
+
+  state.chapters.filter(ch => !state.hidden.chapters[ch.id]).forEach((ch, ci) => {
+    const visibleQuestions = ch.questions.filter(q => !state.hidden.questions[q.id]);
+    const hiddenQuestions  = ch.questions.filter(q =>  state.hidden.questions[q.id]);
+
+    html += `<div class="chapter-section">
+      <div class="chapter-header-bar">
+        <div class="ch-num">${ci + 1}</div>
+        <div class="ch-name">${esc(ch.name)}</div>
+        <span class="badge badge-blue" style="margin-left:auto;">${visibleQuestions.length} Q</span>
+        <button class="hide-btn" onclick="hideChapter(${ch.id})" title="Masquer ce chapitre du rapport">✕ Masquer</button>
+      </div>`;
+
+    // Questions masquées dans ce chapitre
+    hiddenQuestions.forEach(q => {
+      html += `<div class="hidden-question-bar">
+        <span>🙈 Question masquée : <em>${esc(q.text)}</em></span>
+        <button onclick="showQuestion(${q.id})">Afficher</button>
+      </div>`;
+    });
+
+    visibleQuestions.forEach(q => {
+      const ans    = getAnswerValue(q.id);
+      const reason = getAnswerReason(q.id);
+      const para   = ans && ans !== 'Non applicable' ? q.paragraphs[ans] : null;
+      const isNA   = ans === 'Non applicable';
+
+      html += `<div class="question-card">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <div class="question-text" style="flex:1;">${esc(q.text)}</div>
+          <button class="hide-btn" onclick="hideQuestion(${q.id})" title="Masquer cette question du rapport">✕ Masquer</button>
+        </div>
+        <div class="radio-group">`;
+
+      q.options.forEach(opt => {
+        const lo  = opt.toLowerCase();
+        const cls = lo === 'oui' ? 'oui' : lo === 'non' ? 'non' : lo === 'non applicable' ? 'na' : 'other';
+        const sel = ans === opt ? 'selected' : '';
+        html += `<div class="radio-option ${cls} ${sel}" onclick="setAnswer(${q.id}, '${esc(opt)}')">${esc(opt)}</div>`;
+      });
+
+      html += `</div>`;
+
+      if (para) html += `<div class="preview-para">${esc(para)}</div>`;
+
+      if (isNA) {
+        html += `<div class="na-reason-block">
+          <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);display:block;margin-bottom:5px;">Raison / Précision</label>
+          <textarea
+            placeholder="Expliquez pourquoi ce point est non applicable dans ce contexte..."
+            rows="3"
+            style="width:100%;font-size:13px;"
+            onchange="setAnswerReason(${q.id}, this.value)"
+            oninput="setAnswerReason(${q.id}, this.value)"
+          >${esc(reason)}</textarea>
+        </div>`;
+      }
+
+      html += `</div>`;
+    });
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+
+  // Mettre à jour la progression avec les questions visibles
+  document.getElementById('prog-answered').textContent = answered;
+  document.getElementById('prog-total').textContent = total;
+  document.getElementById('prog-fill').style.width = total ? ((answered / total) * 100) + '%' : '0%';
+}
+
+function setAnswer(qid, val) {
+  if (val === 'Non applicable') {
+    // Conserver la raison si déjà saisie
+    const prev = state.answers[qid];
+    const prevReason = (prev && typeof prev === 'object') ? prev.reason : '';
+    state.answers[qid] = { value: 'Non applicable', reason: prevReason };
+  } else {
+    state.answers[qid] = val;
+  }
+  updateProgress();
+  renderAudit();
+}
+
+function setAnswerReason(qid, reason) {
+  const a = state.answers[qid];
+  if (a && typeof a === 'object') {
+    a.reason = reason;
+  } else {
+    state.answers[qid] = { value: 'Non applicable', reason };
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// MANAGE PAGE — avec drag & drop chapitres et questions
+// ────────────────────────────────────────────────────────────────────────────
+
+// État drag en cours
+let drag = { type: null, cid: null, qid: null, fromIdx: null };
+
+function renderManage() {
+  const container = document.getElementById('manage-content');
+  let html = '';
+
+  state.chapters.forEach((ch, ci) => {
+    html += `<div class="chapter-manage-card"
+      draggable="true"
+      data-cid="${ch.id}"
+      ondragstart="onChapterDragStart(event,${ch.id})"
+      ondragover="onChapterDragOver(event,${ch.id})"
+      ondragleave="onChapterDragLeave(event)"
+      ondrop="onChapterDrop(event,${ch.id})"
+      ondragend="onDragEnd()">
+
+      <div class="chapter-manage-head" onclick="toggleCollapse(${ch.id})">
+        <span class="drag-handle" onclick="event.stopPropagation()" title="Glisser pour réordonner">⠿</span>
+        <span class="chapter-manage-title">${esc(ch.name)}</span>
+        <div style="display:flex;gap:8px;align-items:center;margin-left:auto;">
+          <span class="badge badge-blue">${ch.questions.length} Q</span>
+          <button class="btn btn-xs" onclick="event.stopPropagation();renameChapter(${ch.id})">✏ Renommer</button>
+          <button class="btn btn-xs btn-danger" onclick="event.stopPropagation();removeChapter(${ch.id})">✕</button>
+        </div>
+      </div>
+
+      <div class="chapter-manage-body" id="ch-body-${ch.id}">`;
+
+    ch.questions.forEach((q, qi) => {
+      const lo = (opt) => opt.toLowerCase();
+      html += `<div class="question-manage-row"
+          draggable="true"
+          data-cid="${ch.id}" data-qid="${q.id}"
+          ondragstart="onQuestionDragStart(event,${ch.id},${q.id})"
+          ondragover="onQuestionDragOver(event,${ch.id},${q.id})"
+          ondragleave="onQuestionDragLeave(event)"
+          ondrop="onQuestionDrop(event,${ch.id},${q.id})"
+          ondragend="onDragEnd()">
+        <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
+        <div style="flex:1;min-width:0;">
+          <div class="question-manage-text">${esc(q.text)}</div>
+          <div class="question-manage-options">`;
+      q.options.forEach(opt => {
+        const cls = lo(opt) === 'oui' ? 'badge-green' : lo(opt) === 'non' ? 'badge-red' : lo(opt) === 'non applicable' ? 'badge-amber' : 'badge-blue';
+        html += `<span class="badge ${cls}">${esc(opt)}</span>`;
+      });
+      html += `</div></div>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <button class="btn btn-xs" onclick="openEditQuestion(${ch.id}, ${q.id})">✏ Modifier</button>
+          <button class="btn btn-xs btn-danger" onclick="removeQuestion(${ch.id}, ${q.id})">✕</button>
+        </div>
+      </div>`;
+    });
+
+    html += `<button class="add-btn-dashed" style="margin-top:${ch.questions.length?'10px':'0'}" onclick="openAddQuestion(${ch.id})">+ Ajouter une question</button>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// ── Drag chapitres
+function onChapterDragStart(e, cid) {
+  drag = { type: 'chapter', cid };
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onChapterDragOver(e, cid) {
+  if (drag.type !== 'chapter' || drag.cid === cid) return;
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+function onChapterDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function onChapterDrop(e, targetCid) {
+  e.preventDefault();
+  if (drag.type !== 'chapter' || drag.cid === targetCid) return;
+  const fromIdx = state.chapters.findIndex(c => c.id === drag.cid);
+  const toIdx   = state.chapters.findIndex(c => c.id === targetCid);
+  const [moved] = state.chapters.splice(fromIdx, 1);
+  state.chapters.splice(toIdx, 0, moved);
+  renderManage();
+}
+
+// ── Drag questions
+function onQuestionDragStart(e, cid, qid) {
+  drag = { type: 'question', cid, qid };
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.stopPropagation(); // ne pas déclencher le drag chapitre
+}
+function onQuestionDragOver(e, cid, qid) {
+  if (drag.type !== 'question') return;
+  e.preventDefault();
+  e.stopPropagation();
+  e.currentTarget.classList.add('drag-over');
+}
+function onQuestionDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function onQuestionDrop(e, targetCid, targetQid) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (drag.type !== 'question') return;
+
+  const srcChapter  = state.chapters.find(c => c.id === drag.cid);
+  const destChapter = state.chapters.find(c => c.id === targetCid);
+  const fromIdx = srcChapter.questions.findIndex(q => q.id === drag.qid);
+  const toIdx   = destChapter.questions.findIndex(q => q.id === targetQid);
+  if (fromIdx === -1 || toIdx === -1) return;
+
+  const [moved] = srcChapter.questions.splice(fromIdx, 1);
+  destChapter.questions.splice(toIdx, 0, moved);
+  renderManage();
+}
+
+function onDragEnd() {
+  drag = { type: null, cid: null, qid: null };
+  document.querySelectorAll('.dragging, .drag-over').forEach(el => {
+    el.classList.remove('dragging', 'drag-over');
+  });
+}
+
+function toggleCollapse(cid) {
+  const body = document.getElementById('ch-body-' + cid);
+  body.style.display = body.style.display === 'none' ? '' : 'none';
+}
+
+function addChapter() {
+  const name = prompt('Nom du nouveau chapitre :');
+  if (!name || !name.trim()) return;
+  state.chapters.push({ id: Date.now(), name: name.trim(), questions: [] });
+  renderManage();
+}
+
+function renameChapter(cid) {
+  const ch = state.chapters.find(c => c.id === cid);
+  const name = prompt('Nouveau nom :', ch.name);
+  if (!name || !name.trim()) return;
+  ch.name = name.trim();
+  renderManage();
+}
+
+function removeChapter(cid) {
+  if (!confirm('Supprimer ce chapitre et toutes ses questions ?')) return;
+  state.chapters = state.chapters.filter(c => c.id !== cid);
+  renderManage();
+  updateProgress();
+}
+
+function removeQuestion(cid, qid) {
+  if (!confirm('Supprimer cette question ?')) return;
+  const ch = state.chapters.find(c => c.id === cid);
+  ch.questions = ch.questions.filter(q => q.id !== qid);
+  delete state.answers[qid];
+  renderManage();
+  updateProgress();
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// MODAL QUESTION
+// ────────────────────────────────────────────────────────────────────────────
+function openAddQuestion(cid) {
+  state.modal = { type: 'add', cid, q: { id: null, text: '', options: ['Oui', 'Non'], paragraphs: { 'Oui': '', 'Non': '' } } };
+  document.getElementById('modal-title').textContent = 'Nouvelle question';
+  renderModal();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function openEditQuestion(cid, qid) {
+  const ch = state.chapters.find(c => c.id === cid);
+  const q = ch.questions.find(q => q.id === qid);
+  state.modal = { type: 'edit', cid, q: JSON.parse(JSON.stringify(q)) };
+  document.getElementById('modal-title').textContent = 'Modifier la question';
+  renderModal();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function renderModal() {
+  const { q } = state.modal;
+  let html = `<div class="field">
+    <label>Texte de la question *</label>
+    <textarea id="modal-qtext" rows="3" placeholder="La question à poser lors de l'audit...">${esc(q.text)}</textarea>
+  </div>
+  <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);margin-bottom:12px;">Options, paragraphes et images associés</div>`;
+
+  q.options.forEach((opt, i) => {
+    const lo = opt.toLowerCase();
+    const color = lo === 'oui' ? 'var(--green)' : lo === 'non' ? 'var(--red)' : lo === 'non applicable' ? 'var(--gray-med)' : 'var(--amber)';
+    const img = (q.images || {})[opt];
+    const imgSrc = img ? (img.url || img.data || null) : null;
+
+    html += `<div class="option-edit-row">
+      <div class="option-edit-label">
+        <span style="color:${color};font-size:13px;font-weight:600;">${esc(opt)}</span>
+        ${q.options.length > 1 ? `<button class="btn btn-xs btn-danger" onclick="removeOption(event,${i})">Supprimer</button>` : ''}
+      </div>
+      <textarea id="modal-para-${i}" rows="4" placeholder="Paragraphe si réponse «${esc(opt)}»...">${esc(q.paragraphs[opt] || '')}</textarea>
+      <div style="margin-top:10px;">
+        <div style="font-size:11px;color:var(--gray-med);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;">Image (optionnel)</div>`;
+
+    if (imgSrc) {
+      html += `<div class="img-preview">
+          <img src="${esc(imgSrc)}" alt="${esc(img.name||'')}">
+          <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
+            <span style="font-size:11px;color:var(--gray-med);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(img.name||'')}</span>
+            <input type="text" id="modal-img-caption-${i}" value="${esc(img.caption||'')}" placeholder="Légende (optionnel)" style="flex:2;font-size:12px;padding:4px 8px;">
+            <button class="btn btn-xs btn-danger" onclick="removeImage(event,${i})">✕ Supprimer</button>
+          </div>
+        </div>`;
+    } else if (lo !== 'non applicable') {
+      html += `
+        <div class="img-picker" id="img-picker-${i}">
+          <div class="img-picker-tabs">
+            <button class="img-picker-tab active" onclick="switchImgTab(${i},'upload')">📤 Uploader</button>
+            <button class="img-picker-tab" onclick="switchImgTab(${i},'gallery')">🖼️ Bibliothèque</button>
+          </div>
+          <div class="img-picker-panel" id="img-panel-upload-${i}">
+            <input class="img-name-input" type="text" id="img-display-name-${i}" placeholder="Nom de l'image (ex: Schéma réseau)">
+            <label class="img-drop-zone" for="modal-img-${i}">
+              📎 Cliquez pour uploader (JPG, PNG, GIF, WEBP)
+              <input type="file" id="modal-img-${i}" accept="image/*" style="display:none;" onchange="handleImageUpload(${i}, this)">
+            </label>
+          </div>
+          <div class="img-picker-panel hidden" id="img-panel-gallery-${i}">
+            <div class="img-gallery" id="img-gallery-${i}">
+              <div class="img-gallery-empty">⏳ Chargement…</div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    html += `</div></div>`;
+  });
+
+  html += `<div style="margin-top:8px;"><button class="btn btn-sm" onclick="addOption()">+ Ajouter une option</button></div>`;
+  document.getElementById('modal-body').innerHTML = html;
+}
+
+function addOption() {
+  const val = prompt('Nouvelle option de réponse :');
+  if (!val || !val.trim()) return;
+  state.modal.q.options.push(val.trim());
+  state.modal.q.paragraphs[val.trim()] = '';
+  renderModal();
+}
+
+function removeOption(event, idx) {
+  event.stopPropagation();
+  syncModalFields();
+  const opt = state.modal.q.options[idx];
+  state.modal.q.options.splice(idx, 1);
+  delete state.modal.q.paragraphs[opt];
+  if (state.modal.q.images) delete state.modal.q.images[opt];
+  renderModal();
+}
+
+function syncModalFields() {
+  const { q } = state.modal;
+  q.text = document.getElementById('modal-qtext').value;
+  if (!q.images) q.images = {};
+  q.options.forEach((opt, i) => {
+    q.paragraphs[opt] = document.getElementById('modal-para-' + i)?.value || q.paragraphs[opt] || '';
+    const captEl = document.getElementById('modal-img-caption-' + i);
+    if (captEl && q.images[opt]) q.images[opt].caption = captEl.value;
+  });
+}
+
+function handleImageUpload(optIndex, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const opt = state.modal.q.options[optIndex];
+
+  // Récupérer le nom personnalisé saisi
+  const nameInput = document.getElementById('img-display-name-' + optIndex);
+  const displayName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : file.name;
+
+  // Afficher un indicateur de chargement
+  const zone = input.parentElement;
+  zone.innerHTML = `<span style="font-size:12px;color:var(--gray-med);">⏳ Upload en cours...</span>`;
+
+  fetch('/api/upload', {
+    method: 'POST',
+    headers: {
+      'Content-Type': file.type || 'application/octet-stream',
+      'X-Filename': encodeURIComponent(file.name),
+      'X-Display-Name': encodeURIComponent(displayName),
+    },
+    body: file,
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) throw new Error(data.error);
+    syncModalFields();
+    if (!state.modal.q.images) state.modal.q.images = {};
+    const encodedUrl = data.url.replace(/\/([^/]+)$/, (_, fname) => '/' + encodeURIComponent(fname));
+    state.modal.q.images[opt] = {
+      url: encodedUrl,
+      filename: data.filename,
+      name: data.name,
+      caption: '',
+    };
+    renderModal();
+    showToast('✅ Image uploadée : ' + data.name);
+  })
+  .catch(err => {
+    renderModal();
+    alert('Erreur upload : ' + err.message);
+  });
+}
+
+// ── Onglets du picker image ──────────────────────────────────────────────────
+function switchImgTab(optIndex, tab) {
+  const uploadPanel  = document.getElementById('img-panel-upload-' + optIndex);
+  const galleryPanel = document.getElementById('img-panel-gallery-' + optIndex);
+  const picker       = document.getElementById('img-picker-' + optIndex);
+  if (!picker) return;
+  const tabs = picker.querySelectorAll('.img-picker-tab');
+  tabs[0].classList.toggle('active', tab === 'upload');
+  tabs[1].classList.toggle('active', tab === 'gallery');
+  uploadPanel.classList.toggle('hidden', tab !== 'upload');
+  galleryPanel.classList.toggle('hidden', tab !== 'gallery');
+  if (tab === 'gallery') loadImageGallery(optIndex);
+}
+
+// Cache des images serveur (évite les problèmes d'échappement dans les onclick inline)
+const _imgGalleryCache = {};
+
+function loadImageGallery(optIndex) {
+  const container = document.getElementById('img-gallery-' + optIndex);
+  if (!container) return;
+  container.innerHTML = '<div class="img-gallery-empty">⏳ Chargement\u2026</div>';
+  fetch('/api/images')
+    .then(r => r.json())
+    .then(images => {
+      if (!images.length) {
+        container.innerHTML = '<div class="img-gallery-empty">Aucune image sur le serveur.<br>Uploadez-en une d\'abord.</div>';
+        return;
+      }
+      _imgGalleryCache[optIndex] = images;
+      container.innerHTML = images.map((img, idx) => `
+        <div class="img-gallery-item" onclick="selectGalleryImage(event, ${optIndex}, ${idx})" title="${esc(img.name)}">
+          <img src="${esc(img.url)}" alt="${esc(img.name)}" loading="lazy">
+          <div class="img-gallery-name">${esc(img.name)}</div>
+        </div>
+      `).join('');
+    })
+    .catch(() => {
+      container.innerHTML = '<div class="img-gallery-empty">Erreur de chargement.</div>';
+    });
+}
+
+function selectGalleryImage(event, optIndex, imgIdx) {
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  const images = _imgGalleryCache[optIndex];
+  if (!images || !images[imgIdx]) return;
+  const img = images[imgIdx];
+  syncModalFields();
+  if (!state.modal.q.images) state.modal.q.images = {};
+  const opt = state.modal.q.options[optIndex];
+  const encodedUrl = img.url.replace(/\/([^/]+)$/, (_, fname) => '/' + encodeURIComponent(fname));
+  state.modal.q.images[opt] = {
+    url: encodedUrl,
+    filename: img.filename,
+    name: img.name,
+    caption: '',
+  };
+
+  // setTimeout(0) : laisser le bubbling se terminer AVANT de modifier le DOM
+  // (modifier outerHTML pendant le bubbling détache le noeud => closeModal croit que le clic est hors modal)
+  setTimeout(() => {
+    const picker = document.getElementById('img-picker-' + optIndex);
+    if (picker) {
+      const preview = document.createElement('div');
+      preview.className = 'img-preview';
+      preview.innerHTML = `<img src="${encodedUrl}" alt="${img.name.replace(/"/g,'&quot;')}">
+        <div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
+          <span style="font-size:11px;color:var(--gray-med);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${img.name.replace(/</g,'&lt;')}</span>
+          <input type="text" id="modal-img-caption-${optIndex}" value="" placeholder="L\u00e9gende (optionnel)" style="flex:2;font-size:12px;padding:4px 8px;">
+          <button class="btn btn-xs btn-danger" onclick="removeImage(event,${optIndex})">\u2715 Supprimer</button>
+        </div>`;
+      picker.replaceWith(preview);
+    }
+    showToast('\u2705 Image s\u00e9lectionn\u00e9e\u00a0: ' + img.name);
+  }, 0);
+}
+
+
+function removeImage(event, optIndex) {
+  event.stopPropagation();
+  syncModalFields();
+  const opt = state.modal.q.options[optIndex];
+  const images = state.modal.q.images || {};
+  const img = images[opt];
+
+  // Supprimer du serveur si c'est une image uploadée
+  if (img && img.filename) {
+    fetch(`/api/upload/${encodeURIComponent(img.filename)}`, { method: 'DELETE' })
+      .catch(() => {}); // suppression silencieuse
+  }
+  if (state.modal.q.images) delete state.modal.q.images[opt];
+  renderModal();
+}
+
+function saveQuestion() {
+  syncModalFields();
+  const { type, cid, q } = state.modal;
+  if (!q.text.trim()) { alert('La question ne peut pas être vide.'); return; }
+  const ch = state.chapters.find(c => c.id === cid);
+  if (type === 'add') {
+    q.id = Date.now();
+    ch.questions.push(q);
+  } else {
+    const idx = ch.questions.findIndex(qq => qq.id === q.id);
+    ch.questions[idx] = q;
+  }
+  closeModalNow();
+  renderManage();
+  updateProgress();
+}
+
+function closeModal(e) {
+  // Ferme si on clique sur l'overlay sombre (pas sur le panneau lui-même)
+  const panel = document.querySelector('.modal');
+  if (panel && !panel.contains(e.target)) closeModalNow();
+}
+
+function closeModalNow() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  state.modal = null;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// GENERATE PAGE
+// ────────────────────────────────────────────────────────────────────────────
+let currentLayout = 'cogep';
+
+function setLayout(layout) {
+  currentLayout = layout;
+  document.querySelectorAll('.layout-opt').forEach(el => el.classList.remove('active'));
+  document.getElementById('lopt-' + layout).classList.add('active');
+}
+
+function renderSummary() {
+  const total = state.chapters.reduce((s, c) => s + c.questions.length, 0);
+  const answered = Object.keys(state.answers).length;
+  const company = document.getElementById('c-company').value || '—';
+  const date = document.getElementById('c-date').value || '—';
+  const auditor = document.getElementById('c-auditor').value || '—';
+
+  let html = `<div class="card-title">📊 Récapitulatif</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      <div style="background:var(--blue-pale);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:11px;color:var(--gray-med);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Entreprise</div>
+        <div style="font-size:15px;font-weight:600;color:var(--blue-dark);">${esc(company)}</div>
+      </div>
+      <div style="background:var(--blue-pale);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:11px;color:var(--gray-med);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Réponses</div>
+        <div style="font-size:15px;font-weight:600;color:var(--blue-dark);">${answered} / ${total}</div>
+      </div>
+      <div style="background:var(--blue-pale);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:11px;color:var(--gray-med);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Chapitres</div>
+        <div style="font-size:15px;font-weight:600;color:var(--blue-dark);">${state.chapters.length}</div>
+      </div>
+    </div>`;
+
+  document.getElementById('gen-summary').innerHTML = html;
+}
+
+function getClient() {
+  return {
+    company:   document.getElementById('c-company').value,
+    contact:   document.getElementById('c-contact').value,
+    email:     document.getElementById('c-email').value,
+    phone:     document.getElementById('c-phone').value,
+    address:   document.getElementById('c-address').value,
+    postalCode:document.getElementById('c-postal').value,
+    city:      document.getElementById('c-city').value,
+    auditDate: document.getElementById('c-date').value,
+    auditor:   document.getElementById('c-auditor').value,
+    ref:       document.getElementById('c-ref').value,
+  };
+}
+
+async function generateReport(format) {
+  const client = getClient();
+  if (!client.company) {
+    alert('Veuillez saisir le nom de l\'entreprise cliente (onglet "Infos client").');
+    goPage('client');
+    return;
+  }
+
+  const btnDoc  = document.getElementById('gen-btn-doc');
+  const btnHtml = document.getElementById('gen-btn-html');
+  const status  = document.getElementById('gen-status');
+  btnDoc.disabled = true;
+  btnHtml.disabled = true;
+
+  const activeBtn = format === 'html' ? btnHtml : btnDoc;
+  const origLabel = activeBtn.innerHTML;
+  activeBtn.innerHTML = '<span class="spinner"></span> Génération...';
+
+  try {
+    const payload = {
+      client,
+      chapters: state.chapters,
+      answers: state.answers,
+      aiContent: null,
+      format,
+      layout: currentLayout,
+      hidden: state.hidden,
+    };
+
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Erreur serveur');
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const ext = format === 'html' ? 'html' : 'doc';
+    const layoutSuffix = currentLayout === 'simple' ? '_simple' : '';
+    const filename = `Audit_${(client.company || 'rapport').replace(/\s+/g, '_')}_${client.auditDate || 'date'}${layoutSuffix}.${ext}`;
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast(`✅ Rapport ${ext.toUpperCase()} téléchargé !`);
+    status.textContent = '✅ ' + filename;
+  } catch (e) {
+    alert('Erreur : ' + e.message);
+    status.textContent = '❌ ' + e.message;
+  }
+
+  activeBtn.innerHTML = origLabel;
+  btnDoc.disabled = false;
+  btnHtml.disabled = false;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// PARAMÈTRES — Import / Export JSON
+// ────────────────────────────────────────────────────────────────────────────
+
+function exportJSON() {
+  const client = getClient();
+  const data = {
+    _version: 1,
+    _exported: new Date().toISOString(),
+    client,
+    chapters: state.chapters,
+    answers: state.answers,
+    hidden: state.hidden,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `audit-config_${(client.company || 'export').replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ Export JSON téléchargé !');
+}
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.chapters || !Array.isArray(data.chapters)) {
+        alert('Fichier JSON invalide : champ "chapters" manquant.');
+        return;
+      }
+      if (!confirm(`Importer "${file.name}" ?\n\nCela remplacera toutes les données actuelles.`)) {
+        input.value = '';
+        return;
+      }
+      state.chapters = data.chapters;
+      state.answers  = data.answers || {};
+      state.hidden   = data.hidden  || { chapters: {}, questions: {} };
+      if (data.client) {
+        const c = data.client;
+        document.getElementById('c-company').value  = c.company    || '';
+        document.getElementById('c-contact').value  = c.contact    || '';
+        document.getElementById('c-email').value    = c.email      || '';
+        document.getElementById('c-phone').value    = c.phone      || '';
+        document.getElementById('c-address').value  = c.address    || '';
+        document.getElementById('c-postal').value   = c.postalCode || '';
+        document.getElementById('c-city').value     = c.city       || '';
+        document.getElementById('c-date').value     = c.auditDate  || '';
+        document.getElementById('c-auditor').value  = c.auditor    || '';
+        document.getElementById('c-ref').value      = c.ref        || '';
+      }
+      updateProgress();
+      input.value = '';
+      showToast('✅ Import réussi !');
+    } catch (err) {
+      alert('Erreur de lecture du fichier JSON : ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetAnswers() {
+  if (!confirm('Effacer toutes les réponses du questionnaire ?')) return;
+  state.answers = {};
+  updateProgress();
+  showToast('✅ Réponses effacées.');
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// UTILS
+// ────────────────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 4000);
+}
+
+// ── Init date par défaut
+document.getElementById('c-date').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
