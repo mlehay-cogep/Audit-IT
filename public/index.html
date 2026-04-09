@@ -795,6 +795,7 @@ function renderAudit() {
       }
 
       if (isFreeA) {
+        const freeImg = (state.answers[q.id] && typeof state.answers[q.id] === 'object') ? state.answers[q.id].image : null;
         html += `<div class="na-reason-block">
           <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue-med);display:block;margin-bottom:5px;">Informations</label>
           <textarea
@@ -804,6 +805,25 @@ function renderAudit() {
             onchange="setAnswerReason(${q.id}, this.value)"
             oninput="setAnswerReason(${q.id}, this.value)"
           >${esc(reason)}</textarea>
+          <div style="margin-top:10px;">
+            <div style="font-size:11px;color:var(--gray-med);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;">Image associée (optionnel)</div>
+            ${freeImg ? `
+              <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#f0f6fc;border:1px solid #b0cfea;border-radius:var(--radius);">
+                <img src="${esc(freeImg.url || freeImg.data || '')}" alt="${esc(freeImg.name||'')}" style="max-height:60px;max-width:120px;object-fit:contain;border-radius:4px;border:1px solid var(--border);">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;color:var(--blue-dark);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(freeImg.name||'')}</div>
+                  <input type="text" placeholder="Légende (optionnel)" value="${esc(freeImg.caption||'')}"
+                    style="font-size:12px;padding:4px 8px;margin-top:4px;width:100%;"
+                    oninput="setFreeAnswerImageCaption(${q.id}, this.value)"
+                    onchange="setFreeAnswerImageCaption(${q.id}, this.value)">
+                </div>
+                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation();removeFreeAnswerImage(${q.id})">✕</button>
+              </div>` : `
+              <label class="img-upload-zone" style="cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;padding:10px;">
+                📎 Cliquez pour ajouter une image
+                <input type="file" accept="image/*" style="display:none;" onchange="handleFreeAnswerImageUpload(${q.id}, this)">
+              </label>`}
+          </div>
         </div>`;
       }
 
@@ -840,6 +860,54 @@ function setAnswerReason(qid, reason) {
     // Ne devrait pas arriver, mais sécurité
     state.answers[qid] = { value: 'Non applicable', reason };
   }
+}
+
+function handleFreeAnswerImageUpload(qid, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const zone = input.parentElement;
+  zone.innerHTML = `<span style="font-size:12px;color:var(--gray-med);">⏳ Upload en cours...</span>`;
+
+  fetch('/api/upload', {
+    method: 'POST',
+    headers: {
+      'Content-Type': file.type || 'application/octet-stream',
+      'X-Filename': encodeURIComponent(file.name),
+    },
+    body: file,
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) throw new Error(data.error);
+    const a = state.answers[qid];
+    if (a && typeof a === 'object') {
+      a.image = { url: data.url, filename: data.filename, name: data.name, caption: '' };
+    } else {
+      state.answers[qid] = { value: 'Réponse libre', reason: '', image: { url: data.url, filename: data.filename, name: data.name, caption: '' } };
+    }
+    renderAudit();
+    showToast('✅ Image ajoutée à la réponse libre.');
+  })
+  .catch(err => {
+    renderAudit();
+    alert('Erreur upload : ' + err.message);
+  });
+}
+
+function setFreeAnswerImageCaption(qid, caption) {
+  const a = state.answers[qid];
+  if (a && typeof a === 'object' && a.image) a.image.caption = caption;
+}
+
+function removeFreeAnswerImage(qid) {
+  const a = state.answers[qid];
+  if (a && typeof a === 'object') {
+    if (a.image && a.image.filename) {
+      fetch(`/api/upload/${encodeURIComponent(a.image.filename)}`, { method: 'DELETE' }).catch(() => {});
+    }
+    delete a.image;
+  }
+  renderAudit();
 }
 
 // ────────────────────────────────────────────────────────────────────────────

@@ -129,6 +129,12 @@ function answerReason(raw) {
   return raw.reason || '';
 }
 
+// Extrait l'image attachée à une réponse libre
+function answerImage(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  return raw.image || null;
+}
+
 function buildRecoItems(chapters, answers, aiContent, styleExtra = '') {
   let items = '';
   if (aiContent?.recommendations?.length) {
@@ -279,6 +285,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       const raw        = answers[question.id];
       const answer     = answerValue(raw);
       const reason     = answerReason(raw);
+      const freeImg    = answerImage(raw);
       const isNA       = answer === 'Non applicable';
       const isFreeA    = answer === 'Réponse libre';
       const content    = answer && !isNA && !isFreeA ? (question.paragraphs[answer] || '') : '';
@@ -318,10 +325,17 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       }
 
       if (content || renderImage(question, answer) || isNA || isFreeA) {
+        // Image de réponse libre (depuis answers[qid].image)
+        const freeImgHtml = (() => {
+          if (!freeImg) return '';
+          const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
+          if (!src) return '';
+          return `<div style="margin:8pt 0 4pt 0;"><img src="${src}" alt="${esc(freeImg.name||'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(freeImg.caption)}</p>` : ''}</div>`;
+        })();
         const bodyContent = isNA
           ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${esc(reason)}` : ''}`
           : isFreeA
-          ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${esc(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}`
+          ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${esc(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
           : `${content ? esc(content) : ''}${answer ? renderImage(question, answer) : ''}`;
         const borderColor = isNA ? '#B4B2A9' : isFreeA ? '#B0CFEA' : C.GREEN;
         chaptersHtml += `
@@ -488,6 +502,7 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
       const raw     = answers[question.id];
       const answer  = answerValue(raw);
       const reason  = answerReason(raw);
+      const freeImg = answerImage(raw);
       const isNA    = answer === 'Non applicable';
       const content = answer && !isNA ? (question.paragraphs[answer] || '') : '';
 
@@ -515,6 +530,12 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
       } else if (isFreeA) {
         chaptersHtml += `<p style="font-size:9.5pt;font-weight:bold;color:#1d4ed8;margin:0 0 2pt 10pt;">Informations :</p>`;
         chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #93c5fd;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${reason ? esc(reason) : '<em>—</em>'}</p>`;
+        if (freeImg) {
+          const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
+          if (src) {
+            chaptersHtml += `<div style="margin:6pt 0 6pt 10pt;"><img src="${src}" alt="${esc(freeImg.name||'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(freeImg.caption)}</p>` : ''}</div>`;
+          }
+        }
       } else if (content) {
         chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #888;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${esc(content)}</p>`;
       }
