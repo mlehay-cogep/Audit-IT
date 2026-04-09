@@ -63,6 +63,42 @@ function constrainDimensions(dims, maxWpx) {
   return { w: maxWpx, h: Math.round(maxWpx * ratio) };
 }
 
+// Contraint les dimensions en respectant à la fois une largeur ET une hauteur max
+function constrainDimensionsBoth(dims, maxWpx, maxHpx) {
+  if (!dims) return { w: maxWpx, h: maxHpx };
+  let { w, h } = dims;
+  if (w > maxWpx) { h = Math.round(h * maxWpx / w); w = maxWpx; }
+  if (h > maxHpx) { w = Math.round(w * maxHpx / h); h = maxHpx; }
+  return { w, h };
+}
+
+// Lit les dimensions depuis un data URI base64 (PNG ou JPEG)
+function getImageDimensionsFromDataUri(dataUri) {
+  try {
+    if (!dataUri || !dataUri.startsWith('data:')) return null;
+    const base64 = dataUri.split(',')[1];
+    if (!base64) return null;
+    const buf = Buffer.from(base64, 'base64');
+    // PNG
+    if (buf[0]===0x89 && buf[1]===0x50 && buf.length > 24)
+      return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+    // JPEG
+    if (buf[0]===0xFF && buf[1]===0xD8) {
+      let i = 2;
+      while (i < buf.length - 8) {
+        if (buf[i] !== 0xFF) break;
+        const marker = buf[i+1];
+        const len = buf.readUInt16BE(i+2);
+        if ((marker >= 0xC0 && marker <= 0xC3) || (marker >= 0xC5 && marker <= 0xC7) ||
+            (marker >= 0xC9 && marker <= 0xCB) || (marker >= 0xCD && marker <= 0xCF))
+          return { w: buf.readUInt16BE(i+7), h: buf.readUInt16BE(i+5) };
+        i += 2 + len;
+      }
+    }
+  } catch {}
+  return null;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // UTILITAIRES COMMUNS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -104,7 +140,7 @@ function buildRecoItems(chapters, answers, aiContent, styleExtra = '') {
       ch.questions.forEach(q => {
         if (q.qtype === 'freetext') return;
         const val = answerValue(answers[q.id]);
-        if (val && val.toLowerCase() === 'non') {
+        if (val && val.toLowerCase() === 'non' || val && val.toLowerCase() === 'partiel') {
           items += `<li style="margin-bottom:6pt;${styleExtra}"><strong>[${esc(ch.name)}]</strong> ${esc(q.text)}</li>`;
         }
       });
@@ -244,14 +280,17 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       const answer     = answerValue(raw);
       const reason     = answerReason(raw);
       const isNA       = answer === 'Non applicable';
-      const content    = answer && !isNA ? (question.paragraphs[answer] || '') : '';
+      const isFreeA    = answer === 'Réponse libre';
+      const content    = answer && !isNA && !isFreeA ? (question.paragraphs[answer] || '') : '';
 
       let badgeBg = '#E8EEF4', badgeColor = C.TEXT_DARK, badgeBorder = '#CBD5E1';
       if (answer) {
         const lo = answer.toLowerCase();
         if (lo === 'oui')             { badgeBg='#E6FBF3'; badgeColor='#1A7A4A'; badgeBorder=C.GREEN; }
         else if (lo === 'non')        { badgeBg='#FFF4E6'; badgeColor='#8B5E00'; badgeBorder=C.ORANGE; }
+        else if (lo === 'partiel')    { badgeBg='#FAEEDA'; badgeColor='#854F0B'; badgeBorder='#FBAE40'; }
         else if (lo === 'non applicable') { badgeBg='#F1EFE8'; badgeColor='#5F5E5A'; badgeBorder='#B4B2A9'; }
+        else if (lo === 'réponse libre')  { badgeBg='#EEF5FC'; badgeColor='#185FA5'; badgeBorder='#B0CFEA'; }
         else                          { badgeBg='#EEF0FF'; badgeColor='#2D32AA'; badgeBorder=C.ELECTRIC; }
       }
 
@@ -278,11 +317,13 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
         chaptersHtml += `<p style="color:#999;font-style:italic;font-size:10pt;font-family:Calibri,Arial,sans-serif;margin:0 0 8pt 0;">Non renseigné</p>`;
       }
 
-      if (content || renderImage(question, answer) || isNA) {
+      if (content || renderImage(question, answer) || isNA || isFreeA) {
         const bodyContent = isNA
           ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${esc(reason)}` : ''}`
+          : isFreeA
+          ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${esc(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}`
           : `${content ? esc(content) : ''}${answer ? renderImage(question, answer) : ''}`;
-        const borderColor = isNA ? '#B4B2A9' : C.GREEN;
+        const borderColor = isNA ? '#B4B2A9' : isFreeA ? '#B0CFEA' : C.GREEN;
         chaptersHtml += `
 <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:14pt;border-collapse:collapse;">
   <tr>
@@ -340,7 +381,15 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       <table width="100%" height="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;height:100%;">
         <tr><td style="background:${C.CYAN};height:200pt;"></td><td style="background:${C.ELECTRIC};height:200pt;width:50%;"></td></tr>
         <tr><td style="background:${C.GREEN};height:150pt;" colspan="2"></td></tr>
-        <tr><td style="background:${C.LIGHT_BG};height:200pt;" colspan="2"><p style="color:${C.NAVY};font-size:9pt;text-align:right;padding:16pt;margin:0;font-family:Calibri,Arial,sans-serif;">cogep-numerique.fr</p></td></tr>
+        <tr><td style="background:${C.LIGHT_BG};height:200pt;" colspan="2" style="vertical-align:middle;text-align:center;padding:20pt;">
+          ${client.logoBase64
+            ? (() => {
+                const dims = getImageDimensionsFromDataUri(client.logoBase64);
+                const { w, h } = constrainDimensionsBoth(dims, 213, 133); // 160pt x 100pt à 96dpi
+                return `<img src="${client.logoBase64}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin:0 auto;">`;
+              })()
+            : `<p style="color:${C.NAVY};font-size:9pt;text-align:right;padding:16pt;margin:0;font-family:Calibri,Arial,sans-serif;">cogep-numerique.fr</p>`}
+        </td></tr>
         <tr><td style="background:${C.NAVY};height:60pt;"></td><td style="background:${C.GREEN};height:60pt;"></td></tr>
       </table>
     </td>
@@ -446,8 +495,11 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
       const badgeStyle = !answer ? 'background:#e9ecef;color:#495057;border:1pt solid #dee2e6;'
         : answer.toLowerCase() === 'oui'            ? 'background:#d4edda;color:#155724;border:1pt solid #c3e6cb;'
         : answer.toLowerCase() === 'non'            ? 'background:#f8d7da;color:#721c24;border:1pt solid #f5c6cb;'
+        : answer.toLowerCase() === 'partiel'        ? 'background:#fff3cd;color:#856404;border:1pt solid #ffeeba;'
         : answer.toLowerCase() === 'non applicable' ? 'background:#f1efea;color:#5f5e5a;border:1pt solid #ccc;'
+        : answer.toLowerCase() === 'réponse libre'  ? 'background:#dbeafe;color:#1d4ed8;border:1pt solid #93c5fd;'
         :                                             'background:#fff3cd;color:#856404;border:1pt solid #ffeeba;';
+      const isFreeA = answer && answer.toLowerCase() === 'réponse libre';
 
       chaptersHtml += `
 <p style="font-size:11pt;font-weight:bold;margin:12pt 0 4pt 0;">${ci+1}.${qi+1} — ${esc(question.text)}</p>`;
@@ -460,10 +512,13 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
 
       if (isNA && reason) {
         chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #aaa;padding-left:10pt;margin:0 0 6pt 10pt;color:#555;font-style:italic;">${esc(reason)}</p>`;
+      } else if (isFreeA) {
+        chaptersHtml += `<p style="font-size:9.5pt;font-weight:bold;color:#1d4ed8;margin:0 0 2pt 10pt;">Informations :</p>`;
+        chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #93c5fd;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${reason ? esc(reason) : '<em>—</em>'}</p>`;
       } else if (content) {
         chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #888;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${esc(content)}</p>`;
       }
-      if (answer && !isNA) {
+      if (answer && !isNA && !isFreeA) {
         chaptersHtml += renderImage(question, answer);
       }
       chaptersHtml += `<hr style="border:none;border-top:1pt solid #DDD;margin:10pt 0;">`;
@@ -495,9 +550,22 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
 <body>
 
 <!-- ENTÊTE -->
-<h1>Rapport d'audit informatique</h1>
-<p style="font-size:14pt;font-weight:bold;margin:0 0 4pt 0;">${esc(client.company||'')}</p>
-<p style="font-size:10pt;color:#555;margin:0 0 20pt 0;">Auditeur : ${esc(client.auditor||'—')} &nbsp;|&nbsp; Date : ${esc(today)} &nbsp;|&nbsp; Réf. : ${esc(client.ref||'—')}</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:6pt;border-collapse:collapse;">
+  <tr>
+    <td style="vertical-align:bottom;">
+      <h1 style="margin:0 0 4pt 0;">Rapport d'audit informatique</h1>
+      <p style="font-size:14pt;font-weight:bold;margin:0 0 4pt 0;">${esc(client.company||'')}</p>
+      <p style="font-size:10pt;color:#555;margin:0;">Auditeur : ${esc(client.auditor||'—')} &nbsp;|&nbsp; Date : ${esc(today)} &nbsp;|&nbsp; Réf. : ${esc(client.ref||'—')}</p>
+    </td>
+    ${client.logoBase64
+      ? (() => {
+          const dims = getImageDimensionsFromDataUri(client.logoBase64);
+          const { w, h } = constrainDimensionsBoth(dims, 200, 80); // 150pt x 60pt à 96dpi
+          return `<td style="vertical-align:middle;text-align:right;width:160pt;"><img src="${client.logoBase64}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin-left:auto;"></td>`;
+        })()
+      : ''}
+  </tr>
+</table>
 <hr style="border:none;border-top:2pt solid #222;margin:0 0 20pt 0;">
 
 <!-- SOMMAIRE -->

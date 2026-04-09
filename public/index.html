@@ -376,6 +376,17 @@
   .img-preview img { max-width: 100%; max-height: 120px; border: 1px solid var(--border); border-radius: 4px; display: block; margin-top: 6px; }
 
   /* ── Image picker ── */
+  /* ── Logo client ── */
+  .logo-upload-zone {
+    border: 1.5px dashed var(--border); border-radius: var(--radius);
+    padding: 14px; text-align: center; cursor: pointer;
+    font-size: 12px; color: var(--gray-med); transition: all 0.15s;
+    background: #FAFAF8; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .logo-upload-zone:hover { border-color: var(--blue-med); color: var(--blue-med); background: var(--blue-pale); }
+  .logo-preview { display: flex; align-items: center; gap: 12px; padding: 10px; background: #FAFAF8; border: 1px solid var(--border); border-radius: var(--radius); }
+  .logo-preview img { max-height: 60px; max-width: 160px; object-fit: contain; display: block; }
+
   .img-picker { margin-top: 6px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: #FAFAF8; }
   .img-picker-tabs { display: flex; border-bottom: 1px solid var(--border); }
   .img-picker-tab {
@@ -488,6 +499,16 @@
         <div class="grid-2">
           <div class="field"><label>Code postal</label><input type="text" id="c-postal" placeholder="75001"></div>
           <div class="field"><label>Ville</label><input type="text" id="c-city" placeholder="Paris"></div>
+        </div>
+        <div class="field">
+          <label>Logo du client (optionnel)</label>
+          <div id="logo-zone">
+            <label class="logo-upload-zone" for="c-logo-input">
+              🖼️ Cliquez pour uploader un logo (PNG, JPG, SVG…)
+              <span style="font-size:11px;color:var(--gray-med);">Affiché sur la page de garde du rapport</span>
+              <input type="file" id="c-logo-input" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
+            </label>
+          </div>
         </div>
       </div>
 
@@ -613,7 +634,8 @@ let state = {
   chapters: JSON.parse(JSON.stringify(AUDIT_DATA)),
   answers: {},
   hidden: { chapters: {}, questions: {} }, // masqués dans l'onglet Audit
-  modal: null
+  modal: null,
+  logoBase64: null,  // logo client en base64 (data URI)
 };
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -735,10 +757,11 @@ function renderAudit() {
         return;
       }
 
-      const ans    = getAnswerValue(q.id);
-      const reason = getAnswerReason(q.id);
-      const para   = ans && ans !== 'Non applicable' ? q.paragraphs[ans] : null;
-      const isNA   = ans === 'Non applicable';
+      const ans     = getAnswerValue(q.id);
+      const reason  = getAnswerReason(q.id);
+      const para    = ans && ans !== 'Non applicable' && ans !== 'Réponse libre' ? q.paragraphs[ans] : null;
+      const isNA    = ans === 'Non applicable';
+      const isFreeA = ans === 'Réponse libre';
 
       html += `<div class="question-card">
         <div style="display:flex;align-items:flex-start;gap:8px;">
@@ -749,7 +772,7 @@ function renderAudit() {
 
       q.options.forEach(opt => {
         const lo  = opt.toLowerCase();
-        const cls = lo === 'oui' ? 'oui' : lo === 'non' ? 'non' : lo === 'non applicable' ? 'na' : 'other';
+        const cls = lo === 'oui' ? 'oui' : lo === 'non' ? 'non' : lo === 'non applicable' ? 'na' : lo === 'réponse libre' ? 'na' : 'other';
         const sel = ans === opt ? 'selected' : '';
         html += `<div class="radio-option ${cls} ${sel}" onclick="setAnswer(${q.id}, '${esc(opt)}')">${esc(opt)}</div>`;
       });
@@ -763,6 +786,19 @@ function renderAudit() {
           <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);display:block;margin-bottom:5px;">Raison / Précision</label>
           <textarea
             placeholder="Expliquez pourquoi ce point est non applicable dans ce contexte..."
+            rows="3"
+            style="width:100%;font-size:13px;"
+            onchange="setAnswerReason(${q.id}, this.value)"
+            oninput="setAnswerReason(${q.id}, this.value)"
+          >${esc(reason)}</textarea>
+        </div>`;
+      }
+
+      if (isFreeA) {
+        html += `<div class="na-reason-block">
+          <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue-med);display:block;margin-bottom:5px;">Informations</label>
+          <textarea
+            placeholder="Saisissez les informations complémentaires..."
             rows="3"
             style="width:100%;font-size:13px;"
             onchange="setAnswerReason(${q.id}, this.value)"
@@ -785,11 +821,10 @@ function renderAudit() {
 }
 
 function setAnswer(qid, val) {
-  if (val === 'Non applicable') {
-    // Conserver la raison si déjà saisie
+  if (val === 'Non applicable' || val === 'Réponse libre') {
     const prev = state.answers[qid];
     const prevReason = (prev && typeof prev === 'object') ? prev.reason : '';
-    state.answers[qid] = { value: 'Non applicable', reason: prevReason };
+    state.answers[qid] = { value: val, reason: prevReason };
   } else {
     state.answers[qid] = val;
   }
@@ -802,6 +837,7 @@ function setAnswerReason(qid, reason) {
   if (a && typeof a === 'object') {
     a.reason = reason;
   } else {
+    // Ne devrait pas arriver, mais sécurité
     state.answers[qid] = { value: 'Non applicable', reason };
   }
 }
@@ -1021,19 +1057,40 @@ function renderModal() {
       <textarea id="modal-freetext" rows="8" placeholder="Texte libre affiché tel quel dans le rapport…" style="font-size:13px;">${esc(q.freetextContent || '')}</textarea>
     </div>`;
   } else {
-    // ── Mode question à choix (comportement existant) ──
-    html += `<div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);margin-bottom:12px;">Options, paragraphes et images associés</div>`;
+    // ── Mode question à choix ──
+    const ALL_OPTS = ['Oui', 'Non', 'Partiel', 'Non applicable', 'Réponse libre'];
+    const OPT_COLORS = {
+      'oui': 'var(--green)', 'non': 'var(--red)', 'partiel': 'var(--amber)',
+      'non applicable': 'var(--gray-med)', 'réponse libre': 'var(--blue-med)'
+    };
+
+    // Sélecteur d'options actives
+    html += `<div style="margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);margin-bottom:8px;">Options disponibles</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        ${ALL_OPTS.map(opt => {
+          const checked = q.options.includes(opt);
+          const col = OPT_COLORS[opt.toLowerCase()] || 'var(--blue-med)';
+          return `<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;padding:4px 10px;border:1.5px solid ${checked ? col : 'var(--border)'};border-radius:20px;background:${checked ? col+'22' : '#fff'};transition:all 0.15s;">
+            <input type="checkbox" value="${esc(opt)}" ${checked?'checked':''} onchange="toggleOption('${esc(opt)}', this.checked)" style="accent-color:${col};">
+            <span style="color:${checked ? col : 'var(--gray-dark)'};font-weight:${checked?'600':'400'};">${esc(opt)}</span>
+          </label>`;
+        }).join('')}
+      </div>
+    </div>`;
+
+    html += `<div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);margin-bottom:12px;">Paragraphes et images associés</div>`;
 
   q.options.forEach((opt, i) => {
     const lo = opt.toLowerCase();
-    const color = lo === 'oui' ? 'var(--green)' : lo === 'non' ? 'var(--red)' : lo === 'non applicable' ? 'var(--gray-med)' : 'var(--amber)';
+    const isSpecial = lo === 'non applicable' || lo === 'réponse libre';
+    const color = OPT_COLORS[lo] || 'var(--amber)';
     const img = (q.images || {})[opt];
     const imgSrc = img ? (img.url || img.data || null) : null;
 
     html += `<div class="option-edit-row">
       <div class="option-edit-label">
         <span style="color:${color};font-size:13px;font-weight:600;">${esc(opt)}</span>
-        ${q.options.length > 1 ? `<button class="btn btn-xs btn-danger" onclick="removeOption(event,${i})">Supprimer</button>` : ''}
       </div>
       <textarea id="modal-para-${i}" rows="4" placeholder="Paragraphe si réponse «${esc(opt)}»...">${esc(q.paragraphs[opt] || '')}</textarea>
       <div style="margin-top:10px;">
@@ -1048,7 +1105,7 @@ function renderModal() {
             <button class="btn btn-xs btn-danger" onclick="removeImage(event,${i})">✕ Supprimer</button>
           </div>
         </div>`;
-    } else if (lo !== 'non applicable') {
+    } else if (!isSpecial) {
       html += `
         <div class="img-picker" id="img-picker-${i}">
           <div class="img-picker-tabs">
@@ -1073,66 +1130,38 @@ function renderModal() {
     html += `</div></div>`;
   });
 
-  html += `<div style="margin-top:8px;"><button class="btn btn-sm" onclick="addOption()">+ Ajouter une option</button></div>`;
+  // Plus de bouton "Ajouter une option" — les options sont sélectionnées via les checkboxes
 
   } // end if/else isFree
 
   document.getElementById('modal-body').innerHTML = html;
 }
 
-function addOption() {
-  const existing = document.getElementById('new-option-input');
-  if (existing) { existing.focus(); return; }
-
-  const container = document.createElement('div');
-  container.id = 'new-option-row';
-  container.style.cssText = 'display:flex;gap:6px;margin-top:8px;align-items:center;';
-
-  const input = document.createElement('input');
-  input.id = 'new-option-input';
-  input.type = 'text';
-  input.placeholder = 'Nouvelle option...';
-  input.style.cssText = 'flex:1;font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;';
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter')  { e.stopPropagation(); confirmAddOption(e); }
-    if (e.key === 'Escape') { e.stopPropagation(); cancelAddOption(e); }
-  });
-
-  const btnAdd = document.createElement('button');
-  btnAdd.className = 'btn btn-sm btn-primary';
-  btnAdd.textContent = 'Ajouter';
-  btnAdd.addEventListener('click', e => { e.stopPropagation(); e.stopImmediatePropagation(); confirmAddOption(e); });
-
-  const btnCancel = document.createElement('button');
-  btnCancel.className = 'btn btn-sm';
-  btnCancel.textContent = 'Annuler';
-  btnCancel.addEventListener('click', e => { e.stopPropagation(); e.stopImmediatePropagation(); cancelAddOption(e); });
-
-  container.appendChild(input);
-  container.appendChild(btnAdd);
-  container.appendChild(btnCancel);
-
-  const addBtn = document.querySelector('#modal-body > div:last-child');
-  if (addBtn) addBtn.before(container);
-  setTimeout(() => input.focus(), 0);
-}
-
-function confirmAddOption(event) {
-  if (event) { event.stopPropagation(); event.stopImmediatePropagation(); }
-  const input = document.getElementById('new-option-input');
-  if (!input) return;
-  const val = input.value.trim();
-  if (!val) { input.focus(); return; }
+function toggleOption(opt, checked) {
   syncModalFields();
-  state.modal.q.options.push(val);
-  state.modal.q.paragraphs[val] = '';
+  const q = state.modal.q;
+  if (checked) {
+    if (!q.options.includes(opt)) {
+      // Insérer dans l'ordre prédéfini
+      const ORDER = ['Oui', 'Non', 'Partiel', 'Non applicable', 'Réponse libre'];
+      const targetIdx = ORDER.indexOf(opt);
+      let insertAt = q.options.length;
+      for (let i = 0; i < q.options.length; i++) {
+        if (ORDER.indexOf(q.options[i]) > targetIdx) { insertAt = i; break; }
+      }
+      q.options.splice(insertAt, 0, opt);
+      if (!q.paragraphs[opt]) q.paragraphs[opt] = '';
+    }
+  } else {
+    const idx = q.options.indexOf(opt);
+    if (idx !== -1) {
+      if (q.options.length <= 1) return; // garder au moins une option
+      q.options.splice(idx, 1);
+      delete q.paragraphs[opt];
+      if (q.images) delete q.images[opt];
+    }
+  }
   setTimeout(() => renderModal(), 0);
-}
-
-function cancelAddOption(event) {
-  if (event) { event.stopPropagation(); event.stopImmediatePropagation(); }
-  const row = document.getElementById('new-option-row');
-  if (row) row.remove();
 }
 
 function setModalQtype(qtype) {
@@ -1150,15 +1179,7 @@ function setModalQtype(qtype) {
   renderModal();
 }
 
-function removeOption(event, idx) {
-  event.stopPropagation();
-  syncModalFields();
-  const opt = state.modal.q.options[idx];
-  state.modal.q.options.splice(idx, 1);
-  delete state.modal.q.paragraphs[opt];
-  if (state.modal.q.images) delete state.modal.q.images[opt];
-  renderModal();
-}
+// removeOption remplacé par toggleOption (checkboxes prédéfinies)
 
 function syncModalFields() {
   const { q } = state.modal;
@@ -1389,7 +1410,45 @@ function getClient() {
     auditDate: document.getElementById('c-date').value,
     auditor:   document.getElementById('c-auditor').value,
     ref:       document.getElementById('c-ref').value,
+    logoBase64: state.logoBase64 || null,
   };
+}
+
+function handleLogoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    state.logoBase64 = e.target.result;
+    renderLogoPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderLogoPreview() {
+  const zone = document.getElementById('logo-zone');
+  if (!zone) return;
+  if (state.logoBase64) {
+    zone.innerHTML = `<div class="logo-preview">
+      <img src="${state.logoBase64}" alt="Logo client">
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:600;color:var(--gray-dark);">Logo chargé</div>
+        <div style="font-size:11px;color:var(--gray-med);margin-top:2px;">Sera inclus dans le rapport</div>
+      </div>
+      <button class="btn btn-xs btn-danger" onclick="removeLogo()">✕ Supprimer</button>
+    </div>`;
+  } else {
+    zone.innerHTML = `<label class="logo-upload-zone" for="c-logo-input">
+      🖼️ Cliquez pour uploader un logo (PNG, JPG, SVG…)
+      <span style="font-size:11px;color:var(--gray-med);">Affiché sur la page de garde du rapport</span>
+      <input type="file" id="c-logo-input" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
+    </label>`;
+  }
+}
+
+function removeLogo() {
+  state.logoBase64 = null;
+  renderLogoPreview();
 }
 
 async function generateReport(format) {
@@ -1509,6 +1568,8 @@ function importJSON(input) {
         document.getElementById('c-date').value     = c.auditDate  || '';
         document.getElementById('c-auditor').value  = c.auditor    || '';
         document.getElementById('c-ref').value      = c.ref        || '';
+        state.logoBase64 = c.logoBase64 || null;
+        renderLogoPreview();
       }
       updateProgress();
       input.value = '';
