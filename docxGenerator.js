@@ -102,6 +102,7 @@ function buildRecoItems(chapters, answers, aiContent, styleExtra = '') {
   } else {
     chapters.forEach(ch => {
       ch.questions.forEach(q => {
+        if (q.qtype === 'freetext') return;
         const val = answerValue(answers[q.id]);
         if (val && val.toLowerCase() === 'non') {
           items += `<li style="margin-bottom:6pt;${styleExtra}"><strong>[${esc(ch.name)}]</strong> ${esc(q.text)}</li>`;
@@ -422,6 +423,19 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
 <h2 id="section-ch-${ci}" style="font-size:14pt;color:#222;border-bottom:2pt solid #222;padding-bottom:4pt;margin-bottom:14pt;"><a name="section-ch-${ci}"></a>${ci+1}. ${esc(chapter.name)}</h2>`;
 
     chapter.questions.forEach((question, qi) => {
+
+      // ── Bloc libre (freetext) ─────────────────────────────────────────────
+      if (question.qtype === 'freetext') {
+        chaptersHtml += `
+<p style="font-size:12pt;font-weight:bold;margin:12pt 0 4pt 0;border-left:3pt solid #666;padding-left:8pt;">${esc(question.text)}</p>`;
+        if (question.freetextContent) {
+          chaptersHtml += `<p style="font-size:10.5pt;line-height:1.8;white-space:pre-wrap;margin:0 0 8pt 0;color:#333;">${esc(question.freetextContent)}</p>`;
+        }
+        chaptersHtml += `<hr style="border:none;border-top:1pt solid #DDD;margin:10pt 0;">`;
+        return;
+      }
+
+      // ── Question à choix ──────────────────────────────────────────────────
       const raw     = answers[question.id];
       const answer  = answerValue(raw);
       const reason  = answerReason(raw);
@@ -533,7 +547,7 @@ function htmlToDoc(params) {
       ...ch,
       questions: ch.questions.filter(q => !hidden.questions[q.id])
     }))
-    .filter(ch => ch.questions.length > 0); // exclure chapitres vides après filtre
+    .filter(ch => ch.questions.length > 0); // exclure chapitres vides après filtre masquage
 
   const filtered = { ...params, chapters: filteredChapters };
 

@@ -642,6 +642,7 @@ function updateProgress() {
     if (state.hidden.chapters[ch.id]) return;
     ch.questions.forEach(q => {
       if (state.hidden.questions[q.id]) return;
+      if (q.qtype === 'freetext') return;
       total++;
       if (state.answers[q.id]) answered++;
     });
@@ -673,12 +674,13 @@ function showQuestion(qid)  { delete state.hidden.questions[qid]; renderAudit();
 function renderAudit() {
   const container = document.getElementById('audit-content');
 
-  // Calcul progression sur questions non masquées
+  // Calcul progression sur questions non masquées (blocs libres exclus)
   let total = 0, answered = 0;
   state.chapters.forEach(ch => {
     if (state.hidden.chapters[ch.id]) return;
     ch.questions.forEach(q => {
       if (state.hidden.questions[q.id]) return;
+      if (q.qtype === 'freetext') return; // les blocs libres ne comptent pas
       total++;
       if (state.answers[q.id]) answered++;
     });
@@ -1079,27 +1081,44 @@ function renderModal() {
 }
 
 function addOption() {
-  // Pas de prompt() — on insère un champ inline pour éviter la fermeture du modal
   const existing = document.getElementById('new-option-input');
   if (existing) { existing.focus(); return; }
 
   const container = document.createElement('div');
   container.id = 'new-option-row';
   container.style.cssText = 'display:flex;gap:6px;margin-top:8px;align-items:center;';
-  container.innerHTML = `
-    <input id="new-option-input" type="text" placeholder="Nouvelle option..." 
-           style="flex:1;font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;"
-           onkeydown="if(event.key==='Enter'){confirmAddOption();}if(event.key==='Escape'){cancelAddOption();}">
-    <button class="btn btn-sm btn-primary" onclick="confirmAddOption()">Ajouter</button>
-    <button class="btn btn-sm" onclick="cancelAddOption()">Annuler</button>`;
 
-  // Insérer avant le bouton "+ Ajouter une option"
+  const input = document.createElement('input');
+  input.id = 'new-option-input';
+  input.type = 'text';
+  input.placeholder = 'Nouvelle option...';
+  input.style.cssText = 'flex:1;font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;';
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.stopPropagation(); confirmAddOption(e); }
+    if (e.key === 'Escape') { e.stopPropagation(); cancelAddOption(e); }
+  });
+
+  const btnAdd = document.createElement('button');
+  btnAdd.className = 'btn btn-sm btn-primary';
+  btnAdd.textContent = 'Ajouter';
+  btnAdd.addEventListener('click', e => { e.stopPropagation(); e.stopImmediatePropagation(); confirmAddOption(e); });
+
+  const btnCancel = document.createElement('button');
+  btnCancel.className = 'btn btn-sm';
+  btnCancel.textContent = 'Annuler';
+  btnCancel.addEventListener('click', e => { e.stopPropagation(); e.stopImmediatePropagation(); cancelAddOption(e); });
+
+  container.appendChild(input);
+  container.appendChild(btnAdd);
+  container.appendChild(btnCancel);
+
   const addBtn = document.querySelector('#modal-body > div:last-child');
   if (addBtn) addBtn.before(container);
-  setTimeout(() => document.getElementById('new-option-input')?.focus(), 0);
+  setTimeout(() => input.focus(), 0);
 }
 
-function confirmAddOption() {
+function confirmAddOption(event) {
+  if (event) { event.stopPropagation(); event.stopImmediatePropagation(); }
   const input = document.getElementById('new-option-input');
   if (!input) return;
   const val = input.value.trim();
@@ -1107,10 +1126,11 @@ function confirmAddOption() {
   syncModalFields();
   state.modal.q.options.push(val);
   state.modal.q.paragraphs[val] = '';
-  renderModal();
+  setTimeout(() => renderModal(), 0);
 }
 
-function cancelAddOption() {
+function cancelAddOption(event) {
+  if (event) { event.stopPropagation(); event.stopImmediatePropagation(); }
   const row = document.getElementById('new-option-row');
   if (row) row.remove();
 }
