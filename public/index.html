@@ -749,8 +749,8 @@ function renderAudit() {
           <div style="display:flex;align-items:flex-start;gap:8px;">
             <div style="flex:1;">
               <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue-med);margin-bottom:4px;">📝 Bloc libre</div>
-              <div class="question-text">${esc(q.text)}</div>
-              ${q.freetextContent ? `<div class="preview-para" style="margin-top:6px;">${esc(q.freetextContent)}</div>` : ''}
+              <div class="question-text">${escNl(q.text)}</div>
+              ${q.freetextContent ? `<div class="preview-para" style="margin-top:6px;">${escNl(q.freetextContent)}</div>` : ''}
             </div>
             <button class="hide-btn" onclick="hideQuestion(${q.id})" title="Masquer ce bloc du rapport">✕ Masquer</button>
           </div>
@@ -1123,7 +1123,7 @@ function renderModal() {
     // ── Mode champ libre ──
     html += `<div class="field">
       <label>Contenu du bloc</label>
-      <textarea id="modal-freetext" rows="8" placeholder="Texte libre affiché tel quel dans le rapport…" style="font-size:13px;">${esc(q.freetextContent || '')}</textarea>
+      <textarea id="modal-freetext" rows="8" placeholder="Texte libre affiché tel quel dans le rapport…" style="font-size:13px;">${escNl(q.freetextContent || '')}</textarea>
     </div>`;
   } else {
     // ── Mode question à choix ──
@@ -1661,8 +1661,13 @@ function resetAnswers() {
 // UTILS
 // ────────────────────────────────────────────────────────────────────────────
 function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function escNl(str) {
   return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g, '<br>');
 }
+
 
 function showToast(msg) {
   const t = document.getElementById('toast');

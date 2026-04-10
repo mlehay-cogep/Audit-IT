@@ -176,10 +176,10 @@ function renderImage(question, optionKey) {
   const { w, h } = constrainDimensions(dims, MAX_IMG_PX);
 
   return `<div style="margin:8pt 0 4pt 0;">
-    <img src="${src}" alt="${escNl(img.name || 'illustration')}"
+    <img src="${src}" alt="${esc(img.name || 'illustration')}"
          width="${w}" height="${h}"
          style="width:${w}px;height:${h}px;max-width:100%;display:block;border:1pt solid #CBD5E1;">
-    ${img.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${escNl(img.caption)}</p>` : ''}
+    ${img.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(img.caption)}</p>` : ''}
   </div>`;
 }
 
@@ -198,15 +198,15 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
 
   const clientTableRows = buildClientRows(client).map(([label, value]) => `
     <tr>
-      <td style="background:${C.NAVY};color:${C.WHITE};font-weight:bold;padding:7pt 12pt;border:1pt solid ${C.NAVY2};width:32%;font-family:Calibri,Arial,sans-serif;font-size:10pt;">${escNl(label)}</td>
+      <td style="background:${C.NAVY};color:${C.WHITE};font-weight:bold;padding:7pt 12pt;border:1pt solid ${C.NAVY2};width:32%;font-family:Calibri,Arial,sans-serif;font-size:10pt;">${esc(label)}</td>
       <td style="padding:7pt 12pt;border:1pt solid #CBD5E1;font-family:Calibri,Arial,sans-serif;font-size:10pt;color:${C.TEXT_DARK};">${escNl(value)}</td>
     </tr>`).join('');
 
   const intro = aiContent?.introduction ||
-    `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${escNl(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de <strong>${escNl(client.company)}</strong> en date du ${escNl(today)}. Cet audit a pour objectif d'évaluer le niveau de maturité en matière de sécurité informatique et d'identifier les axes d'amélioration prioritaires.`;
+    `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${escNl(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de <strong>${esc(client.company)}</strong> en date du ${esc(today)}. Cet audit a pour objectif d'évaluer le niveau de maturité en matière de sécurité informatique et d'identifier les axes d'amélioration prioritaires.`;
 
   const conclusion = aiContent?.conclusion ||
-    `Cet audit a permis d'évaluer le niveau de sécurité informatique de <strong>${escNl(client.company)}</strong>. Les points identifiés doivent faire l'objet d'un plan d'action priorisé afin de renforcer la posture de sécurité globale de l'organisation.`;
+    `Cet audit a permis d'évaluer le niveau de sécurité informatique de <strong>${esc(client.company)}</strong>. Les points identifiés doivent faire l'objet d'un plan d'action priorisé afin de renforcer la posture de sécurité globale de l'organisation.`;
 
   const sectionTitle = (text, anchorId = '') => `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18pt;border-collapse:collapse;">
@@ -229,7 +229,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
     <tr>
       <td style="padding:5pt 10pt;width:30pt;text-align:right;color:${C.CYAN};font-weight:bold;font-size:11pt;font-family:Calibri,Arial,sans-serif;">${i+1}.</td>
       <td style="padding:5pt 10pt;font-size:11pt;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;border-bottom:1pt solid #E8EEF4;">
-        <a href="#${sectionIds[i]}" style="color:${C.NAVY};text-decoration:none;">${escNl(name)}</a>
+        <a href="#${sectionIds[i]}" style="color:${C.NAVY};text-decoration:none;">${esc(name)}</a>
       </td>
     </tr>`).join('');
 
@@ -249,7 +249,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       <span style="color:${bannerNum};font-size:14pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">${String(ci+1).padStart(2,'0')}</span>
     </td>
     <td style="background:${bannerBg};padding:12pt 8pt 12pt 12pt;">
-      <span style="color:${bannerText};font-size:14pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">${escNl(chapter.name).toUpperCase()}</span>
+      <span style="color:${bannerText};font-size:14pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">${esc(chapter.name).toUpperCase()}</span>
     </td>
     <td style="background:${C.GREEN};width:8pt;"></td>
   </tr>
@@ -264,7 +264,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
   <tr>
     <td style="background:${C.ELECTRIC};width:4pt;padding:0;"></td>
     <td style="padding:8pt 12pt;background:${C.LIGHT_BG};">
-      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${escNl(question.text)}</span>
+      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${esc(question.text)}</span>
     </td>
   </tr>
 </table>`;
@@ -274,7 +274,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
   <tr>
     <td style="background:${C.ELECTRIC};width:4pt;padding:0;"></td>
     <td style="padding:8pt 14pt;font-size:10.5pt;color:${C.TEXT_DARK};line-height:1.7;font-family:Calibri,Arial,sans-serif;border:1pt solid #CBD5E1;border-left:none;white-space:pre-wrap;">
-      ${escNl(question.freetextContent)}
+      ${esc(question.freetextContent)}
     </td>
   </tr>
 </table>`;
@@ -308,7 +308,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
   <tr>
     <td style="background:${C.CYAN};width:4pt;padding:0;"></td>
     <td style="padding:8pt 12pt;background:${C.LIGHT_BG};">
-      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${ci+1}.${qi+1}&nbsp;&nbsp;${escNl(question.text)}</span>
+      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${ci+1}.${qi+1}&nbsp;&nbsp;${esc(question.text)}</span>
     </td>
   </tr>
 </table>`;
@@ -332,13 +332,13 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
           if (!freeImg) return '';
           const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
           if (!src) return '';
-          return `<div style="margin:8pt 0 4pt 0;"><img src="${src}" alt="${escNl(freeImg.name||'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${escNl(freeImg.caption)}</p>` : ''}</div>`;
+          return `<div style="margin:8pt 0 4pt 0;"><img src="${src}" alt="${esc(freeImg.name||'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(freeImg.caption)}</p>` : ''}</div>`;
         })();
         const bodyContent = isNA
-          ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${escNl(reason)}` : ''}`
+          ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${esc(reason)}` : ''}`
           : isFreeA
-          ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${escNl(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
-          : `${content ? escNl(content) : ''}${answer ? renderImage(question, answer) : ''}`;
+          ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${esc(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
+          : `${content ? esc(content) : ''}${answer ? renderImage(question, answer) : ''}`;
         const borderColor = isNA ? '#B4B2A9' : isFreeA ? '#B0CFEA' : C.GREEN;
         chaptersHtml += `
 <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:14pt;border-collapse:collapse;">
@@ -363,7 +363,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       xmlns="http://www.w3.org/TR/REC-html40">
 <head>
 <meta charset="UTF-8">
-<title>Rapport Audit - ${escNl(client.company)}</title>
+<title>Rapport Audit - ${esc(client.company)}</title>
 <!--[if gte mso 9]><xml>
   <w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument>
 </xml><![endif]-->
@@ -384,11 +384,11 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       <p style="color:${C.GREEN};font-size:11pt;font-weight:bold;letter-spacing:2pt;margin:0 0 20pt 0;font-family:Calibri,Arial,sans-serif;">COGEP NUMÉRIQUE</p>
       <p style="color:${C.WHITE};font-size:26pt;font-weight:bold;line-height:1.2;margin:0 0 8pt 0;font-family:Calibri,Arial,sans-serif;">RAPPORT D'AUDIT</p>
       <p style="color:${C.WHITE};font-size:26pt;font-weight:bold;line-height:1.2;margin:0 0 30pt 0;font-family:Calibri,Arial,sans-serif;">INFORMATIQUE</p>
-      <p style="color:${C.CYAN};font-size:18pt;font-weight:bold;margin:0 0 40pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(client.company||'Entreprise')}</p>
+      <p style="color:${C.CYAN};font-size:18pt;font-weight:bold;margin:0 0 40pt 0;font-family:Calibri,Arial,sans-serif;">${esc(client.company||'Entreprise')}</p>
       <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;width:80pt;font-family:Calibri,Arial,sans-serif;">Auditeur</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(client.auditor||'—')}</td></tr>
+        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;width:80pt;font-family:Calibri,Arial,sans-serif;">Auditeur</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${esc(client.auditor||'—')}</td></tr>
         <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Contact</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(client.contact||'—')}</td></tr>
-        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Date</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(today)}</td></tr>
+        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Date</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${esc(today)}</td></tr>
         <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Référence</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(client.ref||'—')}</td></tr>
       </table>
       <p style="color:#8DB4CC;font-size:8pt;font-style:italic;margin:40pt 0 0 0;letter-spacing:1pt;font-family:Calibri,Arial,sans-serif;">DOCUMENT CONFIDENTIEL</p>
@@ -447,7 +447,7 @@ ${recoItems ? `
 
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:40pt;border-collapse:collapse;">
   <tr>
-    <td style="background:${C.NAVY};padding:10pt 50pt;width:70%;"><span style="color:#8DB4CC;font-size:9pt;font-family:Calibri,Arial,sans-serif;">Rapport d'audit — ${escNl(client.company||'')} — ${escNl(today)} — Réf. ${escNl(client.ref||'—')}</span></td>
+    <td style="background:${C.NAVY};padding:10pt 50pt;width:70%;"><span style="color:#8DB4CC;font-size:9pt;font-family:Calibri,Arial,sans-serif;">Rapport d'audit — ${esc(client.company||'')} — ${esc(today)} — Réf. ${escNl(client.ref||'—')}</span></td>
     <td style="background:${C.GREEN};padding:10pt 16pt;width:15%;text-align:right;"><span style="color:${C.NAVY};font-size:9pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">CONFIDENTIEL</span></td>
     <td style="background:${C.CYAN};width:15%;padding:10pt 16pt;text-align:right;"><span style="color:${C.WHITE};font-size:9pt;font-family:Calibri,Arial,sans-serif;font-weight:bold;">COGEP NUMÉRIQUE</span></td>
   </tr>
@@ -467,15 +467,15 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
   const today = client.auditDate || new Date().toISOString().split('T')[0];
 
   const intro = aiContent?.introduction ||
-    `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${escNl(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de ${escNl(client.company)} en date du ${escNl(today)}.`;
+    `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${esc(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de ${esc(client.company)} en date du ${esc(today)}.`;
 
   const conclusion = aiContent?.conclusion ||
-    `Cet audit a permis d'évaluer le niveau de sécurité informatique de ${escNl(client.company)}. Les points identifiés doivent faire l'objet d'un plan d'action priorisé.`;
+    `Cet audit a permis d'évaluer le niveau de sécurité informatique de ${esc(client.company)}. Les points identifiés doivent faire l'objet d'un plan d'action priorisé.`;
 
   const clientTableRows = buildClientRows(client).map(([label, value]) => `
     <tr>
-      <td style="font-weight:bold;padding:5pt 10pt;border:1pt solid #CCC;width:30%;background:#F5F5F5;">${escNl(label)}</td>
-      <td style="padding:5pt 10pt;border:1pt solid #CCC;">${escNl(value)}</td>
+      <td style="font-weight:bold;padding:5pt 10pt;border:1pt solid #CCC;width:30%;background:#F5F5F5;">${esc(label)}</td>
+      <td style="padding:5pt 10pt;border:1pt solid #CCC;">${esc(value)}</td>
     </tr>`).join('');
 
   const sectionIds = ['section-client', 'section-intro', ...chapters.map((_, i) => `section-ch-${i}`), 'section-conclusion'];
@@ -485,7 +485,7 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
   chapters.forEach((chapter, ci) => {
     chaptersHtml += `
 <br style="mso-special-character:line-break;page-break-before:always">
-<h2 id="section-ch-${ci}" style="font-size:14pt;color:#222;border-bottom:2pt solid #222;padding-bottom:4pt;margin-bottom:14pt;"><a name="section-ch-${ci}"></a>${ci+1}. ${escNl(chapter.name)}</h2>`;
+<h2 id="section-ch-${ci}" style="font-size:14pt;color:#222;border-bottom:2pt solid #222;padding-bottom:4pt;margin-bottom:14pt;"><a name="section-ch-${ci}"></a>${ci+1}. ${esc(chapter.name)}</h2>`;
 
     chapter.questions.forEach((question, qi) => {
 
