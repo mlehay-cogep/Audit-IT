@@ -204,6 +204,7 @@
     border-left: 3px solid var(--blue-med);
     border-radius: 0 var(--radius) var(--radius) 0;
     padding: 10px 14px; margin-top: 6px;
+    white-space: pre-wrap;
   }
 
   /* ─── MANAGE PAGE ─────────────────────────────────────── */
@@ -243,7 +244,7 @@
   .question-manage-row:last-child { border-bottom: none; padding-bottom: 0; }
   .question-manage-row.dragging { opacity: 0.4; }
   .question-manage-row.drag-over { background: var(--blue-pale); }
-  .question-manage-text { flex: 1; font-size: 13px; color: var(--gray-dark); }
+  .question-manage-text { flex: 1; font-size: 13px; color: var(--gray-dark); white-space: pre-wrap; }
   .question-manage-options { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
 
   /* ─── AUDIT HIDE CONTROLS ──────────────────────────────── */
@@ -292,7 +293,7 @@
   .modal-overlay.open { display: block; }
   .modal {
     position: fixed; top: 0; right: 0; bottom: 0;
-    width: min(820px, 100vw);
+    width: 100vw;
     background: var(--white);
     box-shadow: -8px 0 40px rgba(0,0,0,0.18);
     display: flex; flex-direction: column;
