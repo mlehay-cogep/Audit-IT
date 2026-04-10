@@ -1660,7 +1660,7 @@ function resetAnswers() {
 // UTILS
 // ────────────────────────────────────────────────────────────────────────────
 function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g, '<br>');
 }
 
 function showToast(msg) {
