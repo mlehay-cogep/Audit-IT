@@ -104,6 +104,7 @@ app.delete('/api/upload/:filename', (req, res) => {
 
 // ── Génération du rapport ────────────────────────────────────────────────────
 app.post('/api/generate', (req, res) => {
+  let tmpLogoFile = null;
   try {
     const { client, chapters, answers, aiContent, format, layout, hidden } = req.body;
 
@@ -111,7 +112,26 @@ app.post('/api/generate', (req, res) => {
       return res.status(400).json({ error: 'Informations client manquantes.' });
     }
 
-    const buffer = htmlToDoc({ client, chapters, answers, aiContent, layout, hidden });
+    // Word ne peut pas afficher les data: URI dans les .doc HTML.
+    // On écrit le logo base64 en fichier temporaire et on passe l'URL relative.
+    let resolvedClient = { ...client };
+    if (client.logoBase64 && client.logoBase64.startsWith('data:')) {
+      try {
+        const m = client.logoBase64.match(/^data:image\/(\w+);base64,(.+)$/s);
+        if (m) {
+          const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
+          const hash = crypto.randomBytes(6).toString('hex');
+          const filename = `tmp_logo_${hash}.${ext}`;
+          tmpLogoFile = path.join(UPLOADS, filename);
+          fs.writeFileSync(tmpLogoFile, Buffer.from(m[2], 'base64'));
+          resolvedClient = { ...client, logoBase64: `/uploads/${filename}` };
+        }
+      } catch (e) {
+        console.warn('Logo temp file error:', e.message);
+      }
+    }
+
+    const buffer = htmlToDoc({ client: resolvedClient, chapters, answers, aiContent, layout, hidden });
     const safeName = (client.company || 'rapport').replace(/\s+/g, '_');
     const date = client.auditDate || 'date';
     const layoutSuffix = layout === 'simple' ? '_simple' : '';
@@ -128,6 +148,9 @@ app.post('/api/generate', (req, res) => {
   } catch (err) {
     console.error('Erreur génération:', err);
     res.status(500).json({ error: err.message });
+  } finally {
+    // Nettoyer le fichier logo temporaire
+    if (tmpLogoFile) try { fs.unlinkSync(tmpLogoFile); } catch {}
   }
 });
 
