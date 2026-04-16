@@ -863,10 +863,23 @@ function renderAudit() {
                 </div>
                 <button class="btn btn-xs btn-danger" onclick="event.stopPropagation();removeFreeAnswerImage(${q.id})">✕</button>
               </div>` : `
-              <label class="img-upload-zone" style="cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;padding:10px;">
-                📎 Cliquez pour ajouter une image
-                <input type="file" accept="image/*" style="display:none;" onchange="handleFreeAnswerImageUpload(${q.id}, this)">
-              </label>`}
+                  <div class="img-picker" id="free-img-picker-${q.id}">
+                    <div class="img-picker-tabs">
+                      <button class="img-picker-tab active" onclick="event.stopPropagation();switchFreeImgTab(${q.id},'upload')">📤 Uploader</button>
+                      <button class="img-picker-tab" onclick="event.stopPropagation();switchFreeImgTab(${q.id},'gallery')">🖼️ Bibliothèque</button>
+                    </div>
+                    <div class="img-picker-panel" id="free-img-panel-upload-${q.id}">
+                      <label class="img-upload-zone" style="cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;padding:10px;margin:0;border:none;border-radius:0;">
+                        📎 Cliquez pour uploader une image
+                        <input type="file" accept="image/*" style="display:none;" onchange="handleFreeAnswerImageUpload(${q.id}, this)">
+                      </label>
+                    </div>
+                    <div class="img-picker-panel hidden" id="free-img-panel-gallery-${q.id}">
+                      <div class="img-gallery" id="free-img-gallery-${q.id}">
+                        <div class="img-gallery-empty">⏳ Chargement…</div>
+                      </div>
+                    </div>
+                  </div>`}
           </div>
         </div>`;
       }
@@ -953,6 +966,58 @@ function removeFreeAnswerImage(qid) {
   }
   renderAudit();
 }
+
+    function switchFreeImgTab(qid, tab) {
+        const upload = document.getElementById(`free-img-panel-upload-${qid}`);
+        const gallery = document.getElementById(`free-img-panel-gallery-${qid}`);
+        const picker = document.getElementById(`free-img-picker-${qid}`);
+        if (!picker) return;
+        picker.querySelectorAll('.img-picker-tab').forEach((t, i) => {
+            t.classList.toggle('active', (i === 0 && tab === 'upload') || (i === 1 && tab === 'gallery'));
+        });
+        if (upload) upload.classList.toggle('hidden', tab !== 'upload');
+        if (gallery) gallery.classList.toggle('hidden', tab !== 'gallery');
+        if (tab === 'gallery') loadFreeImageGallery(qid);
+    }
+
+    const _freeGalleryCache = {};
+
+    function loadFreeImageGallery(qid) {
+        const container = document.getElementById(`free-img-gallery-${qid}`);
+        if (!container) return;
+        container.innerHTML = '<div class="img-gallery-empty">⏳ Chargement…</div>';
+        fetch('/api/images')
+            .then(r => r.json())
+            .then(images => {
+                _freeGalleryCache[qid] = images;
+                if (!images.length) {
+                    container.innerHTML = '<div class="img-gallery-empty">Aucune image dans la bibliothèque.</div>';
+                    return;
+                }
+                container.innerHTML = images.map((img, idx) => `
+            <div class="img-gallery-item" onclick="selectFreeAnswerImage(${qid}, ${idx})">
+              <img src="${esc(img.url)}" alt="${esc(img.name)}" loading="lazy">
+              <div class="img-gallery-name">${esc(img.name)}</div>
+            </div>`).join('');
+            })
+            .catch(() => {
+                container.innerHTML = '<div class="img-gallery-empty">Erreur de chargement.</div>';
+            });
+    }
+
+    function selectFreeAnswerImage(qid, idx) {
+        const images = _freeGalleryCache[qid];
+        if (!images || !images[idx]) return;
+        const img = images[idx];
+        const image = { url: img.url, filename: img.filename || '', name: img.name, caption: '' };
+        const a = state.answers[qid];
+        if (a && typeof a === 'object') {
+            a.image = image;
+        } else {
+            state.answers[qid] = { value: 'Réponse libre', reason: '', image };
+        }
+        renderAudit();
+    }
 
 // ────────────────────────────────────────────────────────────────────────────
 // MANAGE PAGE — avec drag & drop chapitres et questions
