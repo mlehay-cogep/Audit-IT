@@ -335,10 +335,10 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
                     return `<div style="margin:8pt 0 4pt 0;"><img src="${src}" alt="${esc(freeImg.name || 'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(freeImg.caption)}</p>` : ''}</div>`;
                 })();
                 const bodyContent = isNA
-                    ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${esc(reason)}` : ''}`
+                    ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${escNl(reason)}` : ''}`
                     : isFreeA
-                        ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${esc(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
-                        : `${content ? esc(content) : ''}${answer ? renderImage(question, answer) : ''}`;
+                        ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${escNl(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
+                        : `${content ? escNl(content) : ''}${answer ? renderImage(question, answer) : ''}`;
                 const borderColor = isNA ? '#B4B2A9' : isFreeA ? '#B0CFEA' : C.GREEN;
                 chaptersHtml += `
 <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:14pt;border-collapse:collapse;">
