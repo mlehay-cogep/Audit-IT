@@ -188,27 +188,27 @@ function renderImage(question, optionKey) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function htmlToDocCogep({ client, chapters, answers, aiContent }) {
-  const today = client.auditDate || new Date().toISOString().split('T')[0];
+    const today = client.auditDate || new Date().toISOString().split('T')[0];
 
-  const C = {
-    NAVY:     '#00274A', NAVY2:    '#002649', CYAN:     '#00A3E0',
-    GREEN:    '#2BE083', ELECTRIC: '#4950FF', ORANGE:   '#FBAE40',
-    WHITE:    '#FFFFFF', LIGHT_BG: '#F1F4F8', TEXT_DARK:'#00274A', TEXT_MED: '#44546A',
-  };
+    const C = {
+        NAVY: '#00274A', NAVY2: '#002649', CYAN: '#00A3E0',
+        GREEN: '#2BE083', ELECTRIC: '#4950FF', ORANGE: '#FBAE40',
+        WHITE: '#FFFFFF', LIGHT_BG: '#F1F4F8', TEXT_DARK: '#00274A', TEXT_MED: '#44546A',
+    };
 
-  const clientTableRows = buildClientRows(client).map(([label, value]) => `
+    const clientTableRows = buildClientRows(client).map(([label, value]) => `
     <tr>
       <td style="background:${C.NAVY};color:${C.WHITE};font-weight:bold;padding:7pt 12pt;border:1pt solid ${C.NAVY2};width:32%;font-family:Calibri,Arial,sans-serif;font-size:10pt;">${esc(label)}</td>
       <td style="padding:7pt 12pt;border:1pt solid #CBD5E1;font-family:Calibri,Arial,sans-serif;font-size:10pt;color:${C.TEXT_DARK};">${escNl(value)}</td>
     </tr>`).join('');
 
-  const intro = aiContent?.introduction ||
-    `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${escNl(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de <strong>${esc(client.company)}</strong> en date du ${esc(today)}. Cet audit a pour objectif d'évaluer le niveau de maturité en matière de sécurité informatique et d'identifier les axes d'amélioration prioritaires.`;
+    const intro = aiContent?.introduction ||
+        `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${escNl(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de <strong>${esc(client.company)}</strong> en date du ${esc(today)}. Cet audit a pour objectif d'évaluer le niveau de maturité en matière de sécurité informatique et d'identifier les axes d'amélioration prioritaires.`;
 
-  const conclusion = aiContent?.conclusion ||
-    `Cet audit a permis d'évaluer le niveau de sécurité informatique de <strong>${esc(client.company)}</strong>. Les points identifiés doivent faire l'objet d'un plan d'action priorisé afin de renforcer la posture de sécurité globale de l'organisation.`;
+    const conclusion = aiContent?.conclusion ||
+        `Cet audit a permis d'évaluer le niveau de sécurité informatique de <strong>${esc(client.company)}</strong>. Les points identifiés doivent faire l'objet d'un plan d'action priorisé afin de renforcer la posture de sécurité globale de l'organisation.`;
 
-  const sectionTitle = (text, anchorId = '') => `
+    const sectionTitle = (text, anchorId = '') => `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18pt;border-collapse:collapse;">
   <tr>
     <td style="background:${C.NAVY};padding:10pt 18pt;">
@@ -220,33 +220,33 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
   </tr>
 </table>`;
 
-  // IDs d'ancres pour chaque section du sommaire
-  const sectionIds = ['section-client', 'section-intro', ...chapters.map((_, i) => `section-ch-${i}`), 'section-conclusion'];
-  const allItems   = ['Informations client', 'Introduction', ...chapters.map(ch => ch.name), 'Conclusion & Recommandations'];
+    // IDs d'ancres pour chaque section du sommaire
+    const sectionIds = ['section-client', 'section-intro', ...chapters.map((_, i) => `section-ch-${i}`), 'section-conclusion'];
+    const allItems = ['Informations client', 'Introduction', ...chapters.map(ch => ch.name), 'Conclusion & Recommandations'];
 
-  // Sommaire avec liens
-  const sommaireRows = allItems.map((name, i) => `
+    // Sommaire avec liens
+    const sommaireRows = allItems.map((name, i) => `
     <tr>
-      <td style="padding:5pt 10pt;width:30pt;text-align:right;color:${C.CYAN};font-weight:bold;font-size:11pt;font-family:Calibri,Arial,sans-serif;">${i+1}.</td>
+      <td style="padding:5pt 10pt;width:30pt;text-align:right;color:${C.CYAN};font-weight:bold;font-size:11pt;font-family:Calibri,Arial,sans-serif;">${i + 1}.</td>
       <td style="padding:5pt 10pt;font-size:11pt;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;border-bottom:1pt solid #E8EEF4;">
         <a href="#${sectionIds[i]}" style="color:${C.NAVY};text-decoration:none;">${esc(name)}</a>
       </td>
     </tr>`).join('');
 
-  // Chapitres
-  let chaptersHtml = '';
-  chapters.forEach((chapter, ci) => {
-    const bannerBg   = ci % 2 === 0 ? C.NAVY : C.CYAN;
-    const bannerText = ci % 2 === 0 ? C.WHITE : C.NAVY;
-    const bannerNum  = ci % 2 === 0 ? C.GREEN : C.NAVY;
+    // Chapitres
+    let chaptersHtml = '';
+    chapters.forEach((chapter, ci) => {
+        const bannerBg = ci % 2 === 0 ? C.NAVY : C.CYAN;
+        const bannerText = ci % 2 === 0 ? C.WHITE : C.NAVY;
+        const bannerNum = ci % 2 === 0 ? C.GREEN : C.NAVY;
 
-    chaptersHtml += `
+        chaptersHtml += `
 <br style="mso-special-character:line-break;page-break-before:always">
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16pt;border-collapse:collapse;">
   <tr>
     <td style="background:${bannerBg};padding:12pt 18pt;width:6pt;">
       <a name="section-ch-${ci}" id="section-ch-${ci}"></a>
-      <span style="color:${bannerNum};font-size:14pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">${String(ci+1).padStart(2,'0')}</span>
+      <span style="color:${bannerNum};font-size:14pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">${String(ci + 1).padStart(2, '0')}</span>
     </td>
     <td style="background:${bannerBg};padding:12pt 8pt 12pt 12pt;">
       <span style="color:${bannerText};font-size:14pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">${esc(chapter.name).toUpperCase()}</span>
@@ -255,11 +255,11 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
   </tr>
 </table>`;
 
-    chapter.questions.forEach((question, qi) => {
+        chapter.questions.forEach((question, qi) => {
 
-      // ── Bloc libre (freetext) ──────────────────────────────────────────────
-      if (question.qtype === 'freetext') {
-        chaptersHtml += `
+            // ── Bloc libre (freetext) ──────────────────────────────────────────────
+            if (question.qtype === 'freetext') {
+                chaptersHtml += `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:4pt;border-collapse:collapse;">
   <tr>
     <td style="background:${C.ELECTRIC};width:4pt;padding:0;"></td>
@@ -268,8 +268,8 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
     </td>
   </tr>
 </table>`;
-        if (question.freetextContent) {
-          chaptersHtml += `
+                if (question.freetextContent) {
+                    chaptersHtml += `
 <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:14pt;border-collapse:collapse;">
   <tr>
     <td style="background:${C.ELECTRIC};width:4pt;padding:0;"></td>
@@ -278,43 +278,43 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
     </td>
   </tr>
 </table>`;
-        }
-        chaptersHtml += `<hr style="border:none;border-top:1pt solid #CBD5E1;margin:10pt 0;">`;
-        return;
-      }
+                }
+                chaptersHtml += `<hr style="border:none;border-top:1pt solid #CBD5E1;margin:10pt 0;">`;
+                return;
+            }
 
-      // ── Question à choix (comportement normal) ────────────────────────────
-      const raw        = answers[question.id];
-      const answer     = answerValue(raw);
-      const reason     = answerReason(raw);
-      const freeImg    = answerImage(raw);
-      const isNA       = answer === 'Non applicable';
-      const isFreeA    = answer === 'Réponse libre';
-      const content    = answer && !isNA && !isFreeA ? (question.paragraphs[answer] || '') : '';
+            // ── Question à choix (comportement normal) ────────────────────────────
+            const raw = answers[question.id];
+            const answer = answerValue(raw);
+            const reason = answerReason(raw);
+            const freeImg = answerImage(raw);
+            const isNA = answer === 'Non applicable';
+            const isFreeA = answer === 'Réponse libre';
+            const content = answer && !isNA && !isFreeA ? (question.paragraphs[answer] || '') : '';
 
-      let badgeBg = '#E8EEF4', badgeColor = C.TEXT_DARK, badgeBorder = '#CBD5E1';
-      if (answer) {
-        const lo = answer.toLowerCase();
-        if (lo === 'oui')             { badgeBg='#E6FBF3'; badgeColor='#1A7A4A'; badgeBorder=C.GREEN; }
-        else if (lo === 'non')        { badgeBg='#FFF4E6'; badgeColor='#8B5E00'; badgeBorder=C.ORANGE; }
-        else if (lo === 'partiel')    { badgeBg='#FAEEDA'; badgeColor='#854F0B'; badgeBorder='#FBAE40'; }
-        else if (lo === 'non applicable') { badgeBg='#F1EFE8'; badgeColor='#5F5E5A'; badgeBorder='#B4B2A9'; }
-        else if (lo === 'réponse libre')  { badgeBg='#EEF5FC'; badgeColor='#185FA5'; badgeBorder='#B0CFEA'; }
-        else                          { badgeBg='#EEF0FF'; badgeColor='#2D32AA'; badgeBorder=C.ELECTRIC; }
-      }
+            let badgeBg = '#E8EEF4', badgeColor = C.TEXT_DARK, badgeBorder = '#CBD5E1';
+            if (answer) {
+                const lo = answer.toLowerCase();
+                if (lo === 'oui') { badgeBg = '#E6FBF3'; badgeColor = '#1A7A4A'; badgeBorder = C.GREEN; }
+                else if (lo === 'non') { badgeBg = '#FFF4E6'; badgeColor = '#8B5E00'; badgeBorder = C.ORANGE; }
+                else if (lo === 'partiel') { badgeBg = '#FAEEDA'; badgeColor = '#854F0B'; badgeBorder = '#FBAE40'; }
+                else if (lo === 'non applicable') { badgeBg = '#F1EFE8'; badgeColor = '#5F5E5A'; badgeBorder = '#B4B2A9'; }
+                else if (lo === 'réponse libre') { badgeBg = '#EEF5FC'; badgeColor = '#185FA5'; badgeBorder = '#B0CFEA'; }
+                else { badgeBg = '#EEF0FF'; badgeColor = '#2D32AA'; badgeBorder = C.ELECTRIC; }
+            }
 
-      chaptersHtml += `
+            chaptersHtml += `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:4pt;border-collapse:collapse;">
   <tr>
     <td style="background:${C.CYAN};width:4pt;padding:0;"></td>
     <td style="padding:8pt 12pt;background:${C.LIGHT_BG};">
-      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${ci+1}.${qi+1}&nbsp;&nbsp;${esc(question.text)}</span>
+      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${ci + 1}.${qi + 1}&nbsp;&nbsp;${esc(question.text)}</span>
     </td>
   </tr>
 </table>`;
 
-      if (answer) {
-        chaptersHtml += `
+            if (answer && !isFreeA) {
+                chaptersHtml += `
 <table cellpadding="0" cellspacing="0" style="margin-bottom:8pt;border-collapse:collapse;">
   <tr>
     <td style="background:${badgeBg};color:${badgeColor};padding:4pt 16pt;font-size:10pt;font-weight:bold;border:1pt solid ${badgeBorder};font-family:Calibri,Arial,sans-serif;">
@@ -322,25 +322,25 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
     </td>
   </tr>
 </table>`;
-      } else {
-        chaptersHtml += `<p style="color:#999;font-style:italic;font-size:10pt;font-family:Calibri,Arial,sans-serif;margin:0 0 8pt 0;">Non renseigné</p>`;
-      }
+            } else if (!answer) {
+                chaptersHtml += `<p style="color:#999;font-style:italic;font-size:10pt;font-family:Calibri,Arial,sans-serif;margin:0 0 8pt 0;">Non renseigné</p>`;
+            }
 
-      if (content || renderImage(question, answer) || isNA || isFreeA) {
-        // Image de réponse libre (depuis answers[qid].image)
-        const freeImgHtml = (() => {
-          if (!freeImg) return '';
-          const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
-          if (!src) return '';
-          return `<div style="margin:8pt 0 4pt 0;"><img src="${src}" alt="${esc(freeImg.name||'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(freeImg.caption)}</p>` : ''}</div>`;
-        })();
-        const bodyContent = isNA
-          ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${esc(reason)}` : ''}`
-          : isFreeA
-          ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${esc(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
-          : `${content ? esc(content) : ''}${answer ? renderImage(question, answer) : ''}`;
-        const borderColor = isNA ? '#B4B2A9' : isFreeA ? '#B0CFEA' : C.GREEN;
-        chaptersHtml += `
+            if (content || renderImage(question, answer) || isNA || isFreeA) {
+                // Image de réponse libre (depuis answers[qid].image)
+                const freeImgHtml = (() => {
+                    if (!freeImg) return '';
+                    const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
+                    if (!src) return '';
+                    return `<div style="margin:8pt 0 4pt 0;"><img src="${src}" alt="${esc(freeImg.name || 'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(freeImg.caption)}</p>` : ''}</div>`;
+                })();
+                const bodyContent = isNA
+                    ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${esc(reason)}` : ''}`
+                    : isFreeA
+                        ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${esc(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
+                        : `${content ? esc(content) : ''}${answer ? renderImage(question, answer) : ''}`;
+                const borderColor = isNA ? '#B4B2A9' : isFreeA ? '#B0CFEA' : C.GREEN;
+                chaptersHtml += `
 <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:14pt;border-collapse:collapse;">
   <tr>
     <td style="background:${borderColor};width:4pt;padding:0;"></td>
@@ -349,15 +349,15 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
     </td>
   </tr>
 </table>`;
-      }
+            }
 
-      chaptersHtml += `<hr style="border:none;border-top:1pt solid #CBD5E1;margin:10pt 0;">`;
+            chaptersHtml += `<hr style="border:none;border-top:1pt solid #CBD5E1;margin:10pt 0;">`;
+        });
     });
-  });
 
-  const recoItems = buildRecoItems(chapters, answers, aiContent, `font-size:10.5pt;font-family:Calibri,Arial,sans-serif;color:${C.TEXT_DARK};`);
+    const recoItems = buildRecoItems(chapters, answers, aiContent, `font-size:10.5pt;font-family:Calibri,Arial,sans-serif;color:${C.TEXT_DARK};`);
 
-  const html = `
+    const html = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
       xmlns:w="urn:schemas-microsoft-com:office:word"
       xmlns="http://www.w3.org/TR/REC-html40">
@@ -384,12 +384,12 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       <p style="color:${C.GREEN};font-size:11pt;font-weight:bold;letter-spacing:2pt;margin:0 0 20pt 0;font-family:Calibri,Arial,sans-serif;">COGEP NUMÉRIQUE</p>
       <p style="color:${C.WHITE};font-size:26pt;font-weight:bold;line-height:1.2;margin:0 0 8pt 0;font-family:Calibri,Arial,sans-serif;">RAPPORT D'AUDIT</p>
       <p style="color:${C.WHITE};font-size:26pt;font-weight:bold;line-height:1.2;margin:0 0 30pt 0;font-family:Calibri,Arial,sans-serif;">INFORMATIQUE</p>
-      <p style="color:${C.CYAN};font-size:18pt;font-weight:bold;margin:0 0 40pt 0;font-family:Calibri,Arial,sans-serif;">${esc(client.company||'Entreprise')}</p>
+      <p style="color:${C.CYAN};font-size:18pt;font-weight:bold;margin:0 0 40pt 0;font-family:Calibri,Arial,sans-serif;">${esc(client.company || 'Entreprise')}</p>
       <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;width:80pt;font-family:Calibri,Arial,sans-serif;">Auditeur</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${esc(client.auditor||'—')}</td></tr>
-        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Contact</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(client.contact||'—')}</td></tr>
+        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;width:80pt;font-family:Calibri,Arial,sans-serif;">Auditeur</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${esc(client.auditor || '—')}</td></tr>
+        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Contact</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(client.contact || '—')}</td></tr>
         <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Date</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${esc(today)}</td></tr>
-        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Référence</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(client.ref||'—')}</td></tr>
+        <tr><td style="color:#8DB4CC;font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">Référence</td><td style="color:${C.WHITE};font-size:9pt;padding:3pt 0;font-family:Calibri,Arial,sans-serif;">${escNl(client.ref || '—')}</td></tr>
       </table>
       <p style="color:#8DB4CC;font-size:8pt;font-style:italic;margin:40pt 0 0 0;letter-spacing:1pt;font-family:Calibri,Arial,sans-serif;">DOCUMENT CONFIDENTIEL</p>
     </td>
@@ -398,13 +398,15 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
         <tr><td style="background:${C.CYAN};height:200pt;"></td><td style="background:${C.ELECTRIC};height:200pt;width:50%;"></td></tr>
         <tr><td style="background:${C.GREEN};height:150pt;" colspan="2"></td></tr>
         <tr><td style="background:${C.LIGHT_BG};height:200pt;" colspan="2" style="vertical-align:middle;text-align:center;padding:20pt;">
-          ${client.logoBase64
-            ? (() => {
-                const dims = getImageDimensionsFromDataUri(client.logoBase64);
-                const { w, h } = constrainDimensionsBoth(dims, 213, 133); // 160pt x 100pt à 96dpi
-                return `<img src="${client.logoBase64}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin:0 auto;">`;
-              })()
-            : `<p style="color:${C.NAVY};font-size:9pt;text-align:right;padding:16pt;margin:0;font-family:Calibri,Arial,sans-serif;">cogep-numerique.fr</p>`}
+          ${(() => {
+            const raw = client.logoBase64;
+            if (!raw) return `<p style="color:${C.NAVY};font-size:9pt;text-align:right;padding:16pt;margin:0;font-family:Calibri,Arial,sans-serif;">cogep-numerique.fr</p>`;
+            const src = raw.startsWith('data:') ? raw : urlToBase64DataUri(raw);
+            if (!src) return `<p style="color:${C.NAVY};font-size:9pt;text-align:right;padding:16pt;margin:0;font-family:Calibri,Arial,sans-serif;">cogep-numerique.fr</p>`;
+            const dims = getImageDimensionsFromDataUri(src);
+            const { w, h } = constrainDimensionsBoth(dims, 213, 133);
+            return `<img src="${src}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin:0 auto;">`;
+        })()}
         </td></tr>
         <tr><td style="background:${C.NAVY};height:60pt;"></td><td style="background:${C.GREEN};height:60pt;"></td></tr>
       </table>
@@ -447,7 +449,7 @@ ${recoItems ? `
 
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:40pt;border-collapse:collapse;">
   <tr>
-    <td style="background:${C.NAVY};padding:10pt 50pt;width:70%;"><span style="color:#8DB4CC;font-size:9pt;font-family:Calibri,Arial,sans-serif;">Rapport d'audit — ${esc(client.company||'')} — ${esc(today)} — Réf. ${escNl(client.ref||'—')}</span></td>
+    <td style="background:${C.NAVY};padding:10pt 50pt;width:70%;"><span style="color:#8DB4CC;font-size:9pt;font-family:Calibri,Arial,sans-serif;">Rapport d'audit — ${esc(client.company || '')} — ${esc(today)} — Réf. ${escNl(client.ref || '—')}</span></td>
     <td style="background:${C.GREEN};padding:10pt 16pt;width:15%;text-align:right;"><span style="color:${C.NAVY};font-size:9pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">CONFIDENTIEL</span></td>
     <td style="background:${C.CYAN};width:15%;padding:10pt 16pt;text-align:right;"><span style="color:${C.WHITE};font-size:9pt;font-family:Calibri,Arial,sans-serif;font-weight:bold;">COGEP NUMÉRIQUE</span></td>
   </tr>
@@ -456,7 +458,7 @@ ${recoItems ? `
 </body>
 </html>`;
 
-  return Buffer.from('\ufeff' + html, 'utf8');
+    return Buffer.from('\ufeff' + html, 'utf8');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -464,93 +466,93 @@ ${recoItems ? `
 // ─────────────────────────────────────────────────────────────────────────────
 
 function htmlToDocSimple({ client, chapters, answers, aiContent }) {
-  const today = client.auditDate || new Date().toISOString().split('T')[0];
+    const today = client.auditDate || new Date().toISOString().split('T')[0];
 
-  const intro = aiContent?.introduction ||
-    `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${esc(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de ${esc(client.company)} en date du ${esc(today)}.`;
+    const intro = aiContent?.introduction ||
+        `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${esc(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de ${esc(client.company)} en date du ${esc(today)}.`;
 
-  const conclusion = aiContent?.conclusion ||
-    `Cet audit a permis d'évaluer le niveau de sécurité informatique de ${esc(client.company)}. Les points identifiés doivent faire l'objet d'un plan d'action priorisé.`;
+    const conclusion = aiContent?.conclusion ||
+        `Cet audit a permis d'évaluer le niveau de sécurité informatique de ${esc(client.company)}. Les points identifiés doivent faire l'objet d'un plan d'action priorisé.`;
 
-  const clientTableRows = buildClientRows(client).map(([label, value]) => `
+    const clientTableRows = buildClientRows(client).map(([label, value]) => `
     <tr>
       <td style="font-weight:bold;padding:5pt 10pt;border:1pt solid #CCC;width:30%;background:#F5F5F5;">${esc(label)}</td>
       <td style="padding:5pt 10pt;border:1pt solid #CCC;">${esc(value)}</td>
     </tr>`).join('');
 
-  const sectionIds = ['section-client', 'section-intro', ...chapters.map((_, i) => `section-ch-${i}`), 'section-conclusion'];
-  const allItems = ['Informations client', 'Introduction', ...chapters.map(ch => ch.name), 'Conclusion & Recommandations'];
+    const sectionIds = ['section-client', 'section-intro', ...chapters.map((_, i) => `section-ch-${i}`), 'section-conclusion'];
+    const allItems = ['Informations client', 'Introduction', ...chapters.map(ch => ch.name), 'Conclusion & Recommandations'];
 
-  let chaptersHtml = '';
-  chapters.forEach((chapter, ci) => {
-    chaptersHtml += `
-<br style="mso-special-character:line-break;page-break-before:always">
-<h2 id="section-ch-${ci}" style="font-size:14pt;color:#222;border-bottom:2pt solid #222;padding-bottom:4pt;margin-bottom:14pt;"><a name="section-ch-${ci}"></a>${ci+1}. ${esc(chapter.name)}</h2>`;
-
-    chapter.questions.forEach((question, qi) => {
-
-      // ── Bloc libre (freetext) ─────────────────────────────────────────────
-      if (question.qtype === 'freetext') {
+    let chaptersHtml = '';
+    chapters.forEach((chapter, ci) => {
         chaptersHtml += `
+<br style="mso-special-character:line-break;page-break-before:always">
+<h2 id="section-ch-${ci}" style="font-size:14pt;color:#222;border-bottom:2pt solid #222;padding-bottom:4pt;margin-bottom:14pt;"><a name="section-ch-${ci}"></a>${ci + 1}. ${esc(chapter.name)}</h2>`;
+
+        chapter.questions.forEach((question, qi) => {
+
+            // ── Bloc libre (freetext) ─────────────────────────────────────────────
+            if (question.qtype === 'freetext') {
+                chaptersHtml += `
 <p style="font-size:12pt;font-weight:bold;margin:12pt 0 4pt 0;border-left:3pt solid #666;padding-left:8pt;">${escNl(question.text)}</p>`;
-        if (question.freetextContent) {
-          chaptersHtml += `<p style="font-size:10.5pt;line-height:1.8;white-space:pre-wrap;margin:0 0 8pt 0;color:#333;">${escNl(question.freetextContent)}</p>`;
-        }
-        chaptersHtml += `<hr style="border:none;border-top:1pt solid #DDD;margin:10pt 0;">`;
-        return;
-      }
+                if (question.freetextContent) {
+                    chaptersHtml += `<p style="font-size:10.5pt;line-height:1.8;white-space:pre-wrap;margin:0 0 8pt 0;color:#333;">${escNl(question.freetextContent)}</p>`;
+                }
+                chaptersHtml += `<hr style="border:none;border-top:1pt solid #DDD;margin:10pt 0;">`;
+                return;
+            }
 
-      // ── Question à choix ──────────────────────────────────────────────────
-      const raw     = answers[question.id];
-      const answer  = answerValue(raw);
-      const reason  = answerReason(raw);
-      const freeImg = answerImage(raw);
-      const isNA    = answer === 'Non applicable';
-      const content = answer && !isNA ? (question.paragraphs[answer] || '') : '';
+            // ── Question à choix ──────────────────────────────────────────────────
+            const raw = answers[question.id];
+            const answer = answerValue(raw);
+            const reason = answerReason(raw);
+            const freeImg = answerImage(raw);
+            const isNA = answer === 'Non applicable';
+            const content = answer && !isNA ? (question.paragraphs[answer] || '') : '';
 
-      // Badge simple
-      const badgeStyle = !answer ? 'background:#e9ecef;color:#495057;border:1pt solid #dee2e6;'
-        : answer.toLowerCase() === 'oui'            ? 'background:#d4edda;color:#155724;border:1pt solid #c3e6cb;'
-        : answer.toLowerCase() === 'non'            ? 'background:#f8d7da;color:#721c24;border:1pt solid #f5c6cb;'
-        : answer.toLowerCase() === 'partiel'        ? 'background:#fff3cd;color:#856404;border:1pt solid #ffeeba;'
-        : answer.toLowerCase() === 'non applicable' ? 'background:#f1efea;color:#5f5e5a;border:1pt solid #ccc;'
-        : answer.toLowerCase() === 'réponse libre'  ? 'background:#dbeafe;color:#1d4ed8;border:1pt solid #93c5fd;'
-        :                                             'background:#fff3cd;color:#856404;border:1pt solid #ffeeba;';
-      const isFreeA = answer && answer.toLowerCase() === 'réponse libre';
+            // Badge simple
+            const badgeStyle = !answer ? 'background:#e9ecef;color:#495057;border:1pt solid #dee2e6;'
+                : answer.toLowerCase() === 'oui' ? 'background:#d4edda;color:#155724;border:1pt solid #c3e6cb;'
+                    : answer.toLowerCase() === 'non' ? 'background:#f8d7da;color:#721c24;border:1pt solid #f5c6cb;'
+                        : answer.toLowerCase() === 'partiel' ? 'background:#fff3cd;color:#856404;border:1pt solid #ffeeba;'
+                            : answer.toLowerCase() === 'non applicable' ? 'background:#f1efea;color:#5f5e5a;border:1pt solid #ccc;'
+                                : answer.toLowerCase() === 'réponse libre' ? 'background:#dbeafe;color:#1d4ed8;border:1pt solid #93c5fd;'
+                                    : 'background:#fff3cd;color:#856404;border:1pt solid #ffeeba;';
+            const isFreeA = answer && answer.toLowerCase() === 'réponse libre';
 
-      chaptersHtml += `
-<p style="font-size:11pt;font-weight:bold;margin:12pt 0 4pt 0;">${ci+1}.${qi+1} — ${escNl(question.text)}</p>`;
+            chaptersHtml += `
+<p style="font-size:11pt;font-weight:bold;margin:12pt 0 4pt 0;">${ci + 1}.${qi + 1} — ${escNl(question.text)}</p>`;
 
-      if (answer) {
-        chaptersHtml += `<p style="margin:0 0 6pt 0;"><span style="font-size:10pt;font-weight:bold;padding:3pt 10pt;${badgeStyle}">Réponse : ${escNl(answer)}</span></p>`;
-      } else {
-        chaptersHtml += `<p style="font-style:italic;color:#888;font-size:10pt;margin:0 0 6pt 0;">Non renseigné</p>`;
-      }
+            if (answer && !isFreeA) {
+                chaptersHtml += `<p style="margin:0 0 6pt 0;"><span style="font-size:10pt;font-weight:bold;padding:3pt 10pt;${badgeStyle}">Réponse : ${escNl(answer)}</span></p>`;
+            } else if (!answer) {
+                chaptersHtml += `<p style="font-style:italic;color:#888;font-size:10pt;margin:0 0 6pt 0;">Non renseigné</p>`;
+            }
 
-      if (isNA && reason) {
-        chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #aaa;padding-left:10pt;margin:0 0 6pt 10pt;color:#555;font-style:italic;">${escNl(reason)}</p>`;
-      } else if (isFreeA) {
-        chaptersHtml += `<p style="font-size:9.5pt;font-weight:bold;color:#1d4ed8;margin:0 0 2pt 10pt;">Informations :</p>`;
-        chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #93c5fd;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${reason ? escNl(reason) : '<em>—</em>'}</p>`;
-        if (freeImg) {
-          const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
-          if (src) {
-            chaptersHtml += `<div style="margin:6pt 0 6pt 10pt;"><img src="${src}" alt="${escNl(freeImg.name||'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${escNl(freeImg.caption)}</p>` : ''}</div>`;
-          }
-        }
-      } else if (content) {
-        chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #888;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${escNl(content)}</p>`;
-      }
-      if (answer && !isNA && !isFreeA) {
-        chaptersHtml += renderImage(question, answer);
-      }
-      chaptersHtml += `<hr style="border:none;border-top:1pt solid #DDD;margin:10pt 0;">`;
+            if (isNA && reason) {
+                chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #aaa;padding-left:10pt;margin:0 0 6pt 10pt;color:#555;font-style:italic;">${escNl(reason)}</p>`;
+            } else if (isFreeA) {
+                chaptersHtml += `<p style="font-size:9.5pt;font-weight:bold;color:#1d4ed8;margin:0 0 2pt 10pt;">Informations :</p>`;
+                chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #93c5fd;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${reason ? escNl(reason) : '<em>—</em>'}</p>`;
+                if (freeImg) {
+                    const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
+                    if (src) {
+                        chaptersHtml += `<div style="margin:6pt 0 6pt 10pt;"><img src="${src}" alt="${escNl(freeImg.name || 'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${escNl(freeImg.caption)}</p>` : ''}</div>`;
+                    }
+                }
+            } else if (content) {
+                chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #888;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${escNl(content)}</p>`;
+            }
+            if (answer && !isNA && !isFreeA) {
+                chaptersHtml += renderImage(question, answer);
+            }
+            chaptersHtml += `<hr style="border:none;border-top:1pt solid #DDD;margin:10pt 0;">`;
+        });
     });
-  });
 
-  const recoItems = buildRecoItems(chapters, answers, aiContent);
+    const recoItems = buildRecoItems(chapters, answers, aiContent);
 
-  const html = `
+    const html = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
       xmlns:w="urn:schemas-microsoft-com:office:word"
       xmlns="http://www.w3.org/TR/REC-html40">
@@ -577,16 +579,18 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
   <tr>
     <td style="vertical-align:bottom;">
       <h1 style="margin:0 0 4pt 0;">Rapport d'audit informatique</h1>
-      <p style="font-size:14pt;font-weight:bold;margin:0 0 4pt 0;">${esc(client.company||'')}</p>
-      <p style="font-size:10pt;color:#555;margin:0;">Auditeur : ${esc(client.auditor||'—')} &nbsp;|&nbsp; Date : ${esc(today)} &nbsp;|&nbsp; Réf. : ${esc(client.ref||'—')}</p>
+      <p style="font-size:14pt;font-weight:bold;margin:0 0 4pt 0;">${esc(client.company || '')}</p>
+      <p style="font-size:10pt;color:#555;margin:0;">Auditeur : ${esc(client.auditor || '—')} &nbsp;|&nbsp; Date : ${esc(today)} &nbsp;|&nbsp; Réf. : ${esc(client.ref || '—')}</p>
     </td>
-    ${client.logoBase64
-      ? (() => {
-          const dims = getImageDimensionsFromDataUri(client.logoBase64);
-          const { w, h } = constrainDimensionsBoth(dims, 200, 80); // 150pt x 60pt à 96dpi
-          return `<td style="vertical-align:middle;text-align:right;width:160pt;"><img src="${client.logoBase64}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin-left:auto;"></td>`;
-        })()
-      : ''}
+    ${(() => {
+            const raw = client.logoBase64;
+            if (!raw) return '';
+            const src = raw.startsWith('data:') ? raw : urlToBase64DataUri(raw);
+            if (!src) return '';
+            const dims = getImageDimensionsFromDataUri(src);
+            const { w, h } = constrainDimensionsBoth(dims, 200, 80);
+            return `<td style="vertical-align:middle;text-align:right;width:160pt;"><img src="${src}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin-left:auto;"></td>`;
+        })()}
   </tr>
 </table>
 <hr style="border:none;border-top:2pt solid #222;margin:0 0 20pt 0;">
@@ -622,7 +626,7 @@ ${recoItems ? `<h3 style="font-size:12pt;margin-bottom:8pt;">Points nécessitant
 </body>
 </html>`;
 
-  return Buffer.from('\ufeff' + html, 'utf8');
+    return Buffer.from('\ufeff' + html, 'utf8');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -630,20 +634,20 @@ ${recoItems ? `<h3 style="font-size:12pt;margin-bottom:8pt;">Points nécessitant
 // ─────────────────────────────────────────────────────────────────────────────
 
 function htmlToDoc(params) {
-  // Filtrer les chapitres et questions masqués avant génération
-  const hidden = params.hidden || { chapters: {}, questions: {} };
-  const filteredChapters = (params.chapters || [])
-    .filter(ch => !hidden.chapters[ch.id])
-    .map(ch => ({
-      ...ch,
-      questions: ch.questions.filter(q => !hidden.questions[q.id])
-    }))
-    .filter(ch => ch.questions.length > 0); // exclure chapitres vides après filtre masquage
+    // Filtrer les chapitres et questions masqués avant génération
+    const hidden = params.hidden || { chapters: {}, questions: {} };
+    const filteredChapters = (params.chapters || [])
+        .filter(ch => !hidden.chapters[ch.id])
+        .map(ch => ({
+            ...ch,
+            questions: ch.questions.filter(q => !hidden.questions[q.id])
+        }))
+        .filter(ch => ch.questions.length > 0); // exclure chapitres vides après filtre masquage
 
-  const filtered = { ...params, chapters: filteredChapters };
+    const filtered = { ...params, chapters: filteredChapters };
 
-  if (params.layout === 'simple') return htmlToDocSimple(filtered);
-  return htmlToDocCogep(filtered);
+    if (params.layout === 'simple') return htmlToDocSimple(filtered);
+    return htmlToDocCogep(filtered);
 }
 
 module.exports = { htmlToDoc };
