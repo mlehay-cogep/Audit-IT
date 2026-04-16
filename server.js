@@ -8,15 +8,91 @@ const { htmlToDoc } = require('./docxGenerator');
 const app     = express();
 const PORT    = process.env.PORT || 3000;
 const UPLOADS = path.join(__dirname, 'public', 'uploads');
+const CLIENTS = path.join(__dirname, 'data', 'clients');
 
-// S'assurer que le dossier uploads existe
+// S'assurer que les dossiers existent
 if (!fs.existsSync(UPLOADS)) fs.mkdirSync(UPLOADS, { recursive: true });
+if (!fs.existsSync(CLIENTS)) fs.mkdirSync(CLIENTS, { recursive: true });
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-
-// Servir les fichiers statiques (dont /uploads/)
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ── GESTION DES CLIENTS (audits sauvegardés) ─────────────────────────────────
+
+// Liste tous les audits clients sauvegardés
+app.get('/api/clients', (req, res) => {
+  try {
+    const files = fs.readdirSync(CLIENTS)
+      .filter(f => f.endsWith('.json'))
+      .map(f => {
+        const filepath = path.join(CLIENTS, f);
+        const stat = fs.statSync(filepath);
+        try {
+          const data = JSON.parse(fs.readFileSync(filepath, 'utf8'));
+          return {
+            id: f.replace('.json', ''),
+            company: data.client?.company || '—',
+            ref: data.client?.ref || '',
+            auditDate: data.client?.auditDate || '',
+            savedAt: stat.mtime.toISOString(),
+          };
+        } catch {
+          return { id: f.replace('.json', ''), company: f, savedAt: stat.mtime.toISOString() };
+        }
+      })
+      .sort((a, b) => b.savedAt.localeCompare(a.savedAt));
+    res.json(files);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Charge un audit client
+app.get('/api/clients/:id', (req, res) => {
+  try {
+    const id = sanitizeId(req.params.id);
+    const filepath = path.join(CLIENTS, id + '.json');
+    if (!fs.existsSync(filepath)) return res.status(404).json({ error: 'Client introuvable.' });
+    const data = JSON.parse(fs.readFileSync(filepath, 'utf8'));
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Sauvegarde ou met à jour un audit client
+app.post('/api/clients/:id', (req, res) => {
+  try {
+    const id = sanitizeId(req.params.id);
+    const filepath = path.join(CLIENTS, id + '.json');
+    const payload = { ...req.body, _savedAt: new Date().toISOString() };
+    fs.writeFileSync(filepath, JSON.stringify(payload, null, 2), 'utf8');
+    res.json({ ok: true, id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Supprime un audit client
+app.delete('/api/clients/:id', (req, res) => {
+  try {
+    const id = sanitizeId(req.params.id);
+    const filepath = path.join(CLIENTS, id + '.json');
+    if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Génère un identifiant sûr depuis le nom de l'entreprise ou un uuid
+function sanitizeId(raw) {
+  return String(raw)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // retirer accents
+    .replace(/[^a-zA-Z0-9_-]/g, '_')
+    .slice(0, 80) || 'client';
+}
 
 // ── Liste des images ─────────────────────────────────────────────────────────
 app.get('/api/images', (req, res) => {
@@ -104,7 +180,6 @@ app.delete('/api/upload/:filename', (req, res) => {
 
 // ── Génération du rapport ────────────────────────────────────────────────────
 app.post('/api/generate', (req, res) => {
-  let tmpLogoFile = null;
   try {
     const { client, chapters, answers, aiContent, format, layout, hidden } = req.body;
 
@@ -112,26 +187,7 @@ app.post('/api/generate', (req, res) => {
       return res.status(400).json({ error: 'Informations client manquantes.' });
     }
 
-    // Word ne peut pas afficher les data: URI dans les .doc HTML.
-    // On écrit le logo base64 en fichier temporaire et on passe l'URL relative.
-    let resolvedClient = { ...client };
-    if (client.logoBase64 && client.logoBase64.startsWith('data:')) {
-      try {
-        const m = client.logoBase64.match(/^data:image\/(\w+);base64,(.+)$/s);
-        if (m) {
-          const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
-          const hash = crypto.randomBytes(6).toString('hex');
-          const filename = `tmp_logo_${hash}.${ext}`;
-          tmpLogoFile = path.join(UPLOADS, filename);
-          fs.writeFileSync(tmpLogoFile, Buffer.from(m[2], 'base64'));
-          resolvedClient = { ...client, logoBase64: `/uploads/${filename}` };
-        }
-      } catch (e) {
-        console.warn('Logo temp file error:', e.message);
-      }
-    }
-
-    const buffer = htmlToDoc({ client: resolvedClient, chapters, answers, aiContent, layout, hidden });
+    const buffer = htmlToDoc({ client, chapters, answers, aiContent, layout, hidden });
     const safeName = (client.company || 'rapport').replace(/\s+/g, '_');
     const date = client.auditDate || 'date';
     const layoutSuffix = layout === 'simple' ? '_simple' : '';
@@ -148,9 +204,6 @@ app.post('/api/generate', (req, res) => {
   } catch (err) {
     console.error('Erreur génération:', err);
     res.status(500).json({ error: err.message });
-  } finally {
-    // Nettoyer le fichier logo temporaire
-    if (tmpLogoFile) try { fs.unlinkSync(tmpLogoFile); } catch {}
   }
 });
 

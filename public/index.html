@@ -577,18 +577,60 @@
     <!-- PAGE : PARAMÈTRES -->
     <div class="page" id="page-settings">
       <div class="page-title">Paramètres</div>
-      <div class="page-sub">Exportez ou importez toutes les données de l'application au format JSON.</div>
+      <div class="page-sub">Gérez les audits clients sauvegardés sur le serveur, ou exportez/importez en JSON.</div>
 
+      <!-- ── GESTION COLLABORATIVE DES CLIENTS ── -->
       <div class="card">
-        <div class="card-title">⬆ Exporter les données</div>
-        <p style="font-size:13px;color:var(--gray-med);margin-bottom:16px;">Télécharge un fichier JSON contenant toutes les questions, chapitres et réponses actuels. Utile pour sauvegarder ou partager votre configuration.</p>
+        <div class="card-title">🗂 Audits clients (serveur)</div>
+        <p style="font-size:13px;color:var(--gray-med);margin-bottom:14px;">
+          Les données sont sauvegardées sur le serveur et accessibles par tous les utilisateurs connectés.
+        </p>
+
+        <!-- Sélecteur + bouton charger -->
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+          <select id="client-select" style="flex:1;font-size:13px;padding:8px 10px;"
+            onchange="onClientSelectChange()">
+            <option value="">— Sélectionner un audit client —</option>
+          </select>
+          <button class="btn btn-primary" onclick="loadSelectedClient()" id="btn-load-client" disabled>
+            ⬆ Charger
+          </button>
+          <button class="btn btn-danger" onclick="deleteSelectedClient()" id="btn-delete-client" disabled title="Supprimer cet audit du serveur">
+            🗑
+          </button>
+        </div>
+
+        <!-- Infos du client sélectionné -->
+        <div id="client-select-info" style="font-size:12px;color:var(--gray-med);margin-bottom:14px;min-height:16px;"></div>
+
+        <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">
+
+        <!-- Sauvegarder l'état courant -->
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <div style="flex:1;min-width:180px;">
+            <label style="font-size:11px;color:var(--gray-med);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em;">Sauvegarder sous le nom</label>
+            <input type="text" id="client-save-name" placeholder="ex: JRF_Avocats_2026"
+              style="width:100%;font-size:13px;"
+              oninput="updateSaveName(this.value)">
+          </div>
+          <button class="btn btn-primary" onclick="saveCurrentClient()" id="btn-save-client" style="margin-top:18px;">
+            💾 Sauvegarder sur le serveur
+          </button>
+        </div>
+        <div id="save-status" style="font-size:12px;margin-top:6px;min-height:16px;"></div>
+      </div>
+
+      <!-- ── EXPORT / IMPORT LOCAL ── -->
+      <div class="card">
+        <div class="card-title">⬆ Exporter en JSON (local)</div>
+        <p style="font-size:13px;color:var(--gray-med);margin-bottom:16px;">Télécharge un fichier JSON sur votre machine.</p>
         <div class="btn-row">
           <button class="btn btn-primary" onclick="exportJSON()">⬇ Exporter tout en JSON</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">⬇ Importer des données</div>
+        <div class="card-title">⬇ Importer un JSON (local)</div>
         <p style="font-size:13px;color:var(--gray-med);margin-bottom:4px;">Chargez un fichier JSON exporté précédemment. <strong>Attention : remplace toutes les données actuelles.</strong></p>
         <div class="warn-box" style="margin-bottom:12px;">⚠ L'import écrase les chapitres, questions et réponses existants.</div>
         <div class="field">
@@ -650,6 +692,7 @@ function goPage(name) {
   if (name === 'audit') renderAudit();
   if (name === 'manage') renderManage();
   if (name === 'generate') renderSummary();
+  if (name === 'settings') refreshClientsList();
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -820,23 +863,10 @@ function renderAudit() {
                 </div>
                 <button class="btn btn-xs btn-danger" onclick="event.stopPropagation();removeFreeAnswerImage(${q.id})">✕</button>
               </div>` : `
-              <div class="img-picker" id="free-img-picker-${q.id}">
-                <div class="img-picker-tabs">
-                  <button class="img-picker-tab active" onclick="event.stopPropagation();switchFreeImgTab(${q.id},'upload')">📤 Uploader</button>
-                  <button class="img-picker-tab" onclick="event.stopPropagation();switchFreeImgTab(${q.id},'gallery')">🖼️ Bibliothèque</button>
-                </div>
-                <div class="img-picker-panel" id="free-img-panel-upload-${q.id}">
-                  <label class="img-upload-zone" style="cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;padding:10px;margin:0;border:none;border-radius:0;">
-                    📎 Cliquez pour uploader une image
-                    <input type="file" accept="image/*" style="display:none;" onchange="handleFreeAnswerImageUpload(${q.id}, this)">
-                  </label>
-                </div>
-                <div class="img-picker-panel hidden" id="free-img-panel-gallery-${q.id}">
-                  <div class="img-gallery" id="free-img-gallery-${q.id}">
-                    <div class="img-gallery-empty">⏳ Chargement…</div>
-                  </div>
-                </div>
-              </div>`}
+              <label class="img-upload-zone" style="cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center;padding:10px;">
+                📎 Cliquez pour ajouter une image
+                <input type="file" accept="image/*" style="display:none;" onchange="handleFreeAnswerImageUpload(${q.id}, this)">
+              </label>`}
           </div>
         </div>`;
       }
@@ -920,58 +950,6 @@ function removeFreeAnswerImage(qid) {
       fetch(`/api/upload/${encodeURIComponent(a.image.filename)}`, { method: 'DELETE' }).catch(() => {});
     }
     delete a.image;
-  }
-  renderAudit();
-}
-
-function switchFreeImgTab(qid, tab) {
-  const upload  = document.getElementById(`free-img-panel-upload-${qid}`);
-  const gallery = document.getElementById(`free-img-panel-gallery-${qid}`);
-  const picker  = document.getElementById(`free-img-picker-${qid}`);
-  if (!picker) return;
-  picker.querySelectorAll('.img-picker-tab').forEach((t, i) => {
-    t.classList.toggle('active', (i === 0 && tab === 'upload') || (i === 1 && tab === 'gallery'));
-  });
-  if (upload)  upload.classList.toggle('hidden',  tab !== 'upload');
-  if (gallery) gallery.classList.toggle('hidden', tab !== 'gallery');
-  if (tab === 'gallery') loadFreeImageGallery(qid);
-}
-
-const _freeGalleryCache = {};
-
-function loadFreeImageGallery(qid) {
-  const container = document.getElementById(`free-img-gallery-${qid}`);
-  if (!container) return;
-  container.innerHTML = '<div class="img-gallery-empty">⏳ Chargement…</div>';
-  fetch('/api/images')
-    .then(r => r.json())
-    .then(images => {
-      _freeGalleryCache[qid] = images;
-      if (!images.length) {
-        container.innerHTML = '<div class="img-gallery-empty">Aucune image dans la bibliothèque.</div>';
-        return;
-      }
-      container.innerHTML = images.map((img, idx) => `
-        <div class="img-gallery-item" onclick="selectFreeAnswerImage(${qid}, ${idx})">
-          <img src="${esc(img.url)}" alt="${esc(img.name)}" loading="lazy">
-          <div class="img-gallery-name">${esc(img.name)}</div>
-        </div>`).join('');
-    })
-    .catch(() => {
-      container.innerHTML = '<div class="img-gallery-empty">Erreur de chargement.</div>';
-    });
-}
-
-function selectFreeAnswerImage(qid, idx) {
-  const images = _freeGalleryCache[qid];
-  if (!images || !images[idx]) return;
-  const img = images[idx];
-  const image = { url: img.url, filename: img.filename || '', name: img.name, caption: '' };
-  const a = state.answers[qid];
-  if (a && typeof a === 'object') {
-    a.image = image;
-  } else {
-    state.answers[qid] = { value: 'Réponse libre', reason: '', image };
   }
   renderAudit();
 }
@@ -1652,6 +1630,157 @@ async function generateReport(format) {
 // PARAMÈTRES — Import / Export JSON
 // ────────────────────────────────────────────────────────────────────────────
 
+// ────────────────────────────────────────────────────────────────────────────
+// GESTION COLLABORATIVE DES CLIENTS (serveur)
+// ────────────────────────────────────────────────────────────────────────────
+
+let _clientsList = []; // cache de la liste serveur
+
+async function refreshClientsList() {
+  try {
+    const list = await fetch('/api/clients').then(r => r.json());
+    _clientsList = Array.isArray(list) ? list : [];
+    const sel = document.getElementById('client-select');
+    if (!sel) return;
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">— Sélectionner un audit client —</option>';
+    _clientsList.forEach(c => {
+      const date = c.auditDate ? ` (${c.auditDate})` : '';
+      const ref  = c.ref ? ` — ${c.ref}` : '';
+      const opt  = document.createElement('option');
+      opt.value       = c.id;
+      opt.textContent = `${c.company}${ref}${date}`;
+      sel.appendChild(opt);
+    });
+    if (prev) sel.value = prev;
+    onClientSelectChange();
+  } catch (e) {
+    console.warn('Impossible de charger la liste clients :', e.message);
+  }
+}
+
+function onClientSelectChange() {
+  const sel = document.getElementById('client-select');
+  const id  = sel ? sel.value : '';
+  document.getElementById('btn-load-client').disabled   = !id;
+  document.getElementById('btn-delete-client').disabled = !id;
+
+  const info = document.getElementById('client-select-info');
+  if (!id || !info) return (info && (info.textContent = ''));
+  const c = _clientsList.find(x => x.id === id);
+  if (c) {
+    const saved = c.savedAt ? new Date(c.savedAt).toLocaleString('fr-FR') : '';
+    info.textContent = `Dernière sauvegarde : ${saved}`;
+  }
+}
+
+async function loadSelectedClient() {
+  const id = document.getElementById('client-select').value;
+  if (!id) return;
+  if (!confirm(`Charger l'audit "${_clientsList.find(x=>x.id===id)?.company || id}" ?\n\nLes données non sauvegardées seront perdues.`)) return;
+
+  try {
+    const data = await fetch(`/api/clients/${encodeURIComponent(id)}`).then(r => r.json());
+    if (data.error) throw new Error(data.error);
+    applyImportedData(data);
+    showToast(`✅ Audit "${data.client?.company || id}" chargé.`);
+    goPage('client');
+  } catch (e) {
+    alert('Erreur chargement : ' + e.message);
+  }
+}
+
+async function saveCurrentClient() {
+  const nameInput = document.getElementById('client-save-name');
+  const rawName   = nameInput ? nameInput.value.trim() : '';
+  const client    = getClient();
+  const autoName  = (client.company || 'audit').replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '') || 'audit';
+  const finalName = rawName || autoName;
+
+  // ID = nom nettoyé
+  const id = finalName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 80);
+
+  const status = document.getElementById('save-status');
+  status.textContent = '⏳ Sauvegarde en cours...';
+  status.style.color = 'var(--gray-med)';
+
+  const payload = {
+    _version: 1,
+    client,
+    chapters: state.chapters,
+    answers:  state.answers,
+    hidden:   state.hidden,
+  };
+
+  try {
+    const res = await fetch(`/api/clients/${encodeURIComponent(id)}`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    status.textContent = `✅ Sauvegardé sous "${finalName}"`;
+    status.style.color = 'var(--green)';
+    await refreshClientsList();
+    // Sélectionner automatiquement le client sauvegardé
+    const sel = document.getElementById('client-select');
+    if (sel) { sel.value = id; onClientSelectChange(); }
+    setTimeout(() => { status.textContent = ''; }, 4000);
+  } catch (e) {
+    status.textContent = '❌ Erreur : ' + e.message;
+    status.style.color = 'var(--red)';
+  }
+}
+
+async function deleteSelectedClient() {
+  const sel = document.getElementById('client-select');
+  const id  = sel ? sel.value : '';
+  if (!id) return;
+  const name = _clientsList.find(x => x.id === id)?.company || id;
+  if (!confirm(`Supprimer définitivement l'audit "${name}" du serveur ?`)) return;
+
+  try {
+    await fetch(`/api/clients/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    showToast(`🗑 Audit "${name}" supprimé.`);
+    await refreshClientsList();
+  } catch (e) {
+    alert('Erreur suppression : ' + e.message);
+  }
+}
+
+function updateSaveName(val) {
+  // Rien à faire, le champ est libre
+}
+
+function applyImportedData(data) {
+  state.chapters = data.chapters || state.chapters;
+  state.answers  = data.answers  || {};
+  state.hidden   = data.hidden   || { chapters: {}, questions: {} };
+  if (data.client) {
+    const c = data.client;
+    document.getElementById('c-company').value  = c.company    || '';
+    document.getElementById('c-contact').value  = c.contact    || '';
+    document.getElementById('c-email').value    = c.email      || '';
+    document.getElementById('c-phone').value    = c.phone      || '';
+    document.getElementById('c-address').value  = c.address    || '';
+    document.getElementById('c-postal').value   = c.postalCode || '';
+    document.getElementById('c-city').value     = c.city       || '';
+    document.getElementById('c-date').value     = c.auditDate  || '';
+    document.getElementById('c-auditor').value  = c.auditor    || '';
+    document.getElementById('c-ref').value      = c.ref        || '';
+    state.logoBase64 = c.logoBase64 || null;
+    if (typeof renderLogoPreview === 'function') renderLogoPreview();
+    // Préremplir le champ "sauvegarder sous"
+    const nameInput = document.getElementById('client-save-name');
+    if (nameInput && c.company) {
+      nameInput.value = (c.company + (c.ref ? '_' + c.ref : '') + (c.auditDate ? '_' + c.auditDate : ''))
+        .replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
+    }
+  }
+  updateProgress();
+}
+
 function exportJSON() {
   const client = getClient();
   const data = {
@@ -1687,25 +1816,7 @@ function importJSON(input) {
         input.value = '';
         return;
       }
-      state.chapters = data.chapters;
-      state.answers  = data.answers || {};
-      state.hidden   = data.hidden  || { chapters: {}, questions: {} };
-      if (data.client) {
-        const c = data.client;
-        document.getElementById('c-company').value  = c.company    || '';
-        document.getElementById('c-contact').value  = c.contact    || '';
-        document.getElementById('c-email').value    = c.email      || '';
-        document.getElementById('c-phone').value    = c.phone      || '';
-        document.getElementById('c-address').value  = c.address    || '';
-        document.getElementById('c-postal').value   = c.postalCode || '';
-        document.getElementById('c-city').value     = c.city       || '';
-        document.getElementById('c-date').value     = c.auditDate  || '';
-        document.getElementById('c-auditor').value  = c.auditor    || '';
-        document.getElementById('c-ref').value      = c.ref        || '';
-        state.logoBase64 = c.logoBase64 || null;
-        renderLogoPreview();
-      }
-      updateProgress();
+      applyImportedData(data);
       input.value = '';
       showToast('✅ Import réussi !');
     } catch (err) {
@@ -1743,6 +1854,20 @@ function showToast(msg) {
 
 // ── Init date par défaut
 document.getElementById('c-date').value = new Date().toISOString().split('T')[0];
+
+// ── Pré-remplir le champ "sauvegarder sous" quand on saisit le nom de l'entreprise
+document.getElementById('c-company').addEventListener('input', function() {
+  const nameInput = document.getElementById('client-save-name');
+  if (nameInput && !nameInput.dataset.userEdited) {
+    nameInput.value = this.value.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
+  }
+});
+document.getElementById('client-save-name') && document.getElementById('client-save-name').addEventListener('input', function() {
+  this.dataset.userEdited = this.value ? '1' : '';
+});
+
+// ── Charger la liste clients au démarrage
+refreshClientsList();
 </script>
 </body>
 </html>

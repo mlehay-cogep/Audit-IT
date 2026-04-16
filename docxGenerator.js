@@ -313,7 +313,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
   </tr>
 </table>`;
 
-      if (answer && !isFreeA) {
+      if (answer) {
         chaptersHtml += `
 <table cellpadding="0" cellspacing="0" style="margin-bottom:8pt;border-collapse:collapse;">
   <tr>
@@ -322,7 +322,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
     </td>
   </tr>
 </table>`;
-      } else if (!answer) {
+      } else {
         chaptersHtml += `<p style="color:#999;font-style:italic;font-size:10pt;font-family:Calibri,Arial,sans-serif;margin:0 0 8pt 0;">Non renseigné</p>`;
       }
 
@@ -398,15 +398,13 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
         <tr><td style="background:${C.CYAN};height:200pt;"></td><td style="background:${C.ELECTRIC};height:200pt;width:50%;"></td></tr>
         <tr><td style="background:${C.GREEN};height:150pt;" colspan="2"></td></tr>
         <tr><td style="background:${C.LIGHT_BG};height:200pt;" colspan="2" style="vertical-align:middle;text-align:center;padding:20pt;">
-          ${(() => {
-            const raw = client.logoBase64;
-            if (!raw) return `<p style="color:${C.NAVY};font-size:9pt;text-align:right;padding:16pt;margin:0;font-family:Calibri,Arial,sans-serif;">cogep-numerique.fr</p>`;
-            const src = raw.startsWith('data:') ? raw : urlToBase64DataUri(raw);
-            if (!src) return `<p style="color:${C.NAVY};font-size:9pt;text-align:right;padding:16pt;margin:0;font-family:Calibri,Arial,sans-serif;">cogep-numerique.fr</p>`;
-            const dims = getImageDimensionsFromDataUri(src);
-            const { w, h } = constrainDimensionsBoth(dims, 213, 133);
-            return `<img src="${src}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin:0 auto;">`;
-          })()}
+          ${client.logoBase64
+            ? (() => {
+                const dims = getImageDimensionsFromDataUri(client.logoBase64);
+                const { w, h } = constrainDimensionsBoth(dims, 213, 133); // 160pt x 100pt à 96dpi
+                return `<img src="${client.logoBase64}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin:0 auto;">`;
+              })()
+            : `<p style="color:${C.NAVY};font-size:9pt;text-align:right;padding:16pt;margin:0;font-family:Calibri,Arial,sans-serif;">cogep-numerique.fr</p>`}
         </td></tr>
         <tr><td style="background:${C.NAVY};height:60pt;"></td><td style="background:${C.GREEN};height:60pt;"></td></tr>
       </table>
@@ -523,9 +521,9 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
       chaptersHtml += `
 <p style="font-size:11pt;font-weight:bold;margin:12pt 0 4pt 0;">${ci+1}.${qi+1} — ${escNl(question.text)}</p>`;
 
-      if (answer && !isFreeA) {
+      if (answer) {
         chaptersHtml += `<p style="margin:0 0 6pt 0;"><span style="font-size:10pt;font-weight:bold;padding:3pt 10pt;${badgeStyle}">Réponse : ${escNl(answer)}</span></p>`;
-      } else if (!answer) {
+      } else {
         chaptersHtml += `<p style="font-style:italic;color:#888;font-size:10pt;margin:0 0 6pt 0;">Non renseigné</p>`;
       }
 
@@ -582,15 +580,13 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
       <p style="font-size:14pt;font-weight:bold;margin:0 0 4pt 0;">${esc(client.company||'')}</p>
       <p style="font-size:10pt;color:#555;margin:0;">Auditeur : ${esc(client.auditor||'—')} &nbsp;|&nbsp; Date : ${esc(today)} &nbsp;|&nbsp; Réf. : ${esc(client.ref||'—')}</p>
     </td>
-    ${(() => {
-      const raw = client.logoBase64;
-      if (!raw) return '';
-      const src = raw.startsWith('data:') ? raw : urlToBase64DataUri(raw);
-      if (!src) return '';
-      const dims = getImageDimensionsFromDataUri(src);
-      const { w, h } = constrainDimensionsBoth(dims, 200, 80);
-      return `<td style="vertical-align:middle;text-align:right;width:160pt;"><img src="${src}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin-left:auto;"></td>`;
-    })()}
+    ${client.logoBase64
+      ? (() => {
+          const dims = getImageDimensionsFromDataUri(client.logoBase64);
+          const { w, h } = constrainDimensionsBoth(dims, 200, 80); // 150pt x 60pt à 96dpi
+          return `<td style="vertical-align:middle;text-align:right;width:160pt;"><img src="${client.logoBase64}" alt="Logo" width="${w}" height="${h}" style="width:${w}px;height:${h}px;display:block;margin-left:auto;"></td>`;
+        })()
+      : ''}
   </tr>
 </table>
 <hr style="border:none;border-top:2pt solid #222;margin:0 0 20pt 0;">
