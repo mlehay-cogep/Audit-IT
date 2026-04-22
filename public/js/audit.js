@@ -72,7 +72,7 @@ function renderAudit() {
             <div style="flex:1;">
               <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue-med);margin-bottom:4px;">📝 Bloc libre</div>
               <div class="question-text">${escNl(q.text)}</div>
-              ${q.freetextContent ? `<div class="preview-para" style="margin-top:6px;">${escNl(q.freetextContent)}</div>` : ''}
+              ${q.freetextContent ? `<div class="preview-para" style="margin-top:6px;">${q.freetextContent.includes('<') ? q.freetextContent : escNl(q.freetextContent)}</div>` : ''}
             </div>
             <button class="hide-btn" onclick="hideQuestion(${q.id})" title="Masquer ce bloc du rapport">✕ Masquer</button>
           </div>
@@ -102,18 +102,12 @@ function renderAudit() {
 
       html += `</div>`;
 
-      if (para) html += `<div class="preview-para">${esc(para)}</div>`;
+      if (para) html += `<div class="preview-para">${para.includes('<') ? para : esc(para)}</div>`;
 
       if (isNA) {
         html += `<div class="na-reason-block">
           <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--gray-med);display:block;margin-bottom:5px;">Raison / Précision</label>
-          <textarea
-            placeholder="Expliquez pourquoi ce point est non applicable dans ce contexte..."
-            rows="3"
-            style="width:100%;font-size:13px;"
-            onchange="setAnswerReason(${q.id}, this.value)"
-            oninput="setAnswerReason(${q.id}, this.value)"
-          >${esc(reason)}</textarea>
+          ${tiptapWrapperHTML('reason-' + q.id, 'Expliquez pourquoi ce point est non applicable...')}
         </div>`;
       }
 
@@ -121,13 +115,7 @@ function renderAudit() {
         const freeImgs = (state.answers[q.id] && typeof state.answers[q.id] === 'object') ? (state.answers[q.id].images || (state.answers[q.id].image ? [state.answers[q.id].image] : [])) : [];
         html += `<div class="na-reason-block">
           <label style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue-med);display:block;margin-bottom:5px;">Informations</label>
-          <textarea
-            placeholder="Saisissez les informations complémentaires..."
-            rows="3"
-            style="width:100%;font-size:13px;"
-            onchange="setAnswerReason(${q.id}, this.value)"
-            oninput="setAnswerReason(${q.id}, this.value)"
-          >${esc(reason)}</textarea>
+          ${tiptapWrapperHTML('reason-' + q.id, 'Saisissez les informations complémentaires...')}
           <div style="margin-top:10px;">
             <div style="font-size:11px;color:var(--gray-med);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;">Images associées (optionnel)</div>
             <div class="images-list" id="imgs-list-${q.id}">
@@ -176,6 +164,28 @@ function renderAudit() {
 
   container.innerHTML = html;
 
+  // Initialiser les éditeurs Tiptap pour les champs reason/informations
+  destroyTiptapEditors('reason-');
+  state.chapters.forEach(ch => {
+    ch.questions.forEach(q => {
+      if (q.qtype === 'freetext' || state.hidden.questions[q.id]) return;
+      const ans = getAnswerValue(q.id);
+      if (ans === 'Non applicable' || ans === 'Réponse libre') {
+        const reason = getAnswerReason(q.id);
+        setTimeout(() => {
+          const ed = initTiptapDynamic('reason-' + q.id, reason);
+          // Sync vers state à chaque update
+          const editor = tiptapEditors['reason-' + q.id];
+          if (editor) {
+            editor.on('update', () => {
+              setAnswerReasonHtml(q.id, getTiptapValue('reason-' + q.id));
+            });
+          }
+        }, 0);
+      }
+    });
+  });
+
   // Mettre à jour la progression avec les questions visibles
   document.getElementById('prog-answered').textContent = answered;
   document.getElementById('prog-total').textContent = total;
@@ -200,9 +210,13 @@ function setAnswerReason(qid, reason) {
   if (a && typeof a === 'object') {
     a.reason = reason;
   } else {
-    // Ne devrait pas arriver, mais sécurité
     state.answers[qid] = { value: 'Non applicable', reason };
   }
+}
+
+// Version appelée par Tiptap (HTML enrichi)
+function setAnswerReasonHtml(qid, html) {
+  setAnswerReason(qid, html);
 }
 
 function handleFreeAnswerImageUpload(qid, input) {

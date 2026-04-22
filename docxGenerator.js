@@ -9,6 +9,21 @@ const esc = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 // Comme esc() mais convertit aussi les sauts de ligne en <br> pour le rendu Word
 const escNl = s => esc(s).replace(/\n/g, '<br>');
 
+// Convertit le HTML Tiptap en HTML compatible Word
+// Tiptap génère <p>, <strong>, <em>, <u>, <ul>, <ol>, <li>
+// Word les comprend tous — on nettoie juste les attributs de classe
+function tiptapToWord(html) {
+  if (!html) return '';
+  // Détecter si c'est du HTML Tiptap ou du texte brut avec \n
+  if (!html.includes('<')) return escNl(html);
+  // C'est du HTML : on l'utilise tel quel (Word comprend p, strong, em, ul, ol, li)
+  // Juste nettoyer les class= et data- qui servent à rien dans Word
+  return html
+    .replace(/ class="[^"]*"/g, '')
+    .replace(/ data-[^=]+="[^"]*"/g, '')
+    .replace(/<p><\/p>/g, '<p>&nbsp;</p>'); // paragraphes vides → espace insécable
+}
+
 // Dossier uploads (public/uploads/) — relatif à ce fichier
 const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
 
@@ -131,10 +146,12 @@ function answerReason(raw) {
   return raw.reason || '';
 }
 
-// Extrait l'image attachée à une réponse libre
-function answerImage(raw) {
-  if (!raw || typeof raw !== 'object') return null;
-  return raw.image || null;
+// Extrait les images attachées à une réponse libre (retourne toujours un tableau)
+function answerImages(raw) {
+  if (!raw || typeof raw !== 'object') return [];
+  if (Array.isArray(raw.images) && raw.images.length) return raw.images;
+  if (raw.image) return [raw.image];  // compat legacy
+  return [];
 }
 
 function buildRecoItems(chapters, answers, aiContent, styleExtra = '') {
@@ -172,7 +189,7 @@ function buildRecoItems(chapters, answers, aiContent, styleExtra = '') {
       ? `<br><em style="font-size:9.5pt;color:#444;">→ ${escNl(item.action)}</em>`
       : '';
     result += `<li style="margin-bottom:8pt;${styleExtra}">
-      <span style="font-size:8.5pt;padding:1pt 6pt;border-radius:3pt;background:#f3f4f6;color:#555;font-weight:600;">${prioLabel}</span>
+      <span style="font-size:8.5pt;padding:1pt 6pt;border-radius:3pt;background:#f3f4f6;color:#555;font-weight:600;mso-highlight:#f3f4f6;">${prioLabel}</span>
       &nbsp;<strong>[${escNl(item.chName)}]</strong> ${escNl(item.qText)}
       <span style="font-size:9pt;color:#888;"> — <em>${esc(item.ans)}</em></span>
       ${actionLine}
@@ -187,25 +204,34 @@ function buildRecoItems(chapters, answers, aiContent, styleExtra = '') {
 // La largeur est contrainte à MAX_IMG_PX pour ne pas dépasser les marges A4
 const MAX_IMG_PX = 600; // ~160mm à 96dpi — largeur utile A4 avec marges standards
 
-function renderImage(question, optionKey) {
-  const images = question.images || {};
-  const img = images[optionKey];
+function renderOneImage(img) {
   if (!img) return '';
-
   const rawSrc = img.url || img.data || null;
   const src = rawSrc ? (rawSrc.startsWith('data:') ? rawSrc : urlToBase64DataUri(rawSrc)) : null;
   if (!src) return '';
-
-  // Lire les dimensions réelles et contraindre à MAX_IMG_PX
+  const maxW = img.size === 'full' ? MAX_IMG_PX : Math.round(MAX_IMG_PX / 2);
   const dims = getImageDimensions(rawSrc);
-  const { w, h } = constrainDimensions(dims, MAX_IMG_PX);
-
+  const { w, h } = constrainDimensions(dims, maxW);
   return `<div style="margin:8pt 0 4pt 0;">
     <img src="${src}" alt="${esc(img.name || 'illustration')}"
          width="${w}" height="${h}"
          style="width:${w}px;height:${h}px;max-width:100%;display:block;border:1pt solid #CBD5E1;">
     ${img.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(img.caption)}</p>` : ''}
   </div>`;
+}
+
+function renderImage(question, optionKey) {
+  const images = question.images || {};
+  const raw = images[optionKey];
+  if (!raw) return '';
+  // Supporte ancien format (objet unique) et nouveau format (tableau)
+  const list = Array.isArray(raw) ? raw : [raw];
+  return list.map(renderOneImage).join('');
+}
+
+function renderFreeImages(imgs) {
+  if (!imgs || !imgs.length) return '';
+  return imgs.map(renderOneImage).join('');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -314,7 +340,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
             const raw = answers[question.id];
             const answer = answerValue(raw);
             const reason = answerReason(raw);
-            const freeImg = answerImage(raw);
+            const freeImgs = answerImages(raw);
             const isNA = answer === 'Non applicable';
             const isFreeA = answer === 'Réponse libre';
             const content = answer && !isNA && !isFreeA ? (question.paragraphs[answer] || '') : '';
@@ -344,8 +370,8 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
                 chaptersHtml += `
 <table cellpadding="0" cellspacing="0" style="margin-bottom:8pt;border-collapse:collapse;">
   <tr>
-    <td style="background:${badgeBg};color:${badgeColor};padding:4pt 16pt;font-size:10pt;font-weight:bold;border:1pt solid ${badgeBorder};font-family:Calibri,Arial,sans-serif;">
-      Réponse : ${escNl(answer)}
+    <td bgcolor="${badgeBg}" style="background:${badgeBg};color:${badgeColor};padding:4pt 16pt;font-size:10pt;font-weight:bold;border:1pt solid ${badgeBorder};font-family:Calibri,Arial,sans-serif;">
+      <span style="color:${badgeColor};">Réponse : ${escNl(answer)}</span>
     </td>
   </tr>
 </table>`;
@@ -353,19 +379,14 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
                 chaptersHtml += `<p style="color:#999;font-style:italic;font-size:10pt;font-family:Calibri,Arial,sans-serif;margin:0 0 8pt 0;">Non renseigné</p>`;
             }
 
-            if (content || renderImage(question, answer) || isNA || isFreeA) {
+            if (content || renderImage(question, answer).length || isNA || isFreeA) {
                 // Image de réponse libre (depuis answers[qid].image)
-                const freeImgHtml = (() => {
-                    if (!freeImg) return '';
-                    const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
-                    if (!src) return '';
-                    return `<div style="margin:8pt 0 4pt 0;"><img src="${src}" alt="${esc(freeImg.name || 'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${esc(freeImg.caption)}</p>` : ''}</div>`;
-                })();
+                const freeImgHtml = renderFreeImages(freeImgs);
                 const bodyContent = isNA
-                    ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${escNl(reason)}` : ''}`
+                    ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${tiptapToWord(reason)}` : ''}`
                     : isFreeA
-                        ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${escNl(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
-                        : `${content ? escNl(content) : ''}${answer ? renderImage(question, answer) : ''}`;
+                        ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${tiptapToWord(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
+                        : `${content ? tiptapToWord(content) : ''}${answer ? renderImage(question, answer) : ''}`;
                 const borderColor = isNA ? '#B4B2A9' : isFreeA ? '#B0CFEA' : C.GREEN;
                 chaptersHtml += `
 <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:14pt;border-collapse:collapse;">
@@ -535,7 +556,7 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
             const raw = answers[question.id];
             const answer = answerValue(raw);
             const reason = answerReason(raw);
-            const freeImg = answerImage(raw);
+            const freeImgs = answerImages(raw);
             const isNA = answer === 'Non applicable';
             const content = answer && !isNA ? (question.paragraphs[answer] || '') : '';
 
@@ -553,24 +574,28 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
 <p style="font-size:11pt;font-weight:bold;margin:12pt 0 4pt 0;">${ci + 1}.${qi + 1} — ${escNl(question.text)}</p>`;
 
             if (answer && !isFreeA) {
-                chaptersHtml += `<p style="margin:0 0 6pt 0;"><span style="font-size:10pt;font-weight:bold;padding:3pt 10pt;${badgeStyle}">Réponse : ${escNl(answer)}</span></p>`;
+                // Extraire bg/color/border depuis badgeStyle pour les mettre en attributs
+                const _bsBg    = (badgeStyle.match(/background:([^;]+)/) || [])[1] || '#e9ecef';
+                const _bsColor = (badgeStyle.match(/color:([^;]+)/)      || [])[1] || '#495057';
+                const _bsBord  = (badgeStyle.match(/border:[^;]*solid ([^;]+)/) || [])[1] || '#dee2e6';
+                chaptersHtml += `<table cellpadding="0" cellspacing="0" style="margin-bottom:6pt;border-collapse:collapse;">
+  <tr><td bgcolor="${_bsBg}" style="background:${_bsBg};border:1pt solid ${_bsBord};padding:2pt 10pt;">
+    <span style="font-size:10pt;font-weight:bold;color:${_bsColor};">Réponse : ${escNl(answer)}</span>
+  </td></tr></table>`;
             } else if (!answer) {
                 chaptersHtml += `<p style="font-style:italic;color:#888;font-size:10pt;margin:0 0 6pt 0;">Non renseigné</p>`;
             }
 
             if (isNA && reason) {
-                chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #aaa;padding-left:10pt;margin:0 0 6pt 10pt;color:#555;font-style:italic;">${escNl(reason)}</p>`;
+                chaptersHtml += `<div style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #aaa;padding-left:10pt;margin:0 0 6pt 10pt;color:#555;">${tiptapToWord(reason)}</div>`;
             } else if (isFreeA) {
                 chaptersHtml += `<p style="font-size:9.5pt;font-weight:bold;color:#1d4ed8;margin:0 0 2pt 10pt;">Informations :</p>`;
-                chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #93c5fd;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${reason ? escNl(reason) : '<em>—</em>'}</p>`;
-                if (freeImg) {
-                    const src = freeImg.url ? urlToBase64DataUri(freeImg.url) : (freeImg.data || null);
-                    if (src) {
-                        chaptersHtml += `<div style="margin:6pt 0 6pt 10pt;"><img src="${src}" alt="${escNl(freeImg.name || 'illustration')}" style="max-width:460px;max-height:300px;display:block;border:1pt solid #CBD5E1;">${freeImg.caption ? `<p style="font-size:9pt;color:#666;margin:4pt 0 0 0;font-style:italic;">${escNl(freeImg.caption)}</p>` : ''}</div>`;
-                    }
+                chaptersHtml += `<div style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #93c5fd;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${reason ? tiptapToWord(reason) : '<em>—</em>'}</div>`;
+                if (freeImgs.length) {
+                    chaptersHtml += renderFreeImages(freeImgs);
                 }
             } else if (content) {
-                chaptersHtml += `<p style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #888;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${escNl(content)}</p>`;
+                chaptersHtml += `<div style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #888;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${tiptapToWord(content)}</div>`;
             }
             if (answer && !isNA && !isFreeA) {
                 chaptersHtml += renderImage(question, answer);

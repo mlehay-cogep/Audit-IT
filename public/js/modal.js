@@ -39,7 +39,7 @@ function renderModal() {
     // ── Mode champ libre ──
     html += `<div class="field">
       <label>Contenu du bloc</label>
-      <textarea id="modal-freetext" rows="8" placeholder="Texte libre affiché tel quel dans le rapport…" style="font-size:13px;">${escNl(q.freetextContent || '')}</textarea>
+      ${tiptapWrapperHTML('modal-freetext', 'Texte libre affiché tel quel dans le rapport…')}
     </div>`;
   } else {
     // ── Mode question à choix ──
@@ -116,7 +116,7 @@ function renderModal() {
       + '<div class="option-edit-label">'
       + '<span style="color:' + color + ';font-size:13px;font-weight:600;">' + esc(opt) + '</span>'
       + '</div>'
-      + '<textarea id="modal-para-' + i + '" rows="4" placeholder="Paragraphe si réponse «' + esc(opt) + '»...">' + esc(q.paragraphs[opt] || '') + '</textarea>'
+      + tiptapWrapperHTML('modal-para-' + i, 'Paragraphe si réponse «' + opt + '»...')
       + '<div style="margin-top:10px;">'
       + '<div style="font-size:11px;color:var(--gray-med);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em;">Images (optionnel)</div>'
       + '<div class="images-list" id="modal-imgs-list-' + i + '">' + imgsHtml + '</div>'
@@ -130,6 +130,17 @@ function renderModal() {
   } // end if/else isFree
 
   document.getElementById('modal-body').innerHTML = html;
+
+  // Initialiser les éditeurs Tiptap après injection dans le DOM
+  destroyTiptapEditors('modal-para-');
+  destroyTiptapEditors('modal-freetext');
+  if (isFree) {
+    setTimeout(() => initTiptapDynamic('modal-freetext', q.freetextContent || ''), 0);
+  } else {
+    q.options.forEach((opt, i) => {
+      setTimeout(() => initTiptapDynamic('modal-para-' + i, q.paragraphs[opt] || ''), 0);
+    });
+  }
 }
 
 function toggleOption(opt, checked) {
@@ -180,12 +191,12 @@ function syncModalFields() {
   const { q } = state.modal;
   q.text = document.getElementById('modal-qtext').value;
   if (q.qtype === 'freetext') {
-    q.freetextContent = document.getElementById('modal-freetext')?.value || '';
+    q.freetextContent = getTiptapValue('modal-freetext');
     return;
   }
   if (!q.images) q.images = {};
   q.options.forEach((opt, i) => {
-    q.paragraphs[opt] = document.getElementById('modal-para-' + i)?.value || q.paragraphs[opt] || '';
+    q.paragraphs[opt] = getTiptapValue('modal-para-' + i) || q.paragraphs[opt] || '';
     // Sync captions for multi-images
     const imgs = Array.isArray(q.images[opt]) ? q.images[opt] : (q.images[opt] ? [q.images[opt]] : []);
     imgs.forEach((img, imgIdx) => {
@@ -347,6 +358,8 @@ function closeModal(e) {
 }
 
 function closeModalNow() {
+  destroyTiptapEditors('modal-para-');
+  destroyTiptapEditors('modal-freetext');
   document.getElementById('modal-overlay').classList.remove('open');
   state.modal = null;
 }
