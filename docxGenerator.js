@@ -396,7 +396,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
                 const bodyContent = isNA
                     ? `<span style="font-style:italic;color:#5F5E5A;">Non applicable</span>${reason ? `<br>${tiptapToWord(reason)}` : ''}`
                     : isFreeA
-                        ? `<span style="font-weight:bold;color:#185FA5;font-size:9.5pt;">Informations :</span>${reason ? `<br>${tiptapToWord(reason)}` : '<br><span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
+                        ? `${reason ? tiptapToWord(reason) : '<span style="font-style:italic;color:#999;">—</span>'}${freeImgHtml}`
                         : `${content ? tiptapToWord(content) : ''}${answer ? renderImage(question, answer) : ''}`;
                 const borderColor = isNA ? '#B4B2A9' : isFreeA ? '#B0CFEA' : C.GREEN;
                 chaptersHtml += `
@@ -600,7 +600,6 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
             if (isNA && reason) {
                 chaptersHtml += `<div style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #aaa;padding-left:10pt;margin:0 0 6pt 10pt;color:#555;">${tiptapToWord(reason)}</div>`;
             } else if (isFreeA) {
-                chaptersHtml += `<p style="font-size:9.5pt;font-weight:bold;color:#1d4ed8;margin:0 0 2pt 10pt;">Informations :</p>`;
                 chaptersHtml += `<div style="font-size:10.5pt;line-height:1.7;border-left:3pt solid #93c5fd;padding-left:10pt;margin:0 0 6pt 10pt;color:#333;">${reason ? tiptapToWord(reason) : '<em>—</em>'}</div>`;
                 if (freeImgs.length) {
                     chaptersHtml += renderFreeImages(freeImgs);
