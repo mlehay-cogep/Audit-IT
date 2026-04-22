@@ -9,6 +9,17 @@ const esc = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 // Comme esc() mais convertit aussi les sauts de ligne en <br> pour le rendu Word
 const escNl = s => esc(s).replace(/\n/g, '<br>');
 
+// Injecte du contenu qui peut être du HTML Tiptap (commence par "<")
+// ou du texte brut (applique escNl pour préserver les sauts de ligne)
+const safeHtml = s => {
+  if (!s) return '';
+  const t = String(s).trim();
+  // Si ça ressemble à du HTML (Tiptap produit <p>...</p>), on l'injecte tel quel
+  if (t.startsWith('<')) return t;
+  // Sinon texte brut : échapper + convertir \n en <br>
+  return escNl(t);
+};
+
 // Convertit le HTML Tiptap en HTML compatible Word
 // Tiptap génère <p>, <strong>, <em>, <u>, <ul>, <ol>, <li>
 // Word les comprend tous — on nettoie juste les attributs de classe
@@ -326,8 +337,8 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
 <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:14pt;border-collapse:collapse;">
   <tr>
     <td style="background:${C.ELECTRIC};width:4pt;padding:0;"></td>
-    <td style="padding:8pt 14pt;font-size:10.5pt;color:${C.TEXT_DARK};line-height:1.7;font-family:Calibri,Arial,sans-serif;border:1pt solid #CBD5E1;border-left:none;white-space:pre-wrap;">
-      ${esc(question.freetextContent)}
+    <td style="padding:8pt 14pt;font-size:10.5pt;color:${C.TEXT_DARK};line-height:1.7;font-family:Calibri,Arial,sans-serif;border:1pt solid #CBD5E1;border-left:none;">
+      ${safeHtml(question.freetextContent)}
     </td>
   </tr>
 </table>`;
@@ -477,7 +488,7 @@ ${sectionTitle('INFORMATIONS CLIENT', 'section-client')}
 <br style="mso-special-character:line-break;page-break-before:always">
 <div style="margin:40pt 50pt;font-family:Calibri,Arial,sans-serif;">
 ${sectionTitle('INTRODUCTION', 'section-intro')}
-<p style="font-size:11pt;line-height:1.8;color:${C.TEXT_DARK};">${(intro)}</p>
+<p style="font-size:11pt;line-height:1.8;color:${C.TEXT_DARK};">${safeHtml(intro)}</p>
 </div>
 
 <div style="margin:0 50pt;font-family:Calibri,Arial,sans-serif;">
@@ -487,7 +498,7 @@ ${chaptersHtml}
 <br style="mso-special-character:line-break;page-break-before:always">
 <div style="margin:40pt 50pt;font-family:Calibri,Arial,sans-serif;">
 ${sectionTitle('CONCLUSION ET RECOMMANDATIONS', 'section-conclusion')}
-<p style="font-size:11pt;line-height:1.8;color:${C.TEXT_DARK};margin-bottom:16pt;">${(conclusion)}</p>
+<p style="font-size:11pt;line-height:1.8;color:${C.TEXT_DARK};margin-bottom:16pt;">${safeHtml(conclusion)}</p>
 ${recoItems ? `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16pt;border-collapse:collapse;">
   <tr><td style="background:${C.NAVY};padding:8pt 16pt;"><span style="color:${C.GREEN};font-size:12pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">Points nécessitant une action corrective</span></td></tr>
@@ -546,7 +557,7 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
                 chaptersHtml += `
 <p style="font-size:12pt;font-weight:bold;margin:12pt 0 4pt 0;border-left:3pt solid #666;padding-left:8pt;">${escNl(question.text)}</p>`;
                 if (question.freetextContent) {
-                    chaptersHtml += `<p style="font-size:10.5pt;line-height:1.8;white-space:pre-wrap;margin:0 0 8pt 0;color:#333;">${escNl(question.freetextContent)}</p>`;
+                    chaptersHtml += `<div style="font-size:10.5pt;line-height:1.8;margin:0 0 8pt 0;color:#333;">${safeHtml(question.freetextContent)}</div>`;
                 }
                 chaptersHtml += `<hr style="border:none;border-top:1pt solid #DDD;margin:10pt 0;">`;
                 return;
@@ -665,7 +676,7 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
 <br style="mso-special-character:line-break;page-break-before:always">
 <a name="section-intro" id="section-intro"></a>
 <h2 style="border-bottom:1pt solid #CCC;padding-bottom:4pt;margin-bottom:12pt;">Introduction</h2>
-<p style="font-size:11pt;line-height:1.8;">${escNl(intro)}</p>
+<p style="font-size:11pt;line-height:1.8;">${safeHtml(intro)}</p>
 
 <!-- CHAPITRES -->
 ${chaptersHtml}
@@ -674,7 +685,7 @@ ${chaptersHtml}
 <br style="mso-special-character:line-break;page-break-before:always">
 <a name="section-conclusion" id="section-conclusion"></a>
 <h2 style="border-bottom:1pt solid #CCC;padding-bottom:4pt;margin-bottom:12pt;">Conclusion et recommandations</h2>
-<p style="font-size:11pt;line-height:1.8;margin-bottom:14pt;">${conclusion}</p>
+<p style="font-size:11pt;line-height:1.8;margin-bottom:14pt;">${safeHtml(conclusion)}</p>
 ${recoItems ? `<h3 style="font-size:12pt;margin-bottom:8pt;">Points nécessitant une action corrective :</h3><ol>${recoItems}</ol>` : ''}
 
 </body>
