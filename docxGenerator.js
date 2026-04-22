@@ -138,23 +138,48 @@ function answerImage(raw) {
 }
 
 function buildRecoItems(chapters, answers, aiContent, styleExtra = '') {
-  let items = '';
-  if (aiContent?.recommendations?.length) {
-    aiContent.recommendations.forEach(r => {
-      items += `<li style="margin-bottom:6pt;${styleExtra}">${escNl(r)}</li>`;
+  const recoActions = aiContent?.recoActions || {};
+  const priorityOrder = { high: 0, medium: 1, low: 2 };
+  const priorityLabel = { high: '🔴 Haute', medium: '🟡 Moyenne', low: '🟢 Faible' };
+
+  // Collecter toutes les questions Non/Partiel visibles
+  const items = [];
+  (chapters || []).forEach(ch => {
+    (ch.questions || []).forEach(q => {
+      if (q.qtype === 'freetext') return;
+      const val = answerValue(answers[q.id]);
+      const lo = (val || '').toLowerCase();
+      if (lo === 'non' || lo === 'partiel') {
+        const saved = recoActions[q.id] || {};
+        items.push({
+          chName:   ch.name,
+          qText:    q.text,
+          ans:      val,
+          action:   saved.action || '',
+          priority: saved.priority || 'medium',
+        });
+      }
     });
-  } else {
-    chapters.forEach(ch => {
-      ch.questions.forEach(q => {
-        if (q.qtype === 'freetext') return;
-        const val = answerValue(answers[q.id]);
-        if (val && val.toLowerCase() === 'non' || val && val.toLowerCase() === 'partiel') {
-          items += `<li style="margin-bottom:6pt;${styleExtra}"><strong>[${escNl(ch.name)}]</strong> ${escNl(q.text)}</li>`;
-        }
-      });
-    });
-  }
-  return items;
+  });
+
+  // Trier par priorité : high → medium → low
+  items.sort((a, b) => (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1));
+
+  let result = '';
+  items.forEach(item => {
+    const prioLabel = priorityLabel[item.priority] || '🟡 Moyenne';
+    const actionLine = item.action
+      ? `<br><em style="font-size:9.5pt;color:#444;">→ ${escNl(item.action)}</em>`
+      : '';
+    result += `<li style="margin-bottom:8pt;${styleExtra}">
+      <span style="font-size:8.5pt;padding:1pt 6pt;border-radius:3pt;background:#f3f4f6;color:#555;font-weight:600;">${prioLabel}</span>
+      &nbsp;<strong>[${escNl(item.chName)}]</strong> ${escNl(item.qText)}
+      <span style="font-size:9pt;color:#888;"> — <em>${esc(item.ans)}</em></span>
+      ${actionLine}
+    </li>`;
+  });
+
+  return result;
 }
 
 // Rendu d'une image (URL serveur ou base64 legacy) dans le rapport
@@ -202,11 +227,13 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
       <td style="padding:7pt 12pt;border:1pt solid #CBD5E1;font-family:Calibri,Arial,sans-serif;font-size:10pt;color:${C.TEXT_DARK};">${escNl(value)}</td>
     </tr>`).join('');
 
-    const intro = aiContent?.introduction ||
-        `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${escNl(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de <strong>${esc(client.company)}</strong> en date du ${esc(today)}. Cet audit a pour objectif d'évaluer le niveau de maturité en matière de sécurité informatique et d'identifier les axes d'amélioration prioritaires.`;
+    const intro = (aiContent?.introduction && aiContent.introduction.trim())
+        ? aiContent.introduction
+        : `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${esc(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de <strong>${esc(client.company)}</strong> en date du ${esc(today)}.<br></br> Cet audit a pour objectif d'évaluer le niveau de maturité en matière de sécurité informatique et d'identifier les axes d'amélioration prioritaires.`;
 
-    const conclusion = aiContent?.conclusion ||
-        `Cet audit a permis d'évaluer le niveau de sécurité informatique de <strong>${esc(client.company)}</strong>. Les points identifiés doivent faire l'objet d'un plan d'action priorisé afin de renforcer la posture de sécurité globale de l'organisation.`;
+    const conclusion = (aiContent?.conclusion && aiContent.conclusion.trim())
+        ? aiContent.conclusion
+        : `Cet audit a permis d'évaluer le niveau de sécurité informatique de <strong>${esc(client.company)}</strong>. Les points identifiés doivent faire l'objet d'un plan d'action priorisé afin de renforcer la posture de sécurité globale de l'organisation.`;
 
     const sectionTitle = (text, anchorId = '') => `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18pt;border-collapse:collapse;">
@@ -264,7 +291,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
   <tr>
     <td style="background:${C.ELECTRIC};width:4pt;padding:0;"></td>
     <td style="padding:8pt 12pt;background:${C.LIGHT_BG};">
-      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${esc(question.text)}</span>
+      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${escNl(question.text)}</span>
     </td>
   </tr>
 </table>`;
@@ -308,7 +335,7 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
   <tr>
     <td style="background:${C.CYAN};width:4pt;padding:0;"></td>
     <td style="padding:8pt 12pt;background:${C.LIGHT_BG};">
-      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${ci + 1}.${qi + 1}&nbsp;&nbsp;${esc(question.text)}</span>
+      <span style="font-size:11pt;font-weight:bold;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;">${ci + 1}.${qi + 1}&nbsp;&nbsp;${escNl(question.text)}</span>
     </td>
   </tr>
 </table>`;
@@ -429,7 +456,7 @@ ${sectionTitle('INFORMATIONS CLIENT', 'section-client')}
 <br style="mso-special-character:line-break;page-break-before:always">
 <div style="margin:40pt 50pt;font-family:Calibri,Arial,sans-serif;">
 ${sectionTitle('INTRODUCTION', 'section-intro')}
-<p style="font-size:11pt;line-height:1.8;color:${C.TEXT_DARK};">${intro}</p>
+<p style="font-size:11pt;line-height:1.8;color:${C.TEXT_DARK};">${(intro)}</p>
 </div>
 
 <div style="margin:0 50pt;font-family:Calibri,Arial,sans-serif;">
@@ -439,7 +466,7 @@ ${chaptersHtml}
 <br style="mso-special-character:line-break;page-break-before:always">
 <div style="margin:40pt 50pt;font-family:Calibri,Arial,sans-serif;">
 ${sectionTitle('CONCLUSION ET RECOMMANDATIONS', 'section-conclusion')}
-<p style="font-size:11pt;line-height:1.8;color:${C.TEXT_DARK};margin-bottom:16pt;">${conclusion}</p>
+<p style="font-size:11pt;line-height:1.8;color:${C.TEXT_DARK};margin-bottom:16pt;">${(conclusion)}</p>
 ${recoItems ? `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:16pt;border-collapse:collapse;">
   <tr><td style="background:${C.NAVY};padding:8pt 16pt;"><span style="color:${C.GREEN};font-size:12pt;font-weight:bold;font-family:Calibri,Arial,sans-serif;">Points nécessitant une action corrective</span></td></tr>
@@ -468,11 +495,13 @@ ${recoItems ? `
 function htmlToDocSimple({ client, chapters, answers, aiContent }) {
     const today = client.auditDate || new Date().toISOString().split('T')[0];
 
-    const intro = aiContent?.introduction ||
-        `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${esc(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de ${esc(client.company)} en date du ${esc(today)}.`;
+    const intro = (aiContent?.introduction && aiContent.introduction.trim())
+        ? aiContent.introduction
+        : `Dans le cadre de sa mission d'accompagnement en sécurité informatique, ${esc(client.auditor || "l'auditeur")} a réalisé un audit des systèmes d'information de ${esc(client.company)} en date du ${esc(today)}.`;
 
-    const conclusion = aiContent?.conclusion ||
-        `Cet audit a permis d'évaluer le niveau de sécurité informatique de ${esc(client.company)}. Les points identifiés doivent faire l'objet d'un plan d'action priorisé.`;
+    const conclusion = (aiContent?.conclusion && aiContent.conclusion.trim())
+        ? aiContent.conclusion
+        : `Cet audit a permis d'évaluer le niveau de sécurité informatique de ${esc(client.company)}. Les points identifiés doivent faire l'objet d'un plan d'action priorisé.`;
 
     const clientTableRows = buildClientRows(client).map(([label, value]) => `
     <tr>
@@ -611,7 +640,7 @@ function htmlToDocSimple({ client, chapters, answers, aiContent }) {
 <br style="mso-special-character:line-break;page-break-before:always">
 <a name="section-intro" id="section-intro"></a>
 <h2 style="border-bottom:1pt solid #CCC;padding-bottom:4pt;margin-bottom:12pt;">Introduction</h2>
-<p style="font-size:11pt;line-height:1.8;">${intro}</p>
+<p style="font-size:11pt;line-height:1.8;">${escNl(intro)}</p>
 
 <!-- CHAPITRES -->
 ${chaptersHtml}

@@ -94,6 +94,28 @@ function sanitizeId(raw) {
     .slice(0, 80) || 'client';
 }
 
+// ── Dernier client ouvert (mémorisation entre sessions) ──────────────────────
+const LAST_CLIENT_FILE = path.join(__dirname, 'data', 'last-client.json');
+
+app.get('/api/last-client', (req, res) => {
+  try {
+    if (!fs.existsSync(LAST_CLIENT_FILE)) return res.json({ id: null });
+    const { id } = JSON.parse(fs.readFileSync(LAST_CLIENT_FILE, 'utf8'));
+    // Vérifier que le fichier client existe encore
+    const filepath = path.join(CLIENTS, sanitizeId(id) + '.json');
+    if (!id || !fs.existsSync(filepath)) return res.json({ id: null });
+    res.json({ id });
+  } catch { res.json({ id: null }); }
+});
+
+app.post('/api/last-client', (req, res) => {
+  try {
+    const { id } = req.body;
+    fs.writeFileSync(LAST_CLIENT_FILE, JSON.stringify({ id }), 'utf8');
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // ── Liste des images ─────────────────────────────────────────────────────────
 app.get('/api/images', (req, res) => {
   try {
