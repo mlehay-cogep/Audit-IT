@@ -55,7 +55,7 @@ async function _loadTiptap() {
 }
 
 // Initialise un éditeur Tiptap dans les éléments id-toolbar et id-editor
-async function initTiptap(id, initialHTML) {
+async function initTiptap(id, initialHTML, onUpdate) {
   const toolbarEl = document.getElementById(id + '-toolbar');
   const editorEl  = document.getElementById(id + '-editor');
   if (!toolbarEl || !editorEl) return;
@@ -68,7 +68,7 @@ async function initTiptap(id, initialHTML) {
   // Vérifier que les éléments sont toujours dans le DOM après le chargement async
   if (!document.getElementById(id + '-editor')) return;
   if (!mods) {
-    _initFallbackEditor(id, editorEl, toolbarEl, initialHTML);
+    _initFallbackEditor(id, editorEl, toolbarEl, initialHTML, onUpdate);
     return;
   }
 
@@ -78,7 +78,11 @@ async function initTiptap(id, initialHTML) {
       element: editorEl,
       extensions,
       content: initialHTML || '',
-      onUpdate: () => { /* sync via getTiptapValue */ },
+      onUpdate: () => {
+        const val = editor.getHTML() === '<p></p>' ? '' : editor.getHTML();
+        state[id] = val;
+        if (onUpdate) onUpdate(val);
+      },
     });
     tiptapEditors[id] = editor;
     _buildToolbar(editor, toolbarEl);
@@ -86,7 +90,7 @@ async function initTiptap(id, initialHTML) {
     editor.on('transaction',     () => _buildToolbar(editor, toolbarEl));
   } catch (err) {
     console.warn('Tiptap init failed:', err.message);
-    _initFallbackEditor(id, editorEl, toolbarEl, initialHTML);
+    _initFallbackEditor(id, editorEl, toolbarEl, initialHTML, onUpdate);
   }
 }
 
@@ -120,10 +124,15 @@ function _buildToolbar(editor, toolbarEl) {
   });
 }
 
-function _initFallbackEditor(id, editorEl, toolbarEl, initialHTML) {
+function _initFallbackEditor(id, editorEl, toolbarEl, initialHTML, onUpdate) {
   editorEl.contentEditable = 'true';
   editorEl.innerHTML = initialHTML || '';
   editorEl.style.minHeight = '80px';
+  editorEl.addEventListener('input', () => {
+    const val = editorEl.innerHTML;
+    state[id] = val;
+    if (onUpdate) onUpdate(val);
+  });
   toolbarEl.innerHTML = `
     <button class="tiptap-btn" type="button" title="Gras"     onmousedown="event.preventDefault();document.execCommand('bold')"><b>B</b></button>
     <button class="tiptap-btn" type="button" title="Italique" onmousedown="event.preventDefault();document.execCommand('italic')"><i>I</i></button>
@@ -143,15 +152,16 @@ function tiptapWrapperHTML(id, placeholder) {
 }
 
 // Initialise un éditeur après insertion dans le DOM
-function initTiptapDynamic(id, initialContent) {
+// onUpdate(html) est appelé à chaque modification
+function initTiptapDynamic(id, initialContent, onUpdate) {
   if (tiptapEditors[id]) {
     try { tiptapEditors[id].destroy(); } catch {}
     delete tiptapEditors[id];
   }
-  const html = initialContent && !initialContent.trim().startsWith('<')
-    ? initialContent.split('\n').map(l => `<p>${l || '<br>'}</p>`).join('')
+  const html = initialContent && !String(initialContent).trim().startsWith('<')
+    ? String(initialContent).split('\n').map(l => `<p>${l || '<br>'}</p>`).join('')
     : (initialContent || '');
-  initTiptap(id, html); // async, ne bloque pas
+  initTiptap(id, html, onUpdate);
 }
 
 // Lit le contenu HTML d'un éditeur

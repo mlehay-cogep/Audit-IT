@@ -172,15 +172,11 @@ function renderAudit() {
       const ans = getAnswerValue(q.id);
       if (ans === 'Non applicable' || ans === 'Réponse libre') {
         const reason = getAnswerReason(q.id);
+        const qid = q.id;
         setTimeout(() => {
-          const ed = initTiptapDynamic('reason-' + q.id, reason);
-          // Sync vers state à chaque update
-          const editor = tiptapEditors['reason-' + q.id];
-          if (editor) {
-            editor.on('update', () => {
-              setAnswerReasonHtml(q.id, getTiptapValue('reason-' + q.id));
-            });
-          }
+          initTiptapDynamic('reason-' + qid, reason, (html) => {
+            setAnswerReasonHtml(qid, html);
+          });
         }, 0);
       }
     });
