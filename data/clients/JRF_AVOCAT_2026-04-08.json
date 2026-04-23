@@ -1,0 +1,1017 @@
+{
+  "_version": 1,
+  "client": {
+    "company": "JRF AVOCAT",
+    "contact": "jrf-avocats.com",
+    "email": "support@sogecinformatique.fr",
+    "phone": "",
+    "address": "13 Rue Colbert",
+    "postalCode": "78000",
+    "city": "Versailles",
+    "auditDate": "2026-04-08",
+    "auditor": "",
+    "ref": "",
+    "logoBase64": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAUAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAgICAgICAgICAgMCAgIDBAMCAgMEBQQEBAQEBQYFBQUFBQUGBgcHCAcHBgkJCgoJCQwMDAwMDAwMDAwMDAwMDAEDAwMFBAUJBgYJDQsJCw0PDg4ODg8PDAwMDAwPDwwMDAwMDA8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgAiQGQAwERAAIRAQMRAf/EAMkAAAICAwEBAQAAAAAAAAAAAAECAAgGBwkFBAMBAAMAAwEBAQAAAAAAAAAAAAABAgMEBQYHCBAAAQQCAQICBAcKCgcJAQAAAQACAwQFBhESByExQRMUCFFhIrIVdTdxMkLTVHSUNVYXYtIjs5W1FnYYOFJyM8O0hTaBkaFDkySk1He2EQACAQIDAwcJBQcCBQUBAAAAAQIRAyESBDFRBUFhcZEyEwaBobHB0SJyFDTwQjNTFuFSkrJzFTWCs2LCIyR08aJDJjYH/9oADAMBAAIRAxEAPwDm6vHH6oGSGFBQyRQUFDIGEoKIEFoZIpBCBoZIaCEFIKBoYIKQwQUhkighA0EJDQwQUhghFCekqy0FIoZBQUhkQWFBQUhjJoZEGRDBBSCEikEIGhkhoIQUiFBSCEi0RUUiBA0MfIpFoRMsKCkRBYUiiHzQUiIGMEFIYJFIZIpEQMYIGYatk+SDJDCgoZIoKChkDCUFECC0MkUghA0MkNBCCkFA0MEFIYIKQyRQQgaCEhoYIKQwQihPSVZaCkUMgoKQyILCgoKQxk0MiDIhggpBCRSCEDQyQ0EIKRCgpBCRaIqKRAgaGPkUi0ImWFBSIgsKRRD5oKREDGCCkMEikMkUiIGMEDMNWyfJBkhhQUMkUFBQyBhKCiBBaGSKQQgaGSGghBSCgaGCCkMEFIZIoIQNBCQ0MEFI+zHxslvU4pG9Ucs8bHt+EOcAQnEU3SLfMdNf3GdqP2Nrf+tY/Grq9xDcfOFxzW/mPqXsKEb/AIfGYbuhm8LjKbKuLp5WOGtSHLmNj+R8n5ZJI8fSVz7iSm0j32gvTu6SM5OsnHadHv3cdvP2D13+i6n4pdHu47kfOv7jqvzZ/wAT9of3cdvP2D13+i6n4pHdx3IP7lqvzZ/xP2k/dx28/YPXf6Lqfikd3HcjJ/ctV+bP+J+0n7uO3n7B67/RdT8Uju4bl1B/ctV+bP8AiftPNyfaLtnloXQ2dJxULXDjrpwNpvHn4h9b1Z9PwpOzB8hmtcX1lt1V2Xleb01Kw9zfdrs4etYzehyz5SnA0yWsBOQ+0xo8S6B4A9YAPwSOr4C4+C1bmmpjE9TwzxMrrUNRRPkktnl3dOzoKm8EcgjgjzC1D2KL7+75p2o5rtxUvZjVsRlrrr1pjrlyjXnlLWvAaC+RjncD0eK3tPCLjijwHiLW37WrcYXJRVFgm0vMzd/7ue3v7B67/RdT8Us/dx3I4f8Ac9X+bP8AiftJ+7nt7+wmu/0XU/FI7uO5DXE9X+bP+J+0P7ue3v7Ca7/RdT8Uju4bl1D/ALnq/wA2f8T9p817t32/ZRuvZouvNe2CQtcMZUBBDTwQfVKXbjuRktcS1Tkv+rPb+8/acqCuUfX0EJFoiopECBoY+RSLQiZYUFIiCwpFEPmgpEQMYIKQwSKQyRSIgYwQMw1bJ8kGSGFBQyRQUFDIGEoKIEFoZIpBCBoZIaCEFIKBoYIKQwQUhkighA0EJDQwQUj78X+ssf8AnMXzwnHaK52X0HYsLtHyNHMHun9smyfXUf8Au1y7vbfSfT+F/Qw+E6gLqHzIpN3D94Pe9X3XY9fxsGKdQxVsw1nT15HSFoaD8pwlaCfH4Fo3NRKMmke24f4f01/TwuSzVart/YYZ/ih7k/k+F/RZfx6j5qfMb/6X0m+XWvYH/FD3J/J8L+iy/j0vmp8xX6X0m+XWvYZpq3vWZH2yGDcsBVfQkcGyX8V6yOSIf6ZilfIH/GA5vxfArhq395GnqvCkMtbM3XdL2qlPOXKxmToZnH1Mri7Ud7H34mzVLUR5a9jvIj4PjB8R5Fbqaaqjxl21K1JwmqNbUUL95LQK2sbJU2XFQCDG7SZHWq7BwyK7HwZCOPIShwdx8PUtDU28rquU+heGeIPUWXam6yh/LydWzqLDe7T9l1P6wufPC2NN2Dzvif6x/Ch++3cvYu3FTXJ9fjpyPys1mO17XE6QARNjLenpezj748pX7rhSg/D/AAuzrpTVyvupUo99SuX+KDuT+T4X9Fl/HrW+anzHp/0po98utewP+KDuR+T4X9Fl/Ho+anzD/Smj3y617BJfeb7jTQywvr4bomY5j+KsvPDhweP5ZJ6qfMXHwtpIuqcutewrwVrnpkEJFoiopECBoY+RSLQiZYUFIiCwpFEPmgpEQMYIKQwSKQyRSIgYwQMw1bJ8kGSGFBQyRQUFDIGEoKIEFoZIpBCBoZIaCEFIKBoYIKQwQUhkighA0EJDQwQUj78X+ssf+cxfPCcdornZfQdiwu0fI0cwe6f2ybJ9dR/7tcu7230n0/hf0MPhOoC6h8yOWneb7Ud1+sHfMauVe7bPqXBvo7fQaxWI6wUFBSGX591fJW7WlZnHTuc+vi8q72Inya2eJr3MHxBwLvuuXQ0j91o8F4rtRjqIyW1xx8j+3Ueh70cEUnbmnK9gMlfNVnQv9I6oZ2n/ALwU9V2fKT4Uk1q2t8X6Uen7tP2XU/rC588J6bsGPxP9Y/hRgHvafq3Sfzm98yFYtXsR0/B/bu9EfWUoC0j3SGSGghBSIUFIISLRFRSIEDQx8ikWhEywoKREFhSKIfNBSIgYwQUhgkUhkikRAxggZhq2T5IMkMKChkigoKGQMJQUQILQyRSCEDQyQ0EIKQUDQwQUhggpDJFBCBoISGhggpH34v8AWWP/ADmL54TjtFc7L6DsWF2j5GjmD3T+2TZPrqP/AHa5d3tvpPp/C/oYfCdQF1D5kctO832o7r9YO+Y1cq922fUuDfR2+g1isR1goKPd1/Ws9tOQjxev4qxlbshA9XA3kMDjx1SPPDWN+FziAnGLk6Iw6jU29PHNckkvt1nTTtVoTO3eoVMG+VtjIzSOuZmyznofZlDQ4M58eljWtaPh454HK6dm3kjQ+ZcW4h87fdzYti6PtiaN963ZII8VrmpRSc2rVk5S3G0+LIoWPhi6h8D3SO4/1Vg1UsEj0HhLTNzneexLKul4vqousz73afsup/WFz54WTTdg0PE/1j+FGAe9p+rdJ/Ob3zIVi1exHT8H9u70R9ZSgLSPdIZIaCEFIhQUghItEVFIgQNDHyKRaETLCgpEQWFIoh80FIiBjBBSGCRSGSKREDGCBmGrZPkgyQwoKGSKCgoZAwlBRAgtDJFIIQNDJDQQgpBQNDBBSGCCkMkUEIGghIaGCCkffi/1lj/zmL54TjtFc7L6Drjnrtynj5BjGMky1twr4uOTxZ65/wCE4ct5DGgvI6hyBxzyQuxN0WG0+Vaa3Gc/f7KxfR+3YfTh8i3LYyjkRC6u61E181WT7+GTjh8T/jY7lp+4nF1VSb1rupuO2nLv5/KfFsVzI46tUyNCJ9qKpbi+k6ETA+SatLzE71fPk6Nz2yfGGkelTNtYoy6aELjcZYVWD3Pbj07PKetSZajp1mXZRNcbE32qVoAaZOPldIAHhz5eHkqWzEw3HFyeXZyHl5a/ZqXsRXHNehdfM27kunq9U5jOqJhJBaz1h5+U4ceHT984KZOjRs2balGT2tUot+/q/byH7YKxkbWNilysTYromsRuLGljZI4p3xwzBji4t9bG1r+CfDnhOLbWJN+MIzpDZh6FVeR4CZ+9coUoZqcbnGS5WgtTNjMphgllayWXob4npafPyb987loKUm0i9PCM5Ue5+VpYL7bdixPQpSNkic5lz25nW4MscNHI+DlgDXcHw5A/8U0Y5qj2UPmzdyxSx8rqTWvyFgtr45jxy318p6WFw5by1vPU4cjwBSk6IyWIKUve2LF9C+1A4PJOy2KpX5YDUsyx8XabvOGwz5M0R+HoeCOfT5oi6oL1vu5uKdVyPeuR9R8O3Xb+N1zL5HGSFl6jXfNWaGNk63tB6WlpB55J9HilNtJtGTSQjO7GMtjZkELXNjaHTGc+JEpDQSCeR96APL4AqML27jwNoyOQxlKCfHMEz/XgWoG8evfD0O5FZrgWvkDi1wYeOpocB8rhRNtLA2NLbjOTUt3krz83PyYHxdxfs93z+7uU/wCElSu9l9Bm4X9Va+OPpRyeK5J9iQQkWiKikQIGhj5FItCJlhQUiILCkUQ+aCkRAxggpDBIpDJFIiBjBAzDVsnyQZIYUFDJFBQUMgYSgogQWhkikEIGhkhoIQUgoGhggpDBBSLFe7HHBL3ImjnjZK12GtdLJAHAkSQnwB9PHKz6Xt+Q4XiNtaXD95esuzvuKrTaLukNahAbMuByLK4bG0O63VZA3g8efK3bi919B47QXWtRbbbpmj6UcoAuSfUkMEFI9TCwyWMxiq8LS+ae5BHEweZc6RoA/wC0lOO0m60oSb3M7DBdo+SIpLvHfffcD3EzOtY6xRGLo5JtWBr6zXvDCWggu58T4laNy/JSaR7bQ8C013SxuSTzONdpdxbx4so53G799wdZ3jZMDi56Lcfi7ZhqtkrB7w0NafF3Pj5rQuaiUZNI9xw7gOlv6eFySdWscTCv8THdD8pxv6G3+Mo+ZmdH9M6PdLrLJdje8M/cGHIYfYXQRbNQJsQ+pb6tliqSAS1vJ+VG48O+Ig/Ctmxez4Paeb47wdaNqduuR4dD/abu2GLNzYXJM1y1DTzvqXOxc1hgki9a3xa2Rp/Bdx0k+jnn0LNKtMNpxdO7auR7xVjXGm2hQu57xfdnH27NC8aFW5TlfDarSUg18cjD0ua4dXgQQtD5maPfw8OaGcVKNWnsxPm/xMd0PynG/obf4yPmZmX9MaLdLrLhdmNvzO8aPXz2dfE/IS27ELnQxiNnTG4BvyQStuzNzjVnjuNaO3pNQ7dvZRGKd++42y9vKetT65JXjflJrLLftEQlBETYy3jkjj74qNRccKUN3w9wyzrZTV2uCVKOm2pWwe8t3P8AynG/obf4y1fmZnqF4X0W6XWH/Et3P/Kcb+ht/jI+ZmP9L6LdLrPgy3vCdxc1isnhr1igaWWqTUrjWVQ1xinYY39LurwPS48FKWom1QzWPDmktTjOKdYtNY8qxNIFYD0CCEi0RUUiBA0MfIpFoRMsKCkRBYUiiHzQUiIGMEFIYJFIZIpEQMYIGYatk+SDJDCgoZIoKChkDCUFECC0MkUghA0MkNBCCkFA0MEFIYIKRs7s9s8OpdxNbytuT1VCSc08hITw1sVppiL3H4GOcHn7iyWZZZpnP4tpnqNLOC20qvJj59h1LcxsjXMe0PY8Fr2OHIIPgQQV1D5qnQ5s93+z+W0DK2shj6slzULkrpKN6NpcKoeeRBPxz0lvk1x8HD4+QOZesuD5j6Lwni0NXBRk6XFtW/nX2wNJBYDtotb2A7O5O/mMfvGyU30cRipBYw1OdhbJasN8Y5el3BEcZ4cD+EQOPDlbemstvM9h5jjvF4Qg7Ft1k8G1yLd0svDkL9TFULuTvzNrUcfBJZuWHeTIomlz3H7gC326Kp4y1blckoxVW3RHJi/mJdg3G1nZgWyZjMOuuYTz0+vn6w3n4G88Bclusqn1i3ZVmwoL7sadSOuq658mOWneb7Ud1+sHfMauVe7bPqXBvo7fQaxWI6x7eu5/Jatm8bsGIm9RkMXMJoHHnpd6HMeARy17SWuHpBTjJxdUYtTp4ai27c1g0dVNK27GbxreN2PFu4hus4sVieXwTt8JIX+Xi0/F4jgjwIXVhNTVUfK9bo56S67c+TzrkZWT3lu2XrGfvEwtf+UjDItngjHm0cNjtcD4PBj/AIuk+gla2ptfeR6nwzxSn/bTfw+uPrXlKXrSPcI6Ne7T9l1P6wufPC6Om7B838T/AFj+FGAe9p+rdJ/Ob3zIVi1exHT8H9u70R9ZSgLSPdIZIaCEFIhQUghItEVFIgQNDHyKRaETLCgpEQWFIoh80FIiBjBBSGCRSGSKREDGCBmGrZPkgyQwoKGSKCgoZAwlBRAgtDJFIIQNDJDQQgpBQNDBBSGCCkMkUXl7F98qN2hS03crzamUptbBhszYcGxWYm8Njhle4+Eo8gT4OH8L77esX01lkeM41wWUZO9ZVU9qXJzrm9HRsto5ocC1wDmuHDmnxBB9BW2eWPEg1bWa9gW6+u4uC213W21HThbIHH0h4YDyoyLcbHzV2So5yp0s9qaaGtDLYsSsgrwMMk08jg1jGNHLnOceAAB5kq0YlFydFiyinfnvbX2eOXTNSsGTBskH0zlm+Dbj2EFscJ58YmkckkfKIHHyRy7Sv3s2C2HueA8Fdh99dXvci3c75/R6KyYv9ZY785h+eFqo9Rc7D6DscuwfIDlp3m+1HdfrB3zGrlXu2z6lwb6O30GsViOsFBRvnsN3NOi7IMZlLHRrGwvZFeLz8itP97HZ8fAD8F/8HxP3oWfT3cjo9jOFx7hnzdrNBe/HZzrlXs5+k6M2K9e5Xnq2YmWKtqN0ViB4DmSRvBa5rgfAgg8FdJ4nzmMnFprBo5h93e3U/bnap6EbXvwWR6rOv2ncnmHn5UTnel8RPSfhHDvwly71vJLmPqfB+JLW2FJ9pYSXPv6H+zkLj+7T9l1P6wufPC3NN2Dxvif6x/CjAPe0/Vuk/nN75kKxavYjp+D+3d6I+spQFpHukMkNBCCkQoKQQkWiKikQIGhj5FItCJlhQUiILCkUQ+aCkRAxggpDBIpDJFIiBjBAzDVsnyQZIYUFDJFBQUMgYSgogQWhkikEIGhkhoIQUgoGhggpDBBSGSKCEDRs3WO8PcXUoY6mK2SeShFwI8fca21E1o8msEoc5g+JhCyRvTjsZz9RwnS6h1nBV3rB+bb5TPne893MdEY2txEb+APXtqO6vD08OlLfH7it6qZpx8N6Sv3uv9hrLaO5W8bm0xbFsNm7VLuoY9nTBW5HlzDEGMJHoJBPxrHK7KW1nU0vDtPpsbcEnv2vrZgfpKR0EfrFI+GSOaN3TJE4PjdwDw5p5B4KQ2qqhuT/ABB93/2u/wDgY/8A+ss3zE95yf0/ofy//dL2mrc1mclsOUu5rMWfa8nkZPW3LPQyPreQBz0xta0eXoCwybbqzq2bMLMFCCpFbDzEjYCgoKQzbeO7591MVQp4yjtb46dCFkFWN9SnK5scY6WtL5IHPdwBxySSs0b80qVOVc4ForknKVvFurxkvQzxNq7n7xu9GHHbRmWZSpWmE8DDTqROZIGlvLXwwseOQfEc8FKd2UsGbWj4XptJJytRo3htb9LZ9Ws92u4On4pmF13YPo7GRyPlZW9kqTcPkPLj1TQvd4/dRG7KKomLU8H0uqnnuwrLpa9DR8G29xdy3qKlDtWY+lI8c576bfZ68HQ6QNDzzBFHzz0jzUzuSntM2i4bp9I27MaV24t+lswoKDoIZIaCEFIhQUghItEVFIgQNDHyKRaETLCgpEQWFIoh80FIiBjBBSGCRSGSKREDGCBmGrZPkgyQwoKGSKCgoZAwlBRAgtDJFIIQNDJDQQgpBQNDBBSGCCkMkUEIGghIaGCCkMEIoT0lWWgpFDIKCkMiCwoKCkMZNDIgyIYIKQQkUghA0MkNBCCkQoKQQkWiKikQIGhj5FItCJlhQUiILCkUQ+aCkRAxggpDBIpDJFIiBjBAzDVsnyQZIYUFDJFBQUbo933VdU3vvBomjblRuXcHuOUgxE76FoVbEDrTgxkzHmOQHpdxyCPEc+ngjPp4RncUZbGcrjmpu6XRXL1ppShFyxVU6cm1GMd1MPhdd7kbzrmvU5qWG1vO5DE4+GxP7TMY6NiSuHySdLOXPDOo8NA8fBRdiozaWxM2uG3Z3tNbuXHWUoqToqLFVMnvdlspQ7NY3vc7b9ds65lcx/Z+rg4TkvpT6RbH66WBzJKDK49XF8tzvX9HHg1zncNVOw1bz1VK05a+gw2+Lwlrno+7mpqOavu5ctaJ9rNi8KZa+Q+DTu1VzctH7g73X23AYej22r17WexORORF2SK5PHVrOritRnhf62eVsQDpWkHxf0s+UlC1mi5VWHT7DNq+Jx02otWHCUndbSay0qk5OtZJ4RVdj5qvA15iqcGQyNOjaylXCV7Ugjly10Tur1wfw5RWinl6R6eiNx+JYkqs6NybhFyScmuRUq+irS62jY/ebtJmux++ZLtzsucw+b2LDQ1pMv8AQjrkkFd1qFlmKJ0lurVLnGKVjz0BzR1cdXUCBkv2XZllbVeY5/BuK2+Kadai3GUYSrTNSro6N+65cqaxx8hrjG1IL1+pTtZOthq9mRsc2VuNndBXafOSRtaKeYtHp6I3H4AViSqzp3JOMW0nJrkVKvoq0uto2V3m7R5nsfveR7dbJncNm9iw8VeTLjCOuSQV3WoY7MUbpLdWr1OMUrH/ACA5o5456gQMl+y7MsrarzHP4Nxa3xTTrUW4yjCVaZqVdHRv3XLlTWNDWtCvDbu1Kti9BjILErI5slZEroYGucAZZBBHLKWtHiehjnceTSfBY0qnTlJxi2k20tipV8yq0utpGy+8PafK9lt0taHn9hwmwZyhWq2cg7BSW5YIBchZZhY6S3VqkudDIx/yA4cOHjzyBkv2XallbTfMaHB+Kw4np1ftwlGLbSzUq8rafZcuVNYn39suzeV7pYnd8vitqwGDi7fYqTObFWy5yLZW42EtbLZi9ko2mPDC4At6us+hhRasO4m00qKvL7BcS4xDQTtQnCcu8lljly0zPYnmlHbv2c5jG5aTFqMOv2q25a/uNXYqstqCfAyXH+ziKV0JjssuVaj43kt5Dek+HBPCicMtMU67ja0eseoc07c4OLp71McK1WWUqo9btf2k3PvBc2vF6LRblszqmvT7JNh2k+0W61azWryxVWgHrlHtIcGcjqDSG8u6WmrVmV2qjtSqY+J8X0/DY25X3ljOahXkTabTluXu0rycuFWYhr+E+m8/j8BZylTXX37IquyWTbZ9ngkPIaJhVgsTDl3Dfkxngnx4HJGKMaumw3r1/urTuKLlRVpGlX0ZnFec97uRod7tju+xaHlctjs1ltYtPo5W5ijZdVFmI8Sxsdar1pHdDvAno6T+CSPFXctu3JxbxRh4Zr46/Tw1EIyjGaqlKlaPY/dclj0mCekpHSRkWpsxcuy4KDN0JMnibN2GC/RinNaR8crgw9Ewa/oI6uQek+XiCnGlVUw6pzVqTg6SSdHSvmw9JfDJ9ivd+se8nm/dnixu261fdOKGsdwm5evfj9ufQZcibbxz6ERMTy4s5ZMHchvkCS3fentd87WK3OvqoeCtcf4ouDw4o3bmqVlbyuPu5sryzzPFbcY/toJm8VYwWZy+EtPZJaw12xRsyRkljpK8jonFpIB4Jb4chc6So6H0OxdV23Ga2SSfWqmaaN2u2Le6WczlaxQ17UdXbG7Zt1zczq2MpGYkQxufGyWWWWUjhkUMckjvQ3hZLdpzTexLa2auv4ra0coW2nK5PswiqzlTa8WkkuWUmoreZvjuwOT23GZjIdrt41vujc1+q+7ltWxJv1M02tEAZZ4KOTp1HWY2c+JgL3fC0EgK1p3JNwadOTGvnRpXfEUNNOMdXanZUnRSllcKvYnKEpZX8VFzmg1rHojc3cnsxk+2Wt6Hs+Q2/Xdho9xqJyet18OckZjTaS0zSi5QqMYA/wCT09XVz+Dx4rYu2Hbim2nXdX2HF4XxyHEL161G3ODtPLLNkpm3LLOTeGNaU5zTawHfQwQUiyfur9u9J7rdz49H3ihfs46/jMhegt464Kc8L8fVls8cuima4SdAaeR4eY+A7OktRuTyy3PzHl/F/FNTwzQvUadxUlKKpJZk80lHetlamE53MdmsjqOTj17R87q+5x3ahxdm1nG5SpLUIk9pDoxRqFj2kM6T1O56j4Djk4pStuOCafTX1HS01jiMNRF3bsJ2qOqUMklLDLjnlVbeRdJ4/a3tzku7G64jQsLmcXhs1nnOixEuXNpleacDlsAfVr2XNc4AkFzQzw8XDw5Vm07slFPFmfi/FIcM0stTcjKUIYvLSqW/3nHzOvMentXa9mrYfMZT94WqZ6zgsvHhMlgMbJkm5BlmT2jqc2K5QrNdGw1nhzw4jkt456gidrKm8ydHTl9hGj4s9TcjDubkVKLkpSyZaYcsZyxeZUVN+4xzQNNsdwty1zSKOYx2DyW036+LxNzKe0iq63bkbDXie6pXsyN9ZI8NB6Okc8uIHiptW+8kop0qbfEtfHQaa5qJRlKMIuTUaVyxVW/ecVgsdtd1Tb+X92faqUXcdmv7jqm9ZbtJ7W7uFreEnyLMhj48fK6G5MIslQoieOB7SHvgc9vwE8hZ5aSSzUabjtSrh1peY42n8W6efcO7auWo36d3Kajlm5KsVWE55XJbFNRZpTUtdO17DjsB9L4/AMvGQz5vKyPipVYoYnzSTTvjZI8NaxhJ6WuPwAnwWCEczpWh6PWar5azK5llOn3Y4yk26JKrSq2+Vpb2bpZ7utmXV8lu1bu52/talicnDiLuejtZcQtuWI3SxRdD8U2Tl7GEg9H3Vn+W93NmVNnL7Dg/qlK/HTvTX1dlFyUaW65U0m8LlMG1ympt605+jZ36EOxYbao5KVW9WzeBmmnpSxXIWzM6HWIa8gc0O4cHRjg8hYLkMjpVPoO7w3XfOWu87udvFpxmkpJxdPuuS6KPYZZf7N5TH9nsX3pdtev2Ndy+XOBq4SE5H6TGQYz1skL2Potrjoj+WXev6SPBpc7wWV2GrfeVVK05a+g07XH7c+JS4f3c1OMM7k8mTLWifbzYvCmWu+ixMI0rVpd22zX9Rr5ahhLeyXYcdRyOT9p9lbYsOEcLZDUgsyjreQ0ERkAnl3DeSMduGeSjWlTp8Q1q0WnnfcZSUE5NRpmosXTM4rBY7ejE2LunZKzo39uqmS7i6fd2Ht5O2tntTqTZMZB8vtcNORtYWcdBDN6t0wc4tl46Q4gnjhZLljJWslVcmPsObw7xFHW9zKFi6rd5VjNqGWmVyWbLOUo1Sovd20rQ1Xr+JZnc1jcM/KVMKMlO2uMpfFh1aFz/AAaZBVhsS8E8D5MbvP4PFYYqrpsO5qb7sWpXFFyyqtFSr6MzjHraLHZH3Ttyh2bb9GwW8abuPcDR601rO6LibGTiyJZAwSSCr9IY2nBZc1h5LYZXH4ueFtPRyTcU05LkVfWkeUseOdNKxa1N2zetWLrSjckoOHvYLNknOUE3yyikVZWme2GCCkMEikMkUiIGMEDMNWyfJBkhhQUMkUFBRYD3Vv8AMf2S/vhi/wCfatjSfix6UcTxJ/jNR/Tl6DDe9X2xd2f75Z7+sJ1F78SXS/SbvCPorP8ATh/Kjf2TPtXuFau+v/KtxXee5DkC3/ynzYX1kYd/rN8j5ejzWxL6ZfF6jjWvd8Qzry6dU8kzEO0rS3sD72E7h0wuw+oVmyHwBmk2WrKyMfGWQvcB8DT8Cx2fwrnQvSbnFMeI6Jf8Vx+Tu5L0tdZWgLVPSIuN7/f+bXux/wAi/qHHLd4j+PLyehHkvAf+Gsf6/wDckU8C0T2CLi+/1/m17sf8i/qHHLd4j+PLyehHkfAX+Fsf6/8AckU9C0j2KLXe+z/mW338w1n/APnMYtvX/jPyehHl/BX+JtdNz/cmZX7oEmLhwPvRS5qnayGIj7S5R2So0rLKdmWETwdbIrEkFlkTiPAOdE8D/RPkq0VKXK7MrNfxepu5olBpS+YjRtZknR7UnGvRmXSVj3ez27sy4F/brD5zC1fo3nYamevwZKwMh7TPyIrNepRjdF6gQkfyDT1FwPPHK1LjhhlT8uPsPT6GOqipfMSjJ5vdcYuKy0W1OU3XNm+88KG2/dzz+Z1Sv3z2fXclPiM9rvbyPJYjI13dL4rFXadeljPwOaXN4c1wLXN5a4FpIWbTScc7W1R/5kcrxFp7eolpbVxKUZXmmnyp2rq+z2rajd2wYPX/AHosRe76dtMRDie9WlCDKd5u1NP5DMxDAQX5rDM8SXP6P5aIcu6j6ZC0z55xWpXeQXvLtLfzr1/avG02ou8AuLQ6mTlprlY2br+43/8AHc/5Zbubs1+96T/MZ3q/vfk/59y19X+NPpZ6Lwr/AInTf04+g0D6SsJ6JHua1/1Hr/1lU/nmpx2ox6j8KXQ/QdXtnZ2+yHvvd1KOLkvar3uFUs7WbJmMhBZ1+fZJcTDHWY+mylBLA8xv4hL7ErfWjktcS2M9aeR6mSWEuTdWnQfJdI9VDw5p5TpPS1/6sYxauK1nbl72ZqSr2qRi8vKsZHKXZsLn9c2HNYLaqVnHbJirk1fOUrnPr47LHESCQknqJPjzyefME8rkSi4tp7T65pb9q/ajctNOEknFrZTkoW32fHif3FO2V/XQ11Oj3Hy37xI67SSMlNA5tCWzwfDprNaxpcOPlNAIJ4O5Jf8Aaxa/edenk8x5HSXKeJr8bu12Id3X91P30v8AVi+gwD3P5cxD7y/Z52EMotnOsbZ9V5+xOikF3q/giv6wu+LlY9FXvo03/wDqdLxpG2+DanvNmR0+LDL5c1Kc5qzuvYwVzul3Kt6uIxrNraszNrohAEfsD70zq3QB4dPqi3jhYbzTnLLsq6HY4PG7HRWI3vxFbhm+LKs3nLEe8r9knuif/n9j/jCtnVfh2/h9Z53wv9fxH+sv5UU6Wke4QwQUi4/uIuDPeIwryxsgZgdhcY389LuMXYPB4IPB+6t3h/4y6H6DxP8A/Q1Xg81/x2/54mjdn7ga9suqfQtftjrWo5uLLQXYs/gmXGSSVWwTRyVZRbtWvAvex46OnyPVz8njWncUo0ypPmPRaTht7T3+8d+5cjlayzy7apqSyxjyVWNeblNge6B/mX7O/Xzf5mRZNF+PHpOb43/wmq+B+lHjd4bnaqzld3j1nXdlw26R7hZ9qs5XMVcnRnph9wWTDHBjaDoXGb1RAe6X5Ph1eB5m+7bbomnXfX1I2uB29fGFp3p25Wu6VFGEoSUvdy1bncUllrsUceQ8b3fPt87H/wB/9a/rWslpfxYfEvSZ/E/+I1f9C7/JIuxPg6dXdfff2vtTsF3Zu6Mc204fJ6LcosoS18Tk8s8ZjIUHRWrZvezBnq2DiJw59Y5nPQw77jSd2UHWWKpzN4tbzwVvUSlpeEWdbBQ09LUlcUsyc4QXdQnWMe7zVq+0sMtdsjmUuUfX0Wt15rh7mXcZ5ael3dDBAO48CRjbXI5+LkLbj9NL4l6GeN1L/wDstj/x7n88Sqh8itM9si3+b/yLaR/+vZD+qVvS+lXxeo8Np/8A9Xd/8WP+4aH7NfbB2p/vjgv6wgWvY/Ej0r0np+Pf47U/0p/ys3t70lztTJ3Y77V4dd2ajv8AHstkVMvYzFW3iZ5hdb7U5tKPG1ZoOYw7oDrEoHiDyeCtjWO33k8HWu/Db0es874Kt8QXDtE3ctux3a91QlGaWX3ffdyUZY7aQj6irmtf9R4D6yq/zzVpR2nttV+DP4X6DqhltfoVve47/bV282O7ke+erYvKX9I7e36EdGG9du4xsEz6dyO3YdadXqzvmZC6GJ0junxDWucOy4paibg/fVaLyew+KWNVOfhvQ2NXbitHclCNy7GTk4xjPMs8XGORTnFRlLNJRVdraRyXex8Uj4pWOjkjcWyRuBDmuHgQQfEEFcU+7Jp4oAQUhgkUhkikRAxggZhq2T5IMkMKChkigoKLKe6zJi9Z7qYLurtliPHaN2tlfms5flALprMcEpo0ajHf7WzYmDQxg8Q0OkPDWOcNnS0jNTexYnA8SKd7SS01pVuXVlS3KqzSe6MVtfQtrRonZ85Ps+x7Bslpnq7Ow5K3k7MfUX9MluZ8zh1Hgngv81glLM2953NPZVm3G2tkUl1KhsDt13l2bt3hdn1OHG4fbdI3MQnZNJ2KtJZx9iWueYbDTBLXnhlZ6JIZWO8vHwbxkt3nBNYNPkZp67hNrV3IXW5QuQrlnF0kq7Vimmnukmj8tp7s5TYdYi0fD63gdB0pt5mTta1rsNoR27sbHRxz27WQs3bk5jbI8MbJOWt6j0tCU7zksqSS5v21Zk0vC4WbvfTnK5cpTNKmEdrSUVGKrRVpGrpizXOOtx0b9O7LRr5OOpMyV+Ot+sME4YQfVyiJ8b+l3kelwPxrEnQ6M4uUWk2q8q2rorUsltfvS7Hum4We4Wf7a6Da3qyIj/apuPvtsslrwtgrztb9IGL1kLGN6HOYeC1p9AWzPVucsziq7/szgaTwza0thae3euq0vu1jTF1a7NaPGqrysrbQsxU7tW1NRgyUVeVskmPtGUQzBp5Mchhkik6XeR6XtPwELVToeinFyi0m1zqlV11XmLMbV71GybnuT+4ewdtdAub04wPj2j6OvCwyWrG2OtMGfSBhc+FrG9BdGeOlvwLZnq3OWZxVd/2Z57SeGLWlsfL2711WsfdrGlG6tdmtHy0fKVnqTR17VeeWrFeiglZJLSnMgima1wJjeYnxvDXAcHpc13HkQfFayPStNppOnPu66rrRtDvB3cz3evb5t52nEYjG7FbghgyFnERWII7Da8TIYS+KaxM1pZGwNHQG+HnyVkv3ndlmdKnP4Pwm3wywrFqUnBNtZmnSrq8Ultb5an29q+8+c7S1dxqYXXMBnId7xT8JsTc3BasCTHSkGWu1sNqBrQ8gEu46vDwcEWb7tVok6qmIuKcGt8QdtznOLtyzRytL3lseKfsMe3HfXbdRwuLg1LX9QxmDmt2a9HAQWYmyz3hA2aSZ1qzZe49NaMD5QAA8vFTO5mSVEqbjZ0eh+XlKTuTnKVFWTWyNaJZVFfeZ9+h9z8hoOI3XCUtdwubpb9jRiNg+lW3HPNMSx2BHEa1quGESxMeHcdXI8+OQi3dcE1RYk67hkdXO3OU5RduWaOWm2jWNU+RtU2GOaXum09vdlxe36ZmrGA2LDS+tx+SrEdTSQQ5rmuBa9j2ktc1wLXAkEEKIXJW5KUXRo2tZorOtsys3oqUJbU/tt3NYobdNty2+7fs+7Z71P0ztmTtZXJNrtLIWzW5XSuZE1znFrGl3DQXEgceJTnNzk5PaytDpIaOxCxb7MIqKrtolTHnMV9JQbqPYwOW+gszjM0MfVyrsXYjsx4+8JTXlfGepolEMkTyAQDwHjn0+HgnF0dSL9rvbbhVqqpVUr5KprzGed0O7Of7rbxa7i5nG43B7bflinyGSwgtV/XT1444oZemWzMI3MbE3gxdPj4nk+Ku7edyWZ7eY0eFcItcO0y00HKVtVSUqOidW1glVY8tT1u5ve/Y+70VGzvWA1/JbZSqQ05N/grT1cvajg6Q02zBYZWnd0tDOp8BIb97wndvu72kq7+UxcL4FZ4Y2tPOattt93VOCr+7VZoquNFKlT4e2fefde1cefx2CfRy2sbZAK+16VnKzb2IyUbeej19dxbw5hPLXsc14/wBJK1flbqlse1PYZ+KcE0/EXCVysZwdYTi8s49D5+VOq5j0397cljaWap6DpOsdrJdkrSUc7ltbZkpL09Ob/a1mWstfyMteOTwD21zH1AdLuW+CfftJ5Uo13V9bfmIXAoTlGWou3L2R1ip5cqktjy24QUmuTPmptWJpZa53SxuV947J5/XtL1jYO2Gh5zF9v8f9GauLdPJGWCt4FzXSsyLHSdTm9R6ifHnjjlbT1LkknFYbNvtPN2fDMLN67dt37sZXZZpUcaN9Dg6bsDSGz7Bd2zY87s+Rhr172fv2L9mtTj9TWifYkMhjgj5PRGznpY3nwaAFgnLM2956HSaaOmswtRbaikk3i3RUq3yt8r3nihSbSNr9nu72wdk9sG66risRkM/FWlq07GXinnZAydhjm6I4p4WkvY4tPWHeHlwsti87Ms0aVORxvglni+n+XvSkoNpvK0q0xWLT2PdQ1xkbcN69Zt18bWxEM7+qPG0zMYIRwPkxmxLNJx6flPKwt1Z1rUHCKi5OTXK6VfUkvMZd217gZXtbueF3vA0KF/N69KZ8S3JNmkgjmILRIWQzQlxAJ4DiW+PiCrtXHbkpLajU4rw23xLTT01xtQmqPLStN2KftMn23vBY2ynskDdA1DWru3WBYz+awtO3Fbm/9yLbo2me5PHGx8zWuc1jB5AeQ4VTvZq4JV3GtoeCLTSg++uzUFSMZOLSwy1wjFtpYYtmFaPt1zQdv13dMbQpZLK6vfgyeJgyDZnV226sglglc2CWFzvVyNDgOrgkfKBHgotzcJKS2o6HENDHXaaenm2ozi4ulK5ZKjWKe1YbOgzI96tzq915e8+vGpqO72cnYy9qximzezy27kj5LT3w2prALZjI4PZz0cHgNCvv5K53iwdamouAaaXD1w+7W5ZUVFKVKqMUlHGKjjGio9vOYtve5f272C5skusYTWL2SkfPka+BhnrVZppDy6T1Es8zIyT6Igxv8HlTcnndaJdBvcN0PyVlWlcnNLBObTkluqkm/wDVV85lGM7wZjG9p8t2cbruDt6xmcoM3bvWGXDfGRbH6qKzHKy2yNpjjAaG+r6CPvmuJPNq+1bcKKlamrc4FbucQjr881cjHIksuXJWri1lri8a1ruaNTHyKwHdRti53hzV7tLi+zU2vYNusYfKvzdK+yK23IDISsdG+w6UWvVuLo3FnS6Pp444aCAVnd5u33dFStTj2+BWocRlxBTn3ko5Gqxy5E6pUy1241rXnMH1HZLOnbRgNspUqmRva3fgyVCpeErq7rFZ4khdI2GSJ5DXtDuA8A8cHkcg44SyST3HS12kjq7E7Em0ppxbVK0eDpVNbMNhtbc+/mU3e1tuWv8Ab7TMZsu6slZnNrx1K4y8faHNdO6L1t2WFjpQ3pc4R8lrnD0lZrmoc6tpVfL9mcjh3hm3oo2rcL9127VMsJSjlw2VpFSaW1e9tS3GnMJkzhcxjMuKNbJOxlmO0yjc9YYJXRODmtkEMkTy3keIDgtdOjqeh1FnvrcoVccyaqqVVd1U15jZe6d7Ny3LugzvD00tX35tqveOXwbZ4QbVVjI4pvV2J7DQQ2NrSG8NcPvmnk85rmolOefY+Y5PDvDul0eg/t+M7FHHLOj92VaqqUd724rkZ5HczuXf7qZ+Xac3rmBxGxXj15vKYWvNUOQmIAdPYhM74BI4jqc6ONnUSS7lTduu48zSrzGzwbg8OF2VYt3JytrsqbUsi/di6KVFsSk3RYI1yFiOwhgkUhkikRAxggZhq2T5IMkMKChkigoKGQMJQUQILQyRSCEDQyQ0EIKQUDQwQUhggpDJFBCBoISGhggpDBCKE9JVloKRQyCgpDIgsKCgpDGTQyIMiGCCkEJFIIQNDJDQQgpEKCkEJFoiopECBoY+RSLQiZYUFIiCwpFEPmgpEQMYIKQwSKQyRSIgYwQMw1bJ8kGSGFBQyRQUFDIGEoKIEFoZIpBCBoZIaCEFIKBoYIKQwQUhkighA0EJDQwQUhghFCekqy0FIoZBQUhkQWFBQUhjJoZEGRDBBSCEikEIGhkhoIQUiFBSCEi0RUUiBA0MfIpFoRMsKCkRBYUiiHzQUiIGMEFIYJFIZIpEQMYIGYatk+SDJDCgoZIoKChkDCUFECC0MkUghA0MkNBCCkFA0MEFIYIKQyRQQgaCEhoYIKQwQihPSVZaCkUMgoKQyILCgoKQxk0MiDIhggpBCRSCEDQyQ0EIKRCgpBCRaIqKRAgaGPkUi0ImWFBSIgsKRRD5oKREDGCCkMEikMkUiIGMEDP/2Q=="
+  },
+  "chapters": [
+    {
+      "id": 1775650377543,
+      "name": "Contexte",
+      "questions": [
+        {
+          "id": 1775731331460,
+          "text": "Nous utiliserons des outils internes afin de pouvoir compléter cet audit (scripts, outil de supervision, prise en main serveur, …) afin de compléter au maximum cet audit.\n\nIl a été mentionné par le client lors de l’interview que plusieurs cyberattaques ont eu lieu dans les dernières années (3) causant des problématiques de productivité et des pertes de données.\n\nCrife Informatique n’a jamais fourni d’éléments concernant la provenance et le scénario de ces attaques malgré la demande du client final.\n\nLe client nous a remonté quelques actions correctives à savoir l’achat d’un NAS pour une sauvegarde locale et également la mise à niveau des systèmes d’exploitation des serveurs.",
+          "qtype": "freetext",
+          "options": [],
+          "paragraphs": {},
+          "images": {},
+          "freetextContent": ""
+        }
+      ]
+    },
+    {
+      "id": 1775650404177,
+      "name": "Planning",
+      "questions": [
+        {
+          "id": 1775731353417,
+          "text": "Le 03/02/2025 :  Audit technique sur place\nEntre le 03/02/2025 le 10/03/2025 : Préparation de la restitution de l’audit\nLe 31/03/2025 : Restitution de l’audit auprès des représentants de JRF AVOCATS\nPour ce planning, un outil de gestion de projet a été utilisé en interne nommé Gouti.",
+          "qtype": "freetext",
+          "options": [],
+          "paragraphs": {},
+          "images": {},
+          "freetextContent": ""
+        }
+      ]
+    },
+    {
+      "id": 1775745210369,
+      "name": "Remerciements",
+      "questions": [
+        {
+          "id": 1775745237373,
+          "text": "Nous tenons à remercier JRF AVOCATS et ses collaborateurs pour leur disponibilité, tant lors de notre déplacement sur site le 03/02/2025 mais également pendant toute la période de rédaction où chaque question posée était répondue dans de très bons délais pour garantir le contenu de cet audit.",
+          "qtype": "freetext",
+          "options": [],
+          "paragraphs": {},
+          "images": {},
+          "freetextContent": ""
+        }
+      ]
+    },
+    {
+      "id": 111,
+      "name": "Tiers et prestataires",
+      "questions": [
+        {
+          "id": 1775745343708,
+          "text": "Prestataire de la maintenance et d'infogérance du parc",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {},
+          "freetextContent": ""
+        },
+        {
+          "id": 1775650465348,
+          "text": "Internet",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775650492825,
+          "text": "Logiciels Métier",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775650513738,
+          "text": "Site Internet",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775650520562,
+          "text": "Nom de domaine",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775745380622,
+          "text": "Copieurs",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775650531914,
+          "text": "Téléphonie",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775650540589,
+          "text": "Alarme",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1100,
+          "text": "Les accès des prestataires et sous-traitants au système d'information sont-ils encadrés et limités ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les accès des prestataires sont strictement encadrés : accès nominatifs, limités dans le temps et aux périmètres nécessaires, tracés et révocables à tout moment. Des clauses contractuelles de sécurité sont intégrées dans les contrats.",
+            "Non": "Les accès des prestataires ne sont pas correctement encadrés : comptes génériques partagés, accès permanents non révisés, absence de traçabilité. Les prestataires constituent un vecteur d'attaque de plus en plus utilisé. Un encadrement strict est nécessaire.",
+            "Partiel": "Des mesures existent pour certains prestataires mais pas tous, ou les accès ne sont pas systématiquement révoqués en fin de mission. Une politique de gestion des accès tiers, appliquée uniformément, est recommandée.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1101,
+          "text": "Les contrats avec les prestataires traitant des données sensibles incluent-ils des clauses de sécurité et de confidentialité ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les contrats incluent des clauses de sécurité (obligations de moyens, droit d'audit, notification d'incident) et des accords de confidentialité. Pour les sous-traitants RGPD, des DPA (Data Processing Agreements) sont en place.",
+            "Non": "Les contrats ne comportent pas de clauses de sécurité ni de confidentialité. En cas d'incident impliquant un prestataire, la responsabilité juridique peut être difficile à établir. Une révision des contrats pour y intégrer ces clauses est recommandée.",
+            "Partiel": "Certains contrats incluent des clauses de sécurité mais pas tous. Une revue systématique et la mise à jour des contrats les plus anciens sont recommandées.",
+            "Non applicable": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "name": "Parc Informatique : Postes de travail...",
+      "questions": [
+        {
+          "id": 1775745653511,
+          "text": "Habitude utilisateur et logiciels utilisés",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775745712378,
+          "text": "Détail des applications métiers",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1020,
+          "text": "Un antivirus / EDR est-il installé et à jour sur l'ensemble des postes ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Un antivirus ou une solution EDR (Endpoint Detection and Response) est déployé sur l'ensemble des postes de travail et serveurs. Les signatures et moteurs de détection sont mis à jour automatiquement et régulièrement vérifiés.",
+            "Non": "Aucun antivirus ni solution de protection des terminaux n'est déployé ou maintenu à jour. L'ensemble du parc informatique est exposé aux malwares, aux ransomwares et aux exploits. Le déploiement immédiat d'une solution de protection des terminaux est une action urgente.",
+            "Partiel": "Une solution antivirus est présente sur une partie du parc, mais certains postes en sont dépourvus ou les mises à jour ne sont pas systématiques. Une couverture complète et une politique de mise à jour automatique doivent être mises en place.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1021,
+          "text": "Les mises à jour de sécurité des systèmes d'exploitation (Windows 11...) sont-elles appliquées ? ",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les mises à jour de sécurité critiques sont appliquées dans des délais maîtrisés (sous 30 jours pour les correctifs critiques), sur l'ensemble des systèmes.",
+            "Non": "Les mises à jour de sécurité ne sont pas appliquées de manière systématique et rapide. Les vulnérabilités connues et non corrigées sont la première cause d'exploitation réussie par des attaquants. Un plan de patch management, avec des délais d'application définis selon la criticité, doit être mis en place d'urgence.",
+            "Partiel": "Les mises à jour sont appliquées mais avec des délais importants ou de manière incohérente selon les postes. Certains logiciels tiers sont souvent négligés. Une politique de patch management formalisée est recommandée.",
+            "Non applicable": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1022,
+          "text": "Le chiffrement des disques durs est-il activé sur les postes nomades (laptops) ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Le chiffrement des disques durs est activé sur l'ensemble des postes nomades (BitLocker, FileVault ou équivalent). En cas de perte ou de vol d'un ordinateur portable, les données restent inaccessibles sans les clés de déchiffrement.",
+            "Non": "Les disques durs des postes nomades ne sont pas chiffrés. La perte ou le vol d'un ordinateur portable expose directement les données de l'organisation. L'activation du chiffrement complet des disques est une mesure indispensable et simple à déployer.",
+            "Partiel": "Le chiffrement est activé sur une partie des postes nomades, mais pas sur l'ensemble du parc. Une politique systématique, appliquée dès la configuration initiale de chaque poste, est nécessaire.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1023,
+          "text": "Les postes de travail sont-ils configurés pour se verrouiller automatiquement après une période d'inactivité ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les postes de travail sont configurés pour se verrouiller automatiquement après une période d'inactivité courte (5 à 10 minutes), exigeant une ré-authentification. Cette mesure prévient les accès non autorisés aux sessions ouvertes en cas d'absence.",
+            "Non": "Aucun verrouillage automatique n'est configuré. Une session laissée ouverte permet à toute personne physiquement présente d'accéder aux données et systèmes sans authentification. La configuration d'un verrouillage automatique doit être appliquée par GPO sur l'ensemble du parc.",
+            "Partiel": "Le verrouillage automatique est configuré sur certains postes mais pas tous, ou les délais sont trop longs. Une politique uniforme appliquée par GPO est recommandée.",
+            "Non applicable": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": 1775650652789,
+      "name": "Infrastructure Serveur",
+      "questions": [
+        {
+          "id": 1775745768464,
+          "text": "Serveurs physiques",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {},
+          "freetextContent": ""
+        },
+        {
+          "id": 1775745942443,
+          "text": "Rôles du serveur physique ",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775745968153,
+          "text": "Machines Virtuelles",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775746003776,
+          "text": "Rôles des machines virtuelles",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {},
+          "freetextContent": ""
+        },
+        {
+          "id": 1775746050077,
+          "text": "Serveurs NAS",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "name": "Sécurité du réseau",
+      "questions": [
+        {
+          "id": 1030,
+          "text": "Un pare-feu (firewall) est-il en place et correctement configuré ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Un ou plusieurs pare-feux sont en place aux points d'entrée et de sortie du réseau. Les règles de filtrage sont documentées, revues régulièrement et respectent le principe du moindre accès. Les journaux de connexion sont activés et analysés.",
+            "Non": "Aucun pare-feu n'est en place ou celui existant n'est pas correctement configuré. L'absence de filtrage du trafic réseau expose directement les systèmes internes aux attaques depuis Internet. La mise en place et la configuration d'un pare-feu est une mesure de base indispensable.",
+            "Partiel": "Un pare-feu est présent mais sa configuration est insuffisante : règles trop permissives, règles non documentées ou absence de revue régulière. Un durcissement de la configuration est nécessaire.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1031,
+          "text": "Le réseau est-il segmenté (séparation des réseaux utilisateurs, serveurs, IoT, invités) ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Le réseau est segmenté en zones distinctes (VLAN utilisateurs, VLAN serveurs, réseau invité, réseau IoT). Cette architecture limite la propagation des attaques : la compromission d'un poste utilisateur ne donne pas accès direct aux serveurs sensibles.",
+            "Non": "Le réseau est plat : tous les équipements sont sur le même segment réseau. En cas de compromission d'un seul équipement, l'attaquant peut atteindre l'ensemble du parc sans obstacle. Une segmentation par VLAN est fortement recommandée.",
+            "Partiel": "Une segmentation partielle existe mais elle ne couvre pas tous les types d'équipements ou toutes les zones sensibles. Une architecture de segmentation plus complète est recommandée.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1032,
+          "text": "Les accès distants (télétravail, VPN) sont-ils sécurisés ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les accès distants sont sécurisés via un VPN avec authentification forte (MFA). Les flux sont chiffrés, les journaux de connexion sont conservés. Les postes distants sont soumis aux mêmes politiques de sécurité que les postes en local.",
+            "Non": "Les accès distants ne sont pas sécurisés de manière satisfaisante : absence de VPN, protocoles non chiffrés ou absence d'authentification renforcée. Ces points d'accès constituent des portes d'entrée privilégiées pour les attaquants. Une sécurisation urgente est nécessaire.",
+            "Partiel": "Un VPN est en place mais sans MFA, ou certains accès distants utilisent encore des protocoles non sécurisés. Il est recommandé de centraliser tous les accès distants via le VPN et d'y imposer le MFA.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1033,
+          "text": "Le Wi-Fi est-il sécurisé (protocole WPA2/WPA3, réseau invité séparé) ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Le réseau Wi-Fi professionnel utilise le protocole WPA2-Enterprise ou WPA3 avec une authentification par certificat ou identifiants nominatifs. Un réseau Wi-Fi invité isolé est disponible pour les visiteurs, sans accès au réseau interne.",
+            "Non": "Le réseau Wi-Fi n'est pas correctement sécurisé : protocole obsolète, clé partagée trop simple, ou absence de réseau invité séparé. Un Wi-Fi mal sécurisé peut permettre l'interception des communications ou l'accès au réseau interne. Une mise à niveau urgente est recommandée.",
+            "Partiel": "Le Wi-Fi utilise WPA2 mais avec une clé pré-partagée commune à tous les utilisateurs, ou le réseau invité n'est pas correctement isolé. Une migration vers WPA2/WPA3-Enterprise est recommandée.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1775746276802,
+          "text": "Schéma Réseau",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        }
+      ]
+    },
+    {
+      "id": 1775746313765,
+      "name": "Microsoft 365",
+      "questions": [
+        {
+          "id": 1775746815236,
+          "text": "Nom du tenant",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775746838949,
+          "text": "Détails des licences",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775746864144,
+          "text": "Listes de distribution",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775746883313,
+          "text": "Equipes et groupes (Teams/Sharepoint) ",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1775746916420,
+          "text": "Exchange : règles de redirection...",
+          "qtype": "choice",
+          "options": [
+            "Réponse libre"
+          ],
+          "paragraphs": {
+            "Réponse libre": ""
+          },
+          "images": {}
+        },
+        {
+          "id": 1080,
+          "text": "Des filtres anti-spam et anti-phishing sont-ils en place sur la messagerie ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Des solutions de filtrage des emails (anti-spam, anti-phishing, anti-malware sur pièces jointes) sont en place et maintenues à jour. Les enregistrements DNS (SPF, DKIM, DMARC) sont correctement configurés pour limiter l'usurpation d'identité.",
+            "Non": "Aucun filtrage efficace des emails n'est en place. La messagerie est le premier vecteur d'attaque. La mise en place d'une solution de protection et la configuration des enregistrements SPF, DKIM et DMARC sont des actions prioritaires.",
+            "Partiel": "Des filtres existent mais sont insuffisants ou mal configurés. Les enregistrements DNS ne sont pas tous en place ou DMARC est en mode monitoring sans rejet. Un renforcement de la protection est recommandé.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1775746992414,
+          "text": "Sauvegarde M365",
+          "qtype": "choice",
+          "options": [
+            "Oui",
+            "Non"
+          ],
+          "paragraphs": {
+            "Oui": "",
+            "Non": "Extrait des contrats de service Microsoft Contrat de Services Microsoft\nDisponibilité des Services.\na. Les Services, Applications et Services Tiers ou documents ou produits proposés via les Services peuvent s’avérer indisponibles de temps à autre, être offerts sur une base limitée ou peuvent varier en fonction de votre pays ou appareil ou d'autres facteurs externes tels que votre connexion Internet ou réseau. Si vous changez le lieu associé à votre compte Microsoft, vous devrez peut-être racheter les produits que vous avez achetés et payés dans votre précédente région.\nb. Nous mettons tout en œuvre pour assurer la disponibilité permanente des Services. Toutefois, ils ne sont pas offerts avec un niveau de qualité de service garanti et aucun service en ligne n’est à l’abri d’interruptions et de pannes. En cas de panne ou d'interruption du Service, vous pouvez temporairement ne pas être en mesure de récupérer Votre Contenu. Nous vous recommandons de sauvegarder régulièrement Votre Contenu et vos Données que vous stockez sur les Services ou que vous stockez en utilisant des Applications et Services Tiers."
+          },
+          "images": {}
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "name": "Sauvegarde et continuité d'activité",
+      "questions": [
+        {
+          "id": 1050,
+          "text": "Des sauvegardes régulières de l'ensemble des données critiques sont-elles réalisées ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Des sauvegardes régulières (quotidiennes pour les données critiques) sont en place et couvrent l'ensemble des systèmes importants : serveurs de fichiers, bases de données, messagerie, configurations systèmes. Le calendrier et le périmètre sont documentés.",
+            "Non": "Aucune sauvegarde fiable et régulière n'est en place. En cas de sinistre (ransomware, défaillance matérielle, erreur humaine), la perte de données pourrait être totale et définitive. La mise en place immédiate d'un plan de sauvegarde est urgente et prioritaire.",
+            "Partiel": "Des sauvegardes existent pour certains systèmes mais pas tous, ou leur fréquence est insuffisante pour des données critiques. Un plan de sauvegarde exhaustif est nécessaire.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1051,
+          "text": "Les sauvegardes sont-elles stockées hors site ou dans un cloud séparé de la production ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les sauvegardes respectent la règle 3-2-1 : 3 copies des données, sur 2 supports différents, dont 1 hors site. En cas de sinistre affectant le site principal, les sauvegardes hors site permettent une restauration complète.",
+            "Non": "Les sauvegardes sont stockées au même endroit que les données de production. Un ransomware, un incendie ou une inondation peut détruire simultanément les données et leurs sauvegardes. La mise en place d'une copie hors site est indispensable.",
+            "Partiel": "Une copie hors site existe mais n'est pas systématique ou n'est pas suffisamment isolée. La stratégie de sauvegarde doit garantir une isolation stricte entre données de production et sauvegardes.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1052,
+          "text": "Les procédures de restauration sont-elles testées régulièrement ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Des tests de restauration sont réalisés régulièrement (au moins une fois par an) et documentés. Ces tests permettent de vérifier l'intégrité des sauvegardes et la maîtrise des procédures par les équipes.",
+            "Non": "Les procédures de restauration ne sont jamais testées. Une sauvegarde non testée est une sauvegarde dont on ne peut pas garantir le fonctionnement au moment critique. Des tests réguliers de restauration sont indispensables.",
+            "Partiel": "Des tests de restauration ont été réalisés ponctuellement mais sans planification régulière ni documentation. Il est recommandé de planifier des tests au moins annuels.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1053,
+          "text": "Un Plan de Reprise d'Activité (PRA) ou Plan de Continuité d'Activité (PCA) est-il formalisé ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Un PRA/PCA est formalisé, documenté et connu des équipes concernées. Il définit les objectifs de reprise (RTO, RPO), les procédures à suivre en cas d'incident majeur et les responsabilités de chacun. Il est testé périodiquement.",
+            "Non": "Aucun PRA ni PCA n'est en place. En cas d'incident majeur, l'organisation improvise sa réponse, ce qui prolonge les délais de reprise et aggrave les impacts. La formalisation d'un PRA/PCA est fortement recommandée.",
+            "Partiel": "Un document de continuité existe mais il est incomplet, non testé ou non connu des équipes opérationnelles. Une révision et une mise à jour, suivies d'un exercice de simulation, sont nécessaires.",
+            "Non applicable": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "name": "Protection des données, sensibilisation et pratiques",
+      "questions": [
+        {
+          "id": 1040,
+          "text": "Les données sensibles sont-elles identifiées et classifiées ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Un inventaire et une classification des données sensibles (données personnelles, données confidentielles, données métier critiques) sont en place. Cette cartographie permet d'appliquer des mesures de protection proportionnées et de répondre aux exigences réglementaires (RGPD notamment).",
+            "Non": "Aucune classification des données n'est réalisée : l'organisation ne sait pas précisément quelles données sont sensibles, où elles sont stockées et qui y a accès. Un exercice de cartographie et de classification des données est une étape prioritaire.",
+            "Partiel": "Une classification partielle existe (données RGPD identifiées, par exemple) mais elle ne couvre pas l'ensemble des données de l'organisation. Une extension à l'ensemble du patrimoine informationnel est recommandée.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1041,
+          "text": "Le RGPD est-il pris en compte dans les pratiques de l'organisation (registre des traitements, DPO, gestion des droits des personnes) ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "L'organisation est en conformité avec le RGPD : un registre des traitements est tenu à jour, un DPO (ou référent RGPD) est désigné, les mentions légales et politiques de confidentialité sont à jour, et les procédures de gestion des droits des personnes sont opérationnelles.",
+            "Non": "La conformité RGPD n'est pas assurée : absence de registre des traitements, pas de DPO ni de référent RGPD. L'organisation s'expose à des sanctions de la CNIL pouvant atteindre 4 % du chiffre d'affaires mondial ou 20 millions d'euros. Une mise en conformité urgente est nécessaire.",
+            "Partiel": "Des actions RGPD ont été engagées mais la démarche n'est pas complète ou n'est pas maintenue dans le temps. Une revue de conformité complète et la désignation d'un référent RGPD sont recommandées.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1042,
+          "text": "Les données sensibles stockées et transmises sont-elles chiffrées ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les données sensibles sont chiffrées aussi bien au repos (disques, bases de données) qu'en transit (HTTPS, TLS, VPN). Les algorithmes de chiffrement utilisés sont conformes aux recommandations actuelles de l'ANSSI.",
+            "Non": "Les données sensibles ne sont pas chiffrées, ni au repos ni en transit. Des données stockées en clair ou transmises sans chiffrement peuvent être interceptées et exploitées facilement. La mise en place du chiffrement des données sensibles est une priorité.",
+            "Partiel": "Le chiffrement est appliqué en transit (HTTPS) mais pas au repos, ou inversement. Une couverture complète du chiffrement est recommandée.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1043,
+          "text": "L'utilisation de supports amovibles (clés USB, disques externes) est-elle encadrée ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "L'utilisation des supports amovibles est encadrée par une politique claire : seuls les supports chiffrés et référencés sont autorisés, les ports USB peuvent être désactivés sur les postes non autorisés, et l'utilisation est tracée.",
+            "Non": "L'utilisation des supports amovibles n'est pas encadrée. Ce vecteur est régulièrement utilisé pour introduire des malwares ou exfiltrer des données sensibles. Une politique d'encadrement, avec désactivation des ports USB non nécessaires, est recommandée.",
+            "Partiel": "Une politique existe sur le papier mais n'est pas appliquée techniquement. Une application technique des règles, via GPO ou solution de DLP, est nécessaire.",
+            "Non applicable": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Politique de sécurité et gouvernance",
+      "questions": [
+        {
+          "id": 1001,
+          "text": "L'organisation dispose-t-elle d'une politique de sécurité des systèmes d'information (PSSI) formalisée et approuvée ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Une politique de sécurité des systèmes d'information (PSSI) est en place, formalisée et validée par la direction. Elle couvre les grands domaines de la sécurité (accès, données, réseaux, incidents) et est connue des équipes concernées. Ce document constitue le socle de la démarche de sécurité de l'organisation.",
+            "Non": "Aucune politique de sécurité des systèmes d'information (PSSI) formalisée n'a été identifiée. L'absence de ce document de référence expose l'organisation à des incohérences dans les pratiques de sécurité, à des angles morts dans la protection des actifs, et à une difficulté accrue en cas d'audit réglementaire ou d'incident. La rédaction et l'approbation d'une PSSI par la direction est une action prioritaire.",
+            "Partiel": "Des éléments de politique de sécurité existent (chartes, procédures isolées) mais ne constituent pas une PSSI complète et cohérente. Il manque une vision globale, une validation formelle par la direction, ou une diffusion suffisante auprès des collaborateurs. Une consolidation de ces éléments en un document de référence unique est recommandée.",
+            "Non applicable": ""
+          },
+          "images": {
+            "Oui": {
+              "url": "/uploads/img_5e651f1b3aa33782.png",
+              "filename": "img_5e651f1b3aa33782.png",
+              "name": "Matrice de robustesse des mots de passe",
+              "caption": ""
+            }
+          }
+        },
+        {
+          "id": 1002,
+          "text": "Un responsable de la sécurité des systèmes d'information (RSSI) ou équivalent est-il désigné ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Un RSSI (ou équivalent) est clairement identifié, avec des missions et une autorité définies. Ce rôle garantit un pilotage cohérent de la sécurité, une veille sur les menaces et une interface privilégiée en cas d'incident ou d'audit.",
+            "Non": "Aucun référent sécurité n'est formellement désigné. La sécurité informatique est traitée de manière fragmentée, souvent par défaut par les équipes techniques, sans vision stratégique ni responsabilité clairement établie. La désignation d'un RSSI ou d'un référent sécurité, même à temps partiel, est fortement recommandée.",
+            "Partiel": "La fonction de référent sécurité existe de fait (portée par un responsable informatique ou un prestataire) mais n'est pas formalisée dans un organigramme ou une fiche de poste. Le périmètre, les missions et le niveau d'autorité de cette fonction méritent d'être précisés et documentés.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1003,
+          "text": "La politique de sécurité est-elle révisée au moins une fois par an ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "La politique de sécurité fait l'objet d'une révision annuelle formalisée, permettant de l'adapter aux évolutions du contexte réglementaire, technologique et des menaces. Cette pratique démontre une maturité dans la démarche de gouvernance sécurité.",
+            "Non": "La politique de sécurité n'est pas révisée régulièrement. Un document non mis à jour devient rapidement obsolète face à l'évolution des menaces, des technologies et des obligations réglementaires. Une révision annuelle minimum, avec validation par la direction, doit être planifiée.",
+            "Partiel": "Des mises à jour ponctuelles ont lieu mais sans processus formalisé ni calendrier fixe. Il est recommandé d'instaurer un cycle de révision annuel avec un responsable désigné et une validation par la direction.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1004,
+          "text": "Les collaborateurs sont-ils sensibilisés à la politique de sécurité et aux bonnes pratiques informatiques ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Un programme de sensibilisation à la sécurité informatique est en place : formations régulières, communications internes, tests de phishing simulés ou e-learning. Les collaborateurs connaissent les règles essentielles et les réflexes à adopter en cas d'incident.",
+            "Non": "Aucune action de sensibilisation à la sécurité informatique n'est menée auprès des collaborateurs. Or, l'erreur humaine est impliquée dans plus de 80 % des incidents de sécurité. Des actions de sensibilisation régulières (formations, guides de bonnes pratiques, simulations de phishing) sont indispensables pour réduire ce risque.",
+            "Partiel": "Des actions de sensibilisation ont été réalisées ponctuellement mais ne s'inscrivent pas dans un programme structuré et récurrent. Il est recommandé de mettre en place un plan de sensibilisation annuel, adapté aux différents profils de collaborateurs.",
+            "Non applicable": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "name": "Gestion des accès et des identités",
+      "questions": [
+        {
+          "id": 1010,
+          "text": "Les mots de passe respectent-ils une politique de robustesse définie (longueur, complexité) ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Une politique de mots de passe robuste est en vigueur et appliquée techniquement : longueur minimale de 12 caractères, combinaison de majuscules, minuscules, chiffres et caractères spéciaux, et blocage des mots de passe trop simples ou déjà compromis. Cette mesure constitue un rempart efficace contre les attaques par force brute et les compromissions de comptes.",
+            "Non": "Aucune politique de robustesse des mots de passe n'est définie ou appliquée. Des mots de passe simples ou identiques entre plusieurs services exposent l'organisation aux attaques par force brute, par dictionnaire et au credential stuffing. Il est recommandé d'imposer des règles de complexité via les outils techniques (Active Directory, etc.) et d'accompagner les utilisateurs avec un gestionnaire de mots de passe.",
+            "Partiel": "Une politique de mots de passe existe mais n'est pas appliquée uniformément : certains systèmes ou comptes de service n'y sont pas soumis. Une harmonisation sur l'ensemble du périmètre est nécessaire.",
+            "Non applicable": ""
+          },
+          "images": {
+            "Non": {
+              "url": "/uploads/img_4d31c19b10146094.png",
+              "filename": "img_4d31c19b10146094.png",
+              "name": "Matrice de robustesse des mots de passe",
+              "caption": "Matrice de robustesse des mots de passe"
+            },
+            "Partiel": {
+              "url": "/uploads/img_4d31c19b10146094.png",
+              "filename": "img_4d31c19b10146094.png",
+              "name": "Matrice de robustesse des mots de passe",
+              "caption": "Matrice de robustesse des mots de passe"
+            }
+          }
+        },
+        {
+          "id": 1011,
+          "text": "L'authentification multifacteur (MFA) est-elle mise en place sur les accès sensibles ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "L'authentification multifacteur (MFA) est déployée sur les accès sensibles : VPN, messagerie, outils d'administration, applications cloud. Cette mesure réduit drastiquement le risque de compromission de compte, même en cas de vol de mot de passe.",
+            "Non": "Aucune authentification multifacteur n'est en place. Le mot de passe seul ne constitue plus une protection suffisante : en cas de vol ou de fuite, l'accès aux systèmes est immédiatement compromis. Le déploiement du MFA sur au moins les accès à distance, les boîtes mail et les outils d'administration est une priorité.",
+            "Partiel": "Le MFA est déployé sur certains accès (ex : VPN ou messagerie) mais pas sur l'ensemble des périmètres sensibles. Il est recommandé d'étendre le MFA à tous les accès exposés à Internet et aux comptes à privilèges.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1012,
+          "text": "Le principe du moindre privilège est-il appliqué (chaque utilisateur n'a accès qu'à ce dont il a besoin) ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Le principe du moindre privilège est correctement mis en œuvre : les droits d'accès sont attribués en fonction du rôle de chaque utilisateur et limités au strict nécessaire. Cette approche réduit la surface d'attaque et limite l'impact d'une compromission de compte.",
+            "Non": "Le principe du moindre privilège n'est pas respecté : de nombreux utilisateurs disposent de droits excessifs (accès administrateur, accès à des données sans rapport avec leur fonction). En cas de compromission d'un compte, l'attaquant bénéficie de ces droits étendus pour se propager latéralement. Une revue et une restriction des droits d'accès sont nécessaires.",
+            "Partiel": "Le principe est partiellement appliqué : des profils de droits existent mais certains comptes (notamment des comptes de service ou des comptes historiques) disposent de privilèges excessifs. Un audit complet des droits et un nettoyage sont recommandés.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1013,
+          "text": "Les comptes des collaborateurs quittant l'organisation sont-ils désactivés sans délai ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Un processus de déprovisionnement est en place : lors du départ d'un collaborateur, ses accès sont désactivés le jour même ou dès la notification RH. Ce processus est formalisé et inclut tous les systèmes (AD, messagerie, applications métier, VPN).",
+            "Non": "Les comptes des collaborateurs partants ne sont pas désactivés systématiquement et rapidement. Des comptes orphelins actifs représentent un risque majeur : ils peuvent être utilisés par d'anciens employés malveillants ou exploités par des attaquants. Un processus de déprovisionnement immédiat, déclenché par les RH, doit être mis en place.",
+            "Partiel": "Des actions de désactivation sont réalisées mais avec des délais variables ou de manière incomplète (certains systèmes ou applications métier sont oubliés). Un processus exhaustif et systématique, couvrant tous les accès, est nécessaire.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1014,
+          "text": "Une revue régulière des droits d'accès des utilisateurs est-elle réalisée ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Des revues périodiques des droits d'accès (au moins annuelles) sont réalisées et documentées. Elles permettent d'identifier les comptes dormants, les droits excessifs ou inappropriés, et d'ajuster les autorisations en fonction des évolutions de poste.",
+            "Non": "Aucune revue des droits d'accès n'est réalisée. Les droits s'accumulent au fil du temps sans nettoyage, créant une dérive des privilèges qui multiplie les risques. Une revue au moins annuelle, validée par les responsables métier, doit être instaurée.",
+            "Partiel": "Des revues ponctuelles ont lieu mais sans régularité ni formalisme suffisant. Il est recommandé de planifier des revues périodiques (annuelles a minima), avec un processus documenté et une validation managériale.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1015,
+          "text": "Les comptes administrateurs sont-ils distincts des comptes utilisateurs courants ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les comptes à privilèges (administrateurs systèmes, bases de données, réseau) sont distincts des comptes utilisateurs courants. Les administrateurs utilisent leurs comptes personnels pour les tâches quotidiennes et des comptes dédiés uniquement pour les opérations d'administration, réduisant ainsi la surface d'exposition.",
+            "Non": "Les comptes administrateurs ne sont pas séparés des comptes courants : certains utilisateurs naviguent sur Internet ou consultent leur messagerie avec des droits d'administration. En cas de compromission, l'attaquant obtient immédiatement des droits maximaux sur le système. La séparation stricte des comptes est indispensable.",
+            "Partiel": "La séparation est réalisée pour certains systèmes ou certains administrateurs, mais pas de manière exhaustive. Une standardisation de cette pratique sur l'ensemble du périmètre est recommandée.",
+            "Non applicable": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": 109,
+      "name": "Messagerie et protection contre le phishing",
+      "questions": [
+        {
+          "id": 1081,
+          "text": "Les utilisateurs sont-ils formés à reconnaître et signaler les tentatives de phishing ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Des sessions de sensibilisation au phishing sont organisées régulièrement. Des simulations sont réalisées pour tester la vigilance des utilisateurs. Un processus de signalement des emails suspects est en place et connu des utilisateurs.",
+            "Non": "Aucune formation au phishing n'est dispensée. Les utilisateurs constituent la dernière ligne de défense face aux attaques par ingénierie sociale. Des campagnes de sensibilisation et de simulation doivent être organisées.",
+            "Partiel": "Des actions de sensibilisation ont été réalisées ponctuellement mais sans programme structuré ni simulation pratique. Un programme récurrent incluant des tests réguliers est recommandé.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1775747097805,
+          "text": "Des filtres anti-spam et anti-phishing sont-ils en place sur la messagerie ?",
+          "qtype": "choice",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Des solutions de filtrage des emails (anti-spam, anti-phishing, anti-malware sur pièces jointes) sont en place et maintenues à jour. Les enregistrements DNS (SPF, DKIM, DMARC) sont correctement configurés pour limiter l'usurpation d'identité.",
+            "Non": "Aucun filtrage efficace des emails n'est en place. La messagerie est le premier vecteur d'attaque. La mise en place d'une solution de protection et la configuration des enregistrements SPF, DKIM et DMARC sont des actions prioritaires.",
+            "Partiel": "",
+            "Non applicable": "Des filtres existent mais sont insuffisants ou mal configurés. Les enregistrements DNS ne sont pas tous en place ou DMARC est en mode monitoring sans rejet. Un renforcement de la protection est recommandé."
+          },
+          "images": {}
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "name": "Journalisation et supervision",
+      "questions": [
+        {
+          "id": 1090,
+          "text": "Les journaux d'événements (logs) des systèmes critiques sont-ils activés et conservés ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "La journalisation est activée sur l'ensemble des systèmes critiques. Les journaux sont centralisés, conservés pendant une durée suffisante (a minima 1 an selon les recommandations ANSSI) et protégés contre toute modification.",
+            "Non": "La journalisation des événements n'est pas activée ou les journaux ne sont pas conservés. En cas d'incident, il sera impossible de retracer les actions des attaquants. L'activation et la centralisation des journaux sont des mesures indispensables.",
+            "Partiel": "Des journaux existent sur certains systèmes mais pas tous, leur conservation est insuffisante, ou ils ne sont pas centralisés. Une centralisation via un SIEM ou un serveur de logs dédié est recommandée.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1091,
+          "text": "Les journaux sont-ils analysés et des alertes sont-elles configurées en cas d'événement suspect ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les journaux font l'objet d'une analyse régulière, manuelle ou automatisée. Des règles de détection et des alertes sont configurées pour les événements suspects. Un responsable est désigné pour traiter ces alertes.",
+            "Non": "Les journaux existent mais ne sont jamais analysés. Des journaux non analysés n'apportent aucune valeur de détection. La mise en place d'alertes automatiques sur les événements critiques est indispensable.",
+            "Partiel": "Quelques alertes sont configurées mais la couverture est insuffisante ou les alertes ne sont pas systématiquement traitées. Une revue des règles de détection et un processus de traitement doivent être mis en place.",
+            "Non applicable": ""
+          }
+        }
+      ]
+    },
+    {
+      "id": 112,
+      "name": "Sécurité physique",
+      "questions": [
+        {
+          "id": 1110,
+          "text": "L'accès aux locaux informatiques sensibles (salle serveur, baies réseau) est-il contrôlé et réservé aux personnes autorisées ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les locaux informatiques sensibles sont sécurisés par un contrôle d'accès physique (badge, code, clé). L'accès est réservé aux personnes autorisées, la liste est tenue à jour et les accès sont tracés.",
+            "Non": "Les locaux informatiques ne sont pas correctement sécurisés. Un accès physique non contrôlé aux équipements permet de contourner l'ensemble des mesures de sécurité logique. Des mesures de contrôle d'accès physique doivent être mises en place en priorité.",
+            "Partiel": "Des contrôles d'accès existent pour la salle serveur principale mais certains équipements réseau sont installés dans des zones non sécurisées. Une sécurisation de l'ensemble des équipements critiques est recommandée.",
+            "Non applicable": ""
+          }
+        },
+        {
+          "id": 1111,
+          "text": "Les équipements informatiques sont-ils protégés contre les risques environnementaux (incendie, inondation, coupure électrique) ?",
+          "options": [
+            "Oui",
+            "Non",
+            "Partiel",
+            "Non applicable"
+          ],
+          "paragraphs": {
+            "Oui": "Les équipements critiques sont protégés contre les risques environnementaux : onduleur (UPS), détection et extinction incendie, capteurs de température et d'humidité, protections contre les dégâts des eaux. Des contrats de maintenance préventive sont en place.",
+            "Non": "Les équipements informatiques ne sont pas protégés contre les risques environnementaux. Une coupure électrique, un incendie ou une inondation peut provoquer une interruption totale de l'activité. La mise en place d'un onduleur et d'une détection incendie est nécessaire.",
+            "Partiel": "Des protections partielles existent mais la couverture n'est pas complète. Un bilan des risques environnementaux et une mise à niveau des protections sont recommandés.",
+            "Non applicable": ""
+          }
+        }
+      ]
+    }
+  ],
+  "answers": {
+    "1010": "Non",
+    "1775650465348": {
+      "value": "Réponse libre",
+      "reason": "Orange Pro et Freebox\n"
+    },
+    "1775650492825": {
+      "value": "Réponse libre",
+      "reason": "FELIX Informatique, 3 Rue de la Moselotte, 54520 Laxou : \n- Logiciel métier Philéas sous contrat d’assistance\n- L’échange avec le prestataire a été réalisé uniquement par mail faute de disponibilité du contact\nLes prérequis de la solution nous ont été transmis ainsi que le détail d’utilisation (base oracle + rds)"
+    },
+    "1775745343708": {
+      "value": "Réponse libre",
+      "reason": "CRIFE Informatique, 88 Rue Henri Prou, 78340 Les Clayes-sous-Bois"
+    },
+    "1775650513738": {
+      "value": "Réponse libre",
+      "reason": "https://www.jrf-avocats.com/"
+    },
+    "1775745380622": {
+      "value": "Réponse libre",
+      "reason": "DFM Informatique, 13 Rue Paul Sejourne, 94000 Créteil"
+    },
+    "1775650531914": {
+      "value": "Réponse libre",
+      "reason": "CLOUD ECO, 19 Av. de la Métallurgie, 93210 Saint-Denis"
+    }
+  },
+  "hidden": {
+    "chapters": {},
+    "questions": {}
+  },
+  "intro": "Cogep Informatique a été désigné comme Auditeur de l’infrastructure informatique du cabinet d’avocats JRF AVOCATS, situé 13 Rue Colbert, 78000 Versailles.\n\nDeux autres sites annexes sont présents mais ne feront pas parti de cet audit. Ils sont situés 10 Rue de Rome, 75018 Paris ainsi que 2 avenue Jean Jaurès, 92130 Issy Les Moulineaux.\n\nL’objectif est de prendre en main l’environnement et de détecter les points clés de l’infrastructure, pour ainsi souligner les points positifs et négatifs du SI.",
+  "conclusion": "a. Points forts du SI\n\tPrésence de plusieurs lignes internet (amélioration souhaitable pour un basculement automatique)\n\tServeurs performants (espace disque et performances CPU/RAM…)\n\tUtilisation de Windows Server 2019 pour le serveur physique et les VM (support étendu jusqu’au 9 janvier 2029).\n\tLa connexion externe se réalise de manière sécurisée (VPN)\n\n\n\n\tb. Axes d’amélioration\n\tMesures critiques et urgentes\n\n\tSécuriser la transmission des informations techniques (éviter l’envoi en clair par e-mail ou via des documents non protégés).\n\tSauvegarde externalisée sur un serveur ftp Free privé non-cloud (ftp.crife.fr) une seule fois par semaine\n\tPlusieurs logiciels de sauvegarde différents installés\n\tLa sauvegarde locale sur le NAS n’est plus fonctionnelle\n\tLa sauvegarde externalisée du logiciel philéas n’est plus fonctionnelle\n\tAncien serveur encore en service (contrôleur de domaine principal du domaine ad.local -> domaine dédié pour les serveurs physiques)\no\tDépendance inutile entre les deux serveurs physiques\n\tSite internet jrf-avocats.fr non sécurisé\n\tLes utilisateurs sont « administrateurs » de leur poste et sont libres d’installer des applications tierces. Le risque humain est donc décuplé si manque de vigilance ou malveillance d’un utilisateur.\n\tLes postes ne sont pas dans le domaine Active Directory et ne peuvent donc pas bénéficier d’automatisme (politique de sécurité, déploiement d’application, etc…)\no\tNon présence de politique de mot de passe (ouverture postes)\n\tNous n’avons pas pu constater la présence d’antivirus sur les postes malgré un contrat actif (x15). Le fait de ne pas avoir eu accès à la plateforme d’administration ne nous permet pas d’affirmer le bon fonctionnement de la protection antivirale.\n\tUtilisation de 2 systèmes de connexion VPN\no\tVPN Box Orange limité à 10 utilisateurs (et les 10 users sont déjà utilisés)\no\tMise en service récente d’un VPN Windows qui n’est plus supporté par Microsoft\n\n\n\n\n\n\n\n\n\n\tIMPORTANT\n\n\tRenforcer la sécurité de la messagerie avec les enregistrements DMARC/DKIM/SPF/BIMI\n\tAcquérir le domaine jrf-avocats.fr (et autres si nécessaire)\n\tUtiliser un gestionnaire de mot de passe sécurisé\n\tMettre en place un système d’anti-spam sur les boites mails et sensibiliser les utilisateurs aux risques cyber (campagnes de phishing, exercices de vigilance, …)\n\tL’accès à distance à l’infrastructure sur un pc « perso » n’est pas conseillé car il n’y a aucune visibilité sur la protection du poste ; l’utilisation du poste ne peut pas être contrôlée. La connexion VPN utilisée permet de pénétrer dans le réseau et ouvre une faille en utilisant un pc perso.\n\n\tNON URGENT\n\tAbsence de PRA/PCA :\no\tMettre en place un PRA/PCA détaillé avec le prestataire informatique.\no\tInclure des procédures de sauvegarde, des mécanismes de redondance et des processus de reprise en cas de sinistre.\no\tEffectuer des tests réguliers pour s'assurer de l'efficacité des plans.\no\tFormer le personnel aux procédures de reprise et de continuité d'activité.\n\n\tc. Nos préconisations\n\tSupprimer les machines virtuelles inutilisées du serveur SHVA et réutiliser les ressources pour mise en place d’une réplication des machines virtuelles du SHVB\n\n\tMettre en service une sauvegarde Microsoft 365\n\n\tMettre en place un Failover (basculement automatique) sur les connections Internet en cas de défaillance de l’une d’elles.\n\n\tUtilisation d’un logiciel gestionnaire de mot de passe personnel et collaboratif permettant de \na.\tPartage sécurisé : Vous pouvez partager des mots de passe et des informations sensibles avec vos collègues de manière sécurisée. Cela évite l'envoi de mots de passe par e-mail ou d'autres moyens non sécurisés.\nb.\tGestion des accès : Les gestionnaires de mots de passe permettent de contrôler qui a accès à quelles informations. Vous pouvez facilement ajouter ou retirer des utilisateurs et ajuster leurs niveaux d'accès.\nc.\tHistorique et suivi : Certains gestionnaires de mots de passe offrent des fonctionnalités de suivi et d'historique, vous permettant de voir qui a accédé à quel compte et quand. Cela améliore la transparence et la responsabilité au sein de l'équipe.\nd.\tCollaboration en temps réel : Les équipes peuvent travailler ensemble sur des projets nécessitant des accès partagés sans interruption, car les informations de connexion sont toujours à jour et accessibles.\ne.\tRéduction des erreurs : En centralisant la gestion des mots de passe, vous réduisez le risque d'erreurs humaines, comme l'utilisation de mots de passe faibles ou la réutilisation de mots de passe. \n",
+  "_savedAt": "2026-04-21T13:27:43.599Z"
+}

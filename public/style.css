@@ -420,11 +420,13 @@
 
 
   /* ─── TIPTAP EDITOR ───────────────────────────────────── */
-  .tiptap-wrapper { border: 1px solid var(--border); border-radius: var(--radius); background: #FAFAF8; overflow: hidden; }
+  .tiptap-wrapper { border: 1px solid var(--border); border-radius: var(--radius); background: #FAFAF8; overflow: visible; }
   .tiptap-toolbar {
     display: flex; gap: 2px; padding: 6px 8px;
     background: var(--gray-light); border-bottom: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
     flex-wrap: wrap;
+    position: relative;
   }
   .tiptap-btn {
     padding: 4px 8px; border-radius: 5px; border: 1px solid transparent;
@@ -435,6 +437,34 @@
   .tiptap-btn:hover { background: var(--white); border-color: var(--border); color: var(--gray-dark); }
   .tiptap-btn.active { background: var(--blue-pale); border-color: var(--blue-med); color: var(--blue-med); }
   .tiptap-btn-sep { width: 1px; background: var(--border); margin: 2px 4px; }
+
+  /* ── Table size picker ── */
+  .tiptap-table-wrap { position: relative; display: inline-flex; }
+  .tiptap-table-picker {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 9999;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    padding: 8px;
+    min-width: 120px;
+  }
+  .tiptap-table-picker.open { display: block; }
+  .tiptap-table-grid { display: grid; gap: 2px; margin-bottom: 6px; }
+  .tiptap-table-cell-pick {
+    width: 18px; height: 18px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    cursor: pointer;
+    background: var(--gray-light);
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .tiptap-table-cell-pick.hover { background: var(--blue-light); border-color: var(--blue-med); }
+  .tiptap-table-label { font-size: 11px; color: var(--gray-med); text-align: center; }
   .tiptap-editor {
     padding: 12px 14px; min-height: 100px; outline: none;
     font-size: 14px; line-height: 1.65; color: var(--gray-dark);

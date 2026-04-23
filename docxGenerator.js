@@ -288,14 +288,26 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
     const sectionIds = ['section-client', 'section-intro', ...chapters.map((_, i) => `section-ch-${i}`), 'section-conclusion'];
     const allItems = ['Informations client', 'Introduction', ...chapters.map(ch => ch.name), 'Conclusion & Recommandations'];
 
-    // Sommaire avec liens
-    const sommaireRows = allItems.map((name, i) => `
+    // Sommaire condensé sur 2 colonnes
+    const half = Math.ceil(allItems.length / 2);
+    const col1 = allItems.slice(0, half);
+    const col2 = allItems.slice(half);
+    const sommaireRows = col1.map((name, i) => {
+      const i2 = i + half;
+      const right = col2[i] !== undefined ? `
+        <td style="padding:2pt 8pt;width:20pt;text-align:right;color:${C.CYAN};font-weight:bold;font-size:9.5pt;font-family:Calibri,Arial,sans-serif;">${i2 + 1}.</td>
+        <td style="padding:2pt 8pt;font-size:9.5pt;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;border-bottom:1pt solid #E8EEF4;">
+          <a href="#${sectionIds[i2]}" style="color:${C.NAVY};text-decoration:none;">${esc(col2[i])}</a>
+        </td>` : `<td colspan="2"></td>`;
+      return `
     <tr>
-      <td style="padding:5pt 10pt;width:30pt;text-align:right;color:${C.CYAN};font-weight:bold;font-size:11pt;font-family:Calibri,Arial,sans-serif;">${i + 1}.</td>
-      <td style="padding:5pt 10pt;font-size:11pt;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;border-bottom:1pt solid #E8EEF4;">
+      <td style="padding:2pt 8pt;width:20pt;text-align:right;color:${C.CYAN};font-weight:bold;font-size:9.5pt;font-family:Calibri,Arial,sans-serif;">${i + 1}.</td>
+      <td style="padding:2pt 8pt;font-size:9.5pt;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;border-bottom:1pt solid #E8EEF4;width:45%;">
         <a href="#${sectionIds[i]}" style="color:${C.NAVY};text-decoration:none;">${esc(name)}</a>
       </td>
-    </tr>`).join('');
+      ${right}
+    </tr>`;
+    }).join('');
 
     // Chapitres
     let chaptersHtml = '';

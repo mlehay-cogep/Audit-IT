@@ -27,6 +27,10 @@ async function _loadTiptap() {
       { ListItem },
       { HardBreak },
       { History },
+      { Table },
+      { TableRow },
+      { TableHeader },
+      { TableCell },
     ] = await Promise.all([
       import('https://esm.sh/@tiptap/core@2.4.0'),
       import('https://esm.sh/@tiptap/extension-document@2.4.0'),
@@ -40,8 +44,22 @@ async function _loadTiptap() {
       import('https://esm.sh/@tiptap/extension-list-item@2.4.0'),
       import('https://esm.sh/@tiptap/extension-hard-break@2.4.0'),
       import('https://esm.sh/@tiptap/extension-history@2.4.0'),
+      import('https://esm.sh/@tiptap/extension-table@2.4.0'),
+      import('https://esm.sh/@tiptap/extension-table-row@2.4.0'),
+      import('https://esm.sh/@tiptap/extension-table-header@2.4.0'),
+      import('https://esm.sh/@tiptap/extension-table-cell@2.4.0'),
     ]);
-    _tiptapModules = { Editor, extensions: [Document, Paragraph, Text, Bold, Italic, Underline, BulletList, OrderedList, ListItem, HardBreak, History] };
+    _tiptapModules = {
+      Editor,
+      extensions: [
+        Document, Paragraph, Text,
+        Bold, Italic, Underline,
+        BulletList, OrderedList, ListItem,
+        HardBreak, History,
+        Table.configure({ resizable: false }),
+        TableRow, TableHeader, TableCell,
+      ]
+    };
     _tiptapReady = true;
     _tiptapReadyCallbacks.forEach(cb => cb(_tiptapModules));
     _tiptapReadyCallbacks = [];
@@ -95,6 +113,8 @@ async function initTiptap(id, initialHTML, onUpdate) {
 }
 
 function _buildToolbar(editor, toolbarEl) {
+  const inTable = editor.isActive('table');
+
   const buttons = [
     { label: '<b>B</b>', title: 'Gras',       cmd: () => editor.chain().focus().toggleBold().run(),         active: () => editor.isActive('bold') },
     { label: '<i>I</i>', title: 'Italique',    cmd: () => editor.chain().focus().toggleItalic().run(),      active: () => editor.isActive('italic') },
@@ -106,7 +126,10 @@ function _buildToolbar(editor, toolbarEl) {
     { label: '↩', title: 'Annuler',  cmd: () => editor.chain().focus().undo().run(), active: () => false },
     { label: '↪', title: 'Rétablir', cmd: () => editor.chain().focus().redo().run(), active: () => false },
   ];
+
   toolbarEl.innerHTML = '';
+
+  // Boutons de base
   buttons.forEach(btn => {
     if (btn.sep) {
       const sep = document.createElement('div');
@@ -122,6 +145,111 @@ function _buildToolbar(editor, toolbarEl) {
     b.addEventListener('mousedown', e => { e.preventDefault(); btn.cmd(); });
     toolbarEl.appendChild(b);
   });
+
+  // Séparateur avant tableau
+  const sep2 = document.createElement('div');
+  sep2.className = 'tiptap-btn-sep';
+  toolbarEl.appendChild(sep2);
+
+  // Bouton tableau + picker de taille
+  const wrap = document.createElement('div');
+  wrap.className = 'tiptap-table-wrap';
+
+  const tableBtn = document.createElement('button');
+  tableBtn.type = 'button';
+  tableBtn.className = 'tiptap-btn' + (inTable ? ' active' : '');
+  tableBtn.title = 'Insérer un tableau';
+  tableBtn.innerHTML = '⊞';
+
+  const picker = document.createElement('div');
+  picker.className = 'tiptap-table-picker';
+
+  const ROWS = 6, COLS = 6;
+  const grid = document.createElement('div');
+  grid.className = 'tiptap-table-grid';
+  grid.style.gridTemplateColumns = `repeat(${COLS}, 18px)`;
+
+  const label = document.createElement('div');
+  label.className = 'tiptap-table-label';
+  label.textContent = 'Choisir une taille';
+
+  let hoverR = 0, hoverC = 0;
+
+  const cells = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'tiptap-table-cell-pick';
+      cell.addEventListener('mouseenter', () => {
+        hoverR = r; hoverC = c;
+        cells.forEach((cc, idx) => {
+          const cr = Math.floor(idx / COLS), cc2 = idx % COLS;
+          cc.classList.toggle('hover', cr <= r && cc2 <= c);
+        });
+        label.textContent = `${r+1} × ${c+1}`;
+      });
+      cell.addEventListener('mousedown', e => {
+        e.preventDefault();
+        picker.classList.remove('open');
+        editor.chain().focus().insertTable({ rows: r + 1, cols: c + 1, withHeaderRow: true }).run();
+        _buildToolbar(editor, toolbarEl);
+      });
+      grid.appendChild(cell);
+      cells.push(cell);
+    }
+  }
+
+  picker.appendChild(grid);
+  picker.appendChild(label);
+
+  tableBtn.addEventListener('mousedown', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (inTable) return;
+    const isOpen = picker.classList.contains('open');
+    picker.classList.toggle('open');
+    if (!isOpen) {
+      // Un seul listener, se retire tout seul après le premier clic extérieur
+      setTimeout(() => {
+        document.addEventListener('mousedown', function closePickerOnce(e) {
+          if (!wrap.contains(e.target)) {
+            picker.classList.remove('open');
+            document.removeEventListener('mousedown', closePickerOnce, true);
+          }
+        }, true);
+      }, 0);
+    }
+  });
+
+  wrap.appendChild(tableBtn);
+  wrap.appendChild(picker);
+  toolbarEl.appendChild(wrap);
+
+  // Actions contextuelles si dans un tableau
+  if (inTable) {
+    const sep3 = document.createElement('div');
+    sep3.className = 'tiptap-btn-sep';
+    toolbarEl.appendChild(sep3);
+
+    const tableActions = [
+      { label: '+col→', title: 'Ajouter colonne après',  cmd: () => editor.chain().focus().addColumnAfter().run() },
+      { label: '-col',  title: 'Supprimer colonne',       cmd: () => editor.chain().focus().deleteColumn().run() },
+      { label: '+lig↓', title: 'Ajouter ligne après',     cmd: () => editor.chain().focus().addRowAfter().run() },
+      { label: '-lig',  title: 'Supprimer ligne',          cmd: () => editor.chain().focus().deleteRow().run() },
+      { label: '🗑',    title: 'Supprimer le tableau',    cmd: () => editor.chain().focus().deleteTable().run() },
+    ];
+
+    tableActions.forEach(btn => {
+      const b = document.createElement('button');
+      b.className = 'tiptap-btn';
+      b.innerHTML = btn.label;
+      b.title = btn.title;
+      b.type = 'button';
+      b.style.fontSize = '11px';
+      b.addEventListener('mousedown', e => { e.preventDefault(); btn.cmd(); _buildToolbar(editor, toolbarEl); });
+      toolbarEl.appendChild(b);
+    });
+  }
 }
 
 function _initFallbackEditor(id, editorEl, toolbarEl, initialHTML, onUpdate) {
