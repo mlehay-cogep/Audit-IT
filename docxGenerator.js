@@ -191,16 +191,27 @@ function buildRecoItems(chapters, answers, aiContent, styleExtra = '') {
   });
 
   // Trier par priorité : high → medium → low
-  items.sort((a, b) => (priorityOrder[a.priority] || 1) - (priorityOrder[b.priority] || 1));
+  items.sort((a, b) => {
+    const pa = priorityOrder[a.priority] !== undefined ? priorityOrder[a.priority] : 1;
+    const pb = priorityOrder[b.priority] !== undefined ? priorityOrder[b.priority] : 1;
+    return pa - pb;
+  });
+
+  const priorityBadgeStyle = {
+    high:   { bg: '#FEE2E2', color: '#991B1B', border: '#FCA5A5' },
+    medium: { bg: '#FEF9C3', color: '#854D0E', border: '#FCD34D' },
+    low:    { bg: '#DCFCE7', color: '#166534', border: '#86EFAC' },
+  };
 
   let result = '';
   items.forEach(item => {
     const prioLabel = priorityLabel[item.priority] || '🟡 Moyenne';
+    const bs = priorityBadgeStyle[item.priority] || priorityBadgeStyle.medium;
     const actionLine = item.action
       ? `<br><em style="font-size:9.5pt;color:#444;">→ ${escNl(item.action)}</em>`
       : '';
     result += `<li style="margin-bottom:8pt;${styleExtra}">
-      <span style="font-size:8.5pt;padding:1pt 6pt;border-radius:3pt;background:#f3f4f6;color:#555;font-weight:600;mso-highlight:#f3f4f6;">${prioLabel}</span>
+      <span style="font-size:8.5pt;padding:1pt 6pt;border-radius:3pt;background:${bs.bg};color:${bs.color};font-weight:600;border:1pt solid ${bs.border};mso-highlight:${bs.bg};">${prioLabel}</span>
       &nbsp;<strong>[${escNl(item.chName)}]</strong> ${escNl(item.qText)}
       <span style="font-size:9pt;color:#888;"> — <em>${esc(item.ans)}</em></span>
       ${actionLine}
@@ -288,26 +299,14 @@ function htmlToDocCogep({ client, chapters, answers, aiContent }) {
     const sectionIds = ['section-client', 'section-intro', ...chapters.map((_, i) => `section-ch-${i}`), 'section-conclusion'];
     const allItems = ['Informations client', 'Introduction', ...chapters.map(ch => ch.name), 'Conclusion & Recommandations'];
 
-    // Sommaire condensé sur 2 colonnes
-    const half = Math.ceil(allItems.length / 2);
-    const col1 = allItems.slice(0, half);
-    const col2 = allItems.slice(half);
-    const sommaireRows = col1.map((name, i) => {
-      const i2 = i + half;
-      const right = col2[i] !== undefined ? `
-        <td style="padding:2pt 8pt;width:20pt;text-align:right;color:${C.CYAN};font-weight:bold;font-size:9.5pt;font-family:Calibri,Arial,sans-serif;">${i2 + 1}.</td>
-        <td style="padding:2pt 8pt;font-size:9.5pt;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;border-bottom:1pt solid #E8EEF4;">
-          <a href="#${sectionIds[i2]}" style="color:${C.NAVY};text-decoration:none;">${esc(col2[i])}</a>
-        </td>` : `<td colspan="2"></td>`;
-      return `
+    // Sommaire simple (une colonne, comme la version sans charte)
+    const sommaireRows = allItems.map((name, i) => `
     <tr>
       <td style="padding:2pt 8pt;width:20pt;text-align:right;color:${C.CYAN};font-weight:bold;font-size:9.5pt;font-family:Calibri,Arial,sans-serif;">${i + 1}.</td>
-      <td style="padding:2pt 8pt;font-size:9.5pt;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;border-bottom:1pt solid #E8EEF4;width:45%;">
+      <td style="padding:2pt 8pt;font-size:9.5pt;color:${C.NAVY};font-family:Calibri,Arial,sans-serif;border-bottom:1pt solid #E8EEF4;">
         <a href="#${sectionIds[i]}" style="color:${C.NAVY};text-decoration:none;">${esc(name)}</a>
       </td>
-      ${right}
-    </tr>`;
-    }).join('');
+    </tr>`).join('');
 
     // Chapitres
     let chaptersHtml = '';
